@@ -1,0 +1,33 @@
+new best net in 19
+TRAINING result
+accuracy   = 89.58 [%]
+hit_count  = 52888
+miss_count = 6152
+
+class_accuracy = 97.941%   84.666%   87.393%   88.298%   
+
+
+confusion_matrix = 
+14460	 345	 3	 21	 
+152	 12517	 1288	 586	 
+60	 1351	 12887	 1118	 
+91	 570	 567	 13024	 
+
+
+
+TESTING result
+accuracy   = 94.985 [%]
+hit_count  = 1307
+miss_count = 69
+
+class_accuracy = 98.102%   90.728%   80.0%   83.051%   
+
+
+confusion_matrix = 
+827	 4	 0	 0	 
+12	 411	 4	 0	 
+0	 32	 20	 9	 
+3	 5	 0	 49	 
+
+
+

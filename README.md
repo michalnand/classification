@@ -72,3 +72,51 @@ result link : [results](models/magnetometer_net_1/result)
 ![](models/magnetometer_net_1/result/loss_progress.png)
 
 ![](models/magnetometer_net_1/result/accuracy_progress.png)
+
+
+
+
+### results net_2
+ 
+1D convs, kernel size 3, stride 2
+
+last conv is 1D conv, channels = num. classes (4), followed byt global average pooling
+
+IN4x512 - C16x3/2 - C32x3/2 - C32x3/2 - C64x3/2 - C64x3/2 - C128x3/2 - C4x1 - GAP - Flatten
+
+**accuracy   = 94.985 [%]**
+
+class_accuracy = 98.829%   90.521%   71.429%   82.258%   
+
+
+
+model link : [results](models/magnetometer_net_2/model.py)
+
+result link : [results](models/magnetometer_net_2/result)
+
+![](models/magnetometer_net_2/result/loss_progress.png)
+
+![](models/magnetometer_net_2/result/accuracy_progress.png)
+
+
+
+### results net_3
+ 
+1D convs, kernel size 3, stride 2
+
+last layer is fully connected, out_features = num. classes (4)
+
+IN4x512 - C16x3/2 - C32x3/2 - C32x3/2 - C64x3/2 - C64x3/2 - C128x3/2 - Flatten - FC4
+
+**accuracy   = N/A**
+
+class_accuracy = N/A
+
+
+model link : [results](models/magnetometer_net_2/model.py)
+
+result link : [results](models/magnetometer_net_2/result)
+
+![](models/magnetometer_net_2/result/loss_progress.png)
+
+![](models/magnetometer_net_2/result/accuracy_progress.png)
