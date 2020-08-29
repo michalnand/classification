@@ -111,12 +111,12 @@ IN4x512 - C16x3/2 - C32x3/2 - C32x3/2 - C64x3/2 - C64x3/2 - C128x3/2 - Flatten -
 **accuracy   = N/A**
 
 class_accuracy = N/A
+ 
 
+model link : [results](models/magnetometer_net_3/model.py)
 
-model link : [results](models/magnetometer_net_2/model.py)
+result link : [results](models/magnetometer_net_3/result)
 
-result link : [results](models/magnetometer_net_2/result)
+![](models/magnetometer_net_3/result/loss_progress.png)
 
-![](models/magnetometer_net_2/result/loss_progress.png)
-
-![](models/magnetometer_net_2/result/accuracy_progress.png)
+![](models/magnetometer_net_3/result/accuracy_progress.png)
