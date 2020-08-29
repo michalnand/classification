@@ -1,0 +1,33 @@
+new best net in 87
+TRAINING result
+accuracy   = 90.32 [%]
+hit_count  = 53325
+miss_count = 5715
+
+class_accuracy = 96.946%   86.04%   89.064%   89.207%   
+
+
+confusion_matrix = 
+14347	 328	 6	 15	 
+315	 12789	 996	 579	 
+56	 1182	 12973	 1004	 
+80	 564	 590	 13216	 
+
+
+
+TESTING result
+accuracy   = 94.84 [%]
+hit_count  = 1305
+miss_count = 71
+
+class_accuracy = 98.107%   91.743%   81.081%   74.194%   
+
+
+confusion_matrix = 
+829	 2	 0	 0	 
+13	 400	 2	 4	 
+0	 25	 30	 11	 
+2	 8	 4	 46	 
+
+
+

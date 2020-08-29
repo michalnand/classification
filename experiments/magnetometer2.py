@@ -10,17 +10,17 @@ import models.magnetometer_net_3.model as Model3
 
 
 folders_list = []
-folders_list.append("/Users/michal/dataset/car_detection_2/Meranie_20_06_03-Kinekus/1")
-folders_list.append("/Users/michal/dataset/car_detection_2/Meranie_20_06_03-Kinekus/2")
-folders_list.append("/Users/michal/dataset/car_detection_2/Porubka_03_06_2020")
-folders_list.append("/Users/michal/dataset/car_detection_2/Meranie_20_05_22-Pribovce_xyz")
-folders_list.append("/Users/michal/dataset/car_detection_2/Meranie_20_06_01-Lietavska_Lucka/01")
+folders_list.append("/home/michal/dataset/car_detection_2/Meranie_20_06_03-Kinekus/1")
+folders_list.append("/home/michal/dataset/car_detection_2/Meranie_20_06_03-Kinekus/2")
+folders_list.append("/home/michal/dataset/car_detection_2/Porubka_03_06_2020")
+folders_list.append("/home/michal/dataset/car_detection_2/Meranie_20_05_22-Pribovce_xyz")
+folders_list.append("/home/michal/dataset/car_detection_2/Meranie_20_06_01-Lietavska_Lucka/01")
 
 
-dataset = libs_dataset.DatasetMagnetometer2(folders_list, width = 512, augmentations_count = 40, testing_ratio = 0.2)
+dataset = libs_dataset.DatasetMagnetometer2(folders_list, width = 512, augmentations_count = 10, testing_ratio = 0.2)
 
-epoch_count = 100
-learning_rates  = [0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
+epoch_count = 200
+learning_rates  = [0.001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
 
 
 train = libs.Train(dataset, Model0, batch_size = 64, learning_rates = learning_rates)

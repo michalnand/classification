@@ -12,7 +12,7 @@ testing_data_files_list     = []
 testing_categories_ids      = []
 
 
-dataset_path = "/Users/michal/dataset/car_detection/"
+dataset_path = "/home/michal/dataset/car_detection/"
 
 training_data_files_list.append(dataset_path + "dataS1RawWinCat1.csv")
 training_categories_ids.append(0)
