@@ -19,9 +19,21 @@ class		count		relative[%]
 
 the 20% of items was used for testing, remaining 80% for training + 10x augmentation
 
+### hyperparameters
+
+- learning rate : cyclic,  [0.001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
+- weight decay  : learning_rate*0.001
+- epoch count : 200
+- batch size  : 64
+- dropout     : 5%
+
+
+
 ### results net_0
 
 1D convs, kernel size 3, stride 2
+
+last conv is 1D conv, channels = num. classes (4), followed byt global average pooling
 
 IN4x512 - C8x3/2 - C16x3/2 - C32x3/2 - C64x3/2 - C4x1 - GAP - Flatten
 
@@ -44,11 +56,14 @@ result link : [results](models/magnetometer_net_0/result)
 
 1D convs, kernel size 3, stride 2
 
+last conv is 1D conv, channels = num. classes (4), followed byt global average pooling
+
 IN4x512 - C16x3/2 - C16x3/2 - C32x3/2 - C32x3/2 - C64x3/2 - C128x3/2 - C4x1 - GAP - Flatten
 
-**accuracy   = 94.84 [%]**
+**accuracy   = 95.058 [%]**
 
-class_accuracy = 98.107%   91.743%   81.081%   74.194%   
+class_accuracy = 97.783%   90.979%   75.0%   84.483%   
+
 
 model link : [results](models/magnetometer_net_1/model.py)
 
