@@ -19,16 +19,41 @@ class		count		relative[%]
 
 the 20% of items was used for testing, remaining 80% for training + 10x augmentation
 
-### results net0
+### results net_0
 
 1D convs, kernel size 3, stride 2
+
 IN4x512 - C8x3/2 - C16x3/2 - C32x3/2 - C64x3/2 - C4x1 - GAP - Flatten
 
 **accuracy   = 93.532 [%]**
+
 class_accuracy = 96.911%   88.095%   79.412%   82.692%   
 
 model link : [results](models/magnetometer_net_0/model.py)
+
 result link : [results](models/magnetometer_net_0/result)
 
 ![](models/magnetometer_net_0/result/loss_progress.png)
+
 ![](models/magnetometer_net_0/result/accuracy_progress.png)
+
+
+
+
+### results net_1
+
+1D convs, kernel size 3, stride 2
+
+IN4x512 - C16x3/2 - C16x3/2 - C32x3/2 - C32x3/2 - C64x3/2 - C128x3/2 - C4x1 - GAP - Flatten
+
+**accuracy   = 94.84 [%]**
+
+class_accuracy = 98.107%   91.743%   81.081%   74.194%   
+
+model link : [results](models/magnetometer_net_1/model.py)
+
+result link : [results](models/magnetometer_net_1/result)
+
+![](models/magnetometer_net_1/result/loss_progress.png)
+
+![](models/magnetometer_net_1/result/accuracy_progress.png)
