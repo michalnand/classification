@@ -24,6 +24,8 @@ plot 'training.log' using 1:2 title 'training' with lines lc 'blue' lw 3, \
      'training.log' using 1:3 title 'testing' with lines lc 'red' lw 3, \
 
 
+set key right top
+
 set xlabel "epoch"
 set ylabel "loss"
 set output 'loss_progress.png'
