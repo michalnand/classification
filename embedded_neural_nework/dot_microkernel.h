@@ -101,7 +101,7 @@ ACC_t dot_microkernel(const DATA_VA_t *va, const DATA_VB_t *vb)
 
 
     ACC_t result = 0;
-    for (unsigned int i = 0; i < 8; i++)
+    for (unsigned int i = 0; i < 32; i++)
         result+= buffer[i];
 
     return result;

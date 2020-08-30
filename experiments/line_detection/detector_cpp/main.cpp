@@ -113,13 +113,14 @@ int main()
         //frame = frame(myROI);
 
         double time_start = get_time();
-        auto prediction   = 255*get_prediction(frame, model, 0.06);
+        auto prediction   = 255*get_prediction(frame, model, 0.3);
         double time_stop  = get_time();
 
         cv::Mat prediction_resized(cv::Size(frame.cols, frame.rows), CV_8U);
         cv::resize(prediction, prediction_resized, cv::Size(frame.cols, frame.rows), 0, 0, cv::INTER_LINEAR);
 
         cv::Mat result(cv::Size(frame.cols, frame.rows), CV_8UC3, cv::Scalar(0, 0, 0));
+
        
 
         result = frame;
@@ -132,7 +133,6 @@ int main()
                 result.at<cv::Vec3b>(y, x)[1] = (1.0 - k)*frame.at<cv::Vec3b>(y, x)[1] + k*prediction_resized.at<uint8_t>(y, x);
                 result.at<cv::Vec3b>(y, x)[2] = (1.0 - k)*frame.at<cv::Vec3b>(y, x)[2];
             }
-
 
         double k = 0.05;
         fps = (1.0 - k)*fps + k*1.0/(time_stop - time_start + 0.0000001);
