@@ -10,7 +10,8 @@ class ExportNetwork:
 
         self.network_prefix = network_prefix
 
-        max_required_memory = model_input_shape[0]*model_input_shape[1]*model_input_shape[2]
+
+        max_required_memory = numpy.prod(numpy.array(model_input_shape))
         total_macs          = 0
 
         layer_input_shape = model_input_shape
@@ -28,6 +29,17 @@ class ExportNetwork:
 
                 total_macs+= macs
 
+            elif isinstance(layer, torch.nn.Conv1d):
+                code, output_shape, required_memory, macs = self.export_Conv1d(layer, layer_input_shape, i)
+
+                code_network+= code[0]
+                code_weights+= code[1]
+ 
+                total_macs+= macs
+
+                if i == 0:
+                    input_channels = layer.weight.shape[1]
+
             elif isinstance(layer, torch.nn.Conv2d):
                 code, output_shape, required_memory, macs = self.export_Conv2d(layer, layer_input_shape, i)
 
@@ -41,6 +53,14 @@ class ExportNetwork:
 
             elif isinstance(layer, torch.nn.ReLU):
                 code, output_shape, required_memory, macs = self.export_ReLU(layer, layer_input_shape, i)
+
+                code_network+= code[0]
+                code_weights+= code[1]
+
+                total_macs+= macs
+
+            elif isinstance(layer, torch.nn.AvgPool1d):
+                code, output_shape, required_memory, macs = self.export_AvgPool1d(layer, layer_input_shape, i)
 
                 code_network+= code[0]
                 code_weights+= code[1]
@@ -75,9 +95,11 @@ class ExportNetwork:
 
         self.code_cpp = ""
         self.code_cpp+= "#include <" + self.network_prefix + ".h>\n"
-        #self.code_cpp+= "#include <Linear.h>\n"
+        self.code_cpp+= "#include <Linear.h>\n"
+        self.code_cpp+= "#include <Conv1d.h>\n"
         self.code_cpp+= "#include <Conv2d.h>\n"
         self.code_cpp+= "#include <ReLU.h>\n"
+        self.code_cpp+= "#include <GlobalAveragePooling.h>\n"
         self.code_cpp+= "\n\n"
         self.code_cpp+= code_weights + "\n\n"
 
@@ -87,9 +109,20 @@ class ExportNetwork:
         self.code_cpp+= "{\n"
         self.code_cpp+= "\t" + "init_buffer(" + str(max_required_memory) + ");\n"
         self.code_cpp+= "\t" + "total_macs = " + str(total_macs) + ";\n"
-        self.code_cpp+= "\t" + "input_channels = "  + str(model_input_shape[0]) + ";\n"
-        self.code_cpp+= "\t" + "input_height = "  + str(model_input_shape[1]) + ";\n"
-        self.code_cpp+= "\t" + "input_width = "   + str(model_input_shape[2]) + ";\n"
+
+        if len(model_input_shape) == 3:
+            self.code_cpp+= "\t" + "input_channels = "  + str(model_input_shape[0]) + ";\n"
+            self.code_cpp+= "\t" + "input_height = "  + str(model_input_shape[1]) + ";\n"
+            self.code_cpp+= "\t" + "input_width = "   + str(model_input_shape[2]) + ";\n"
+        elif len(model_input_shape) == 2:
+            self.code_cpp+= "\t" + "input_channels = "  + str(model_input_shape[0]) + ";\n"
+            self.code_cpp+= "\t" + "input_height = "  + str(1) + ";\n"
+            self.code_cpp+= "\t" + "input_width = "   + str(model_input_shape[1]) + ";\n" 
+        elif len(model_input_shape) == 1:
+            self.code_cpp+= "\t" + "input_channels = "  + str(model_input_shape[0]) + ";\n"
+            self.code_cpp+= "\t" + "input_height = "  + str(1) + ";\n"
+            self.code_cpp+= "\t" + "input_width = "   + str(1) + ";\n" 
+
         self.code_cpp+= "\t" + "output_channels = " + str(output_shape[0]) + ";\n"
 
         if len(output_shape) > 1:
@@ -131,17 +164,19 @@ class ExportNetwork:
 
         weights_quant, bias_quant, scale = self.quantize(weights, bias)
 
-        scale_round = int(scale*128)
+        scale_rounded = int(scale*128)
 
         input_size      = weights.shape[1]
         output_size     = weights.shape[0]
+
+        var_weights = layer_id + "_weights" + ", "
+        var_bias    = layer_id + "_bias" + ", "
+
         
         #layer call code
-        code_network = "\tLinear(" + "\t" + "output_buffer(), input_buffer()," + "\n"
-        code_network+= "\t\t" + layer_id + "_bias" + ", " + layer_id + "_weights" + ", " + "\n"
-        code_network+= "\t\t" + str(scale_round) + ", " 
-        code_network+= str(input_size) + ", "
-        code_network+= str(output_size) + ");\n"
+
+        code_network = "\tLinear<" + str(input_size) + ", " + str(output_size) + ", " + self.IO_t + ", " + self.WEIGHT_t + ", " + self.ACC_t + ">(\n"
+        code_network+= "\t\toutput_buffer(), input_buffer(), " + var_weights + var_bias + str(scale_rounded) + ");\n"
         code_network+= "\tswap_buffer();" + "\n\n"
 
         #weights
@@ -173,6 +208,88 @@ class ExportNetwork:
 
         return code, (output_size, ), output_size, macs
 
+
+    def export_Conv1d(self, layer, input_shape, layer_num):
+        layer_id = self.network_prefix + "_" + "layer_" + str(layer_num)
+
+        weights = layer.weight.data.detach().to("cpu").numpy()
+        kernel_shape = weights.shape
+
+        bias    = layer.bias.data.detach().to("cpu").numpy()
+
+        weights_quant, bias_quant, scale = self.quantize(weights, bias)
+
+        scale_rounded = int(scale*128)
+
+
+        output_channels = kernel_shape[0]
+        input_width     = input_shape[1]
+        input_channels  = kernel_shape[1]
+        kernel_size     = kernel_shape[2]
+        kernel_stride   = layer.stride[0]
+
+        output_shape    = (output_channels, input_width//kernel_stride)
+
+        #layer call code
+       
+        var_weights = layer_id + "_weights" + ", "
+        var_bias    = layer_id + "_bias" + ", "
+
+        code_network = "\tConv1d"
+
+        code_network+= "<" + str(input_width) + ", " + str(input_channels) + ", " + str(output_channels) + ", "
+        code_network+= str(kernel_size) + ", " + str(kernel_stride) + ", "
+        code_network+= self.IO_t + ", " + self.WEIGHT_t + ", " + self.ACC_t
+        code_network+= ">"
+
+        code_network+= "(\n\t\toutput_buffer(), input_buffer(), \n"
+        code_network+= "\t\t" + var_weights + var_bias + str(scale_rounded) + ");\n"
+        
+
+        code_network+= "\tswap_buffer();" + "\n\n"
+
+        #weights
+        code_weight = "const int8_t " + layer_id + "_weights[] = {" + "\n"
+        for k in range(kernel_shape[0]):
+            for kw in range(kernel_shape[2]):
+                for ch in range(kernel_shape[1]):
+                    code_weight+= str(weights_quant[k][ch][kw]) + ", " 
+                        
+                if ch > 1:
+                    code_weight+= "\n"
+
+            if kernel_shape[1] == 1:
+                code_weight+= "\n"
+
+        code_weight+= "};\n\n"
+        
+        #bias
+        code_weight+= "const int8_t "  + layer_id + "_bias[] = {" + "\n"
+        for i in range(len(bias)):
+            code_weight+= str(bias_quant[i]) + ", " 
+        code_weight+= "};\n\n\n"
+
+
+        code = (code_network, code_weight)
+        
+        required_memory       = output_shape[0]*output_shape[1]
+
+        macs = 2*output_channels*kernel_size*input_channels*output_shape[1] #convolution
+        macs+= 2*output_channels*output_shape[1]    #bias
+
+
+        print("export_Conv1d :")
+        print("output_channels ", output_channels)
+        print("input_width     ", input_width)
+        print("input_channels  ", input_channels)
+        print("kernel_size     ", kernel_size)
+        print("stride          ", kernel_stride)
+        print("output_shape    ", output_shape)
+        print("macs            ", macs)
+        print("\n\n")
+
+        return code, output_shape, required_memory, macs
+    
 
 
     def export_Conv2d(self, layer, input_shape, layer_num):
@@ -277,6 +394,34 @@ class ExportNetwork:
         print("\n\n")
       
         return code, output_shape, size, macs
+
+
+    def export_AvgPool1d(self, layer, input_shape, layer_num):
+        
+        channels    = input_shape[0]
+        width       = input_shape[1]
+        
+        output_shape = (1, 1, channels)
+
+        code_network = "\tGlobalAveragePooling<"
+        code_network+= str(1) + ", " + str(width) + ", " + str(channels) + ", " + self.IO_t + ", " + self.ACC_t + ">(\n"
+        code_network+= "\t\toutput_buffer(), input_buffer());\n" 
+        code_network+= "\tswap_buffer();" + "\n\n"
+
+        code = (code_network, "", "")
+
+        macs = width*channels*2
+
+        size = width*channels
+
+        print("export_AvgPool1d :")
+        print("IO shape        ", output_shape)
+        print("macs            ", macs)
+        print("\n\n")
+      
+        return code, output_shape, size, macs
+
+
 
 
     def quantize(self, weights, bias):

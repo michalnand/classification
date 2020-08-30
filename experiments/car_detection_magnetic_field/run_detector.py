@@ -5,14 +5,14 @@ import libs
 import libs_dataset
 import numpy
 
-import models.magnetometer_net_0.model as Model0
-import models.magnetometer_net_1.model as Model1
-import models.magnetometer_net_2.model as Model2
-import models.magnetometer_net_3.model as Model3
+import models.net_0.model as Model0
+import models.net_1.model as Model1
+import models.net_2.model as Model2
+import models.net_3.model as Model3
 
 
 dataset_path = "/Users/michal/dataset/"
-model_path   = "models/magnetometer_net_2/trained/"
+model_path   = "models/net_2/trained/"
 
 confidence_threshold_c1 = 0.38
 confidence_threshold_c2 = 0.42
