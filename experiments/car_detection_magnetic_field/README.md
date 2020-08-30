@@ -16,11 +16,13 @@ the sensor is streaming 3-axis data of magnetic field :
 time window with length 512 samples, on three axis (XYZ) + padding dummy channel
 
 classes counts : 
-class		count		relative[%]
-0 		 8291 		 61.64
-1 		 4270 		 31.75
-2 		 340 		 2.53
-3 		 549 		 4.08
+
+class	count		relative[%]
+
+- 0 		 8291 		 61.64
+- 1 		 4270 		 31.75
+- 2 		 340 		 2.53
+- 3 		 549 		 4.08
 
 the 20% of items was used for testing, remaining 80% for training + 10x augmentation
 
