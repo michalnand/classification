@@ -111,6 +111,8 @@ IN4x512 - C16x3/2 - C32x3/2 - C32x3/2 - C64x3/2 - C64x3/2 - C128x3/2 - Flatten -
 **accuracy   = 96.512 [%]**
 
 class_accuracy = 99.178%   94.279%   72.414%   80.645%   
+
+yes / no car present : **accuracy   = 99.418 [%]**
  
 
 model link : [model.py](models/magnetometer_net_3/model.py)

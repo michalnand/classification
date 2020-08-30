@@ -13,12 +13,10 @@ dataset_path = "/home/michal/dataset/"
 folders_list = []
 
 folders_list.append(dataset_path + "/car_detection_2/Meranie_20_06_03-Kinekus/1")
-'''
 folders_list.append(dataset_path + "/car_detection_2/Meranie_20_06_03-Kinekus/2")
 folders_list.append(dataset_path + "/car_detection_2/Porubka_03_06_2020")
 folders_list.append(dataset_path + "/car_detection_2/Meranie_20_05_22-Pribovce_xyz")
 folders_list.append(dataset_path + "/car_detection_2/Meranie_20_06_01-Lietavska_Lucka/01")
-'''
 
 dataset = libs_dataset.DatasetMagnetometer2(folders_list, width = 512, augmentations_count = 10, testing_ratio = 0.2)
 
