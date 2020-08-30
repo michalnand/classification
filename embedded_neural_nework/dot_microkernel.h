@@ -3,11 +3,14 @@
 
 
 
-template<unsigned int vector_size, class DATA_VA_t, class DATA_VB_t, class ACC_t>
+template<const unsigned int vector_size, class DATA_VA_t, class DATA_VB_t, class ACC_t>
 ACC_t dot_microkernel(const DATA_VA_t *va, const DATA_VB_t *vb)
 {
-    ACC_t buffer[32];
-    for (unsigned int i = 0; i < 32; i++)
+    const unsigned int BUFFER_SIZE = 32;
+
+    ACC_t buffer[BUFFER_SIZE];
+
+    for (unsigned int i = 0; i < BUFFER_SIZE; i++)
         buffer[i] = 0;
 
     unsigned int size = vector_size;
@@ -101,7 +104,7 @@ ACC_t dot_microkernel(const DATA_VA_t *va, const DATA_VB_t *vb)
 
 
     ACC_t result = 0;
-    for (unsigned int i = 0; i < 32; i++)
+    for (unsigned int i = 0; i < BUFFER_SIZE; i++)
         result+= buffer[i];
 
     return result;

@@ -1,6 +1,9 @@
 #include <LineNetwork.h>
+#include <Linear.h>
+#include <Conv1d.h>
 #include <Conv2d.h>
 #include <ReLU.h>
+#include <GlobalAveragePooling.h>
 
 
 const int8_t LineNetwork_layer_0_weights[] = {

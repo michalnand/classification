@@ -7,6 +7,11 @@ class IDs
 - 3 : truck, above 3.5t
 
 
+the sensor is streaming 3-axis data of magnetic field :
+
+![](images/magnetic_sensor.png)
+
+
 ### dataset notes
 time window with length 512 samples, on three axis (XYZ) + padding dummy channel
 
@@ -18,6 +23,10 @@ class		count		relative[%]
 3 		 549 		 4.08
 
 the 20% of items was used for testing, remaining 80% for training + 10x augmentation
+
+some basic preprocessing was used 
+- normalisation, each axis independed : x_norm = (x - x.mean())/x.var()
+- augmentation : random white noise, random DC offset, random signal center shift
 
 ### hyperparameters
 
@@ -41,13 +50,13 @@ IN4x512 - C8x3/2 - C16x3/2 - C32x3/2 - C64x3/2 - C4x1 - GAP - Flatten
 
 class_accuracy = 96.911%   88.095%   79.412%   82.692%   
 
-model link : [model.py](models/magnetometer_net_0/model.py)
+model link : [model.py](models/net_0/model.py)
 
-result link : [/result](models/magnetometer_net_0/result)
+result link : [/result](models/net_0/result)
 
-![](models/magnetometer_net_0/result/loss_progress.png)
+![](models/net_0/result/loss_progress.png)
 
-![](models/magnetometer_net_0/result/accuracy_progress.png)
+![](models/net_0/result/accuracy_progress.png)
 
 
 
@@ -65,13 +74,13 @@ IN4x512 - C16x3/2 - C16x3/2 - C32x3/2 - C32x3/2 - C64x3/2 - C128x3/2 - C4x1 - GA
 class_accuracy = 97.783%   90.979%   75.0%   84.483%   
 
 
-model link : [model.py](models/magnetometer_net_1/model.py)
+model link : [model.py](models/net_1/model.py)
 
-result link : [/result](models/magnetometer_net_1/result)
+result link : [/result](models/net_1/result)
 
-![](models/magnetometer_net_1/result/loss_progress.png)
+![](models/net_1/result/loss_progress.png)
 
-![](models/magnetometer_net_1/result/accuracy_progress.png)
+![](models/net_1/result/accuracy_progress.png)
 
 
 
@@ -90,13 +99,13 @@ class_accuracy = 98.829%   90.521%   71.429%   82.258%
 
 
 
-model link : [model.py](models/magnetometer_net_2/model.py)
+model link : [model.py](models/net_2/model.py)
 
-result link : [/result](models/magnetometer_net_2/result)
+result link : [/result](models/net_2/result)
 
-![](models/magnetometer_net_2/result/loss_progress.png)
+![](models/net_2/result/loss_progress.png)
 
-![](models/magnetometer_net_2/result/accuracy_progress.png)
+![](models/net_2/result/accuracy_progress.png)
 
 
 
@@ -115,10 +124,10 @@ class_accuracy = 99.178%   94.279%   72.414%   80.645%
 yes / no car present : **accuracy   = 99.418 [%]**
  
 
-model link : [model.py](models/magnetometer_net_3/model.py)
+model link : [model.py](models/net_3/model.py)
 
-result link : [/result](models/magnetometer_net_3/result)
+result link : [/result](models/net_3/result)
 
-![](models/magnetometer_net_3/result/loss_progress.png)
+![](models/net_3/result/loss_progress.png)
 
-![](models/magnetometer_net_3/result/accuracy_progress.png)
+![](models/net_3/result/accuracy_progress.png)

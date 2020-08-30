@@ -20,7 +20,7 @@ LD  = g++
 OBJDUMP = objdump
 SIZE = size
 
-OPTIM_FLAGS = -march=native -O3 -s
+OPTIM_FLAGS = -march=native -O3 -s -funroll-loops
 CXXFLAGS = -c $(OPTIM_FLAGS) -Wall -Wextra -pedantic -std=c++17 -Wno-unused-command-line-argument
 CXX_OBJS = $(CXX_SRCS:.cpp=.o)
 
