@@ -560,7 +560,7 @@ LineNetwork::LineNetwork()
 	: ModelInterface()
 {
 	init_buffer(524288);
-	total_macs = 51775488;
+	total_macs = 27395072;
 	input_channels = 1;
 	input_height = 512;
 	input_width = 512;

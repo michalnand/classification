@@ -78,7 +78,7 @@ ACC_t dot_microkernel(const DATA_VA_t *va, const DATA_VB_t *vb)
         buffer[14]+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
         buffer[15]+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
 
-        size-= 8;
+        size-= 16;
     }
 
     while (size >= 8)

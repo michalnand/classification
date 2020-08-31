@@ -197,7 +197,7 @@ class ExportNetwork:
 
 
         code = (code_network, code_weight)
-        macs = 2*output_size*input_size + 2*output_size
+        macs = output_size*input_size + output_size
 
         print("export_Linear :")
         print("output_size    ", output_size)
@@ -274,8 +274,8 @@ class ExportNetwork:
         
         required_memory       = output_shape[0]*output_shape[1]
 
-        macs = 2*output_channels*kernel_size*input_channels*output_shape[1] #convolution
-        macs+= 2*output_channels*output_shape[1]    #bias
+        macs = output_channels*kernel_size*input_channels*output_shape[1] #convolution
+        macs+= output_channels*output_shape[1]    #bias
 
 
         print("export_Conv1d :")
@@ -359,8 +359,8 @@ class ExportNetwork:
         
         required_memory       = output_shape[0]*output_shape[1]*output_shape[2]
 
-        macs = 2*output_channels*(kernel_size**2)*input_channels*output_shape[1]*output_shape[2] #convolution
-        macs+= 2*output_channels*output_shape[1]*output_shape[2]    #bias
+        macs = output_channels*(kernel_size**2)*input_channels*output_shape[1]*output_shape[2] #convolution
+        macs+= output_channels*output_shape[1]*output_shape[2]    #bias
 
 
         print("export_Conv2d :")

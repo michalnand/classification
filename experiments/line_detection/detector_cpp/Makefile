@@ -26,8 +26,8 @@ CXX_OBJS = $(CXX_SRCS:.cpp=.o)
 
 LDFLAGS = $(OPTIM_FLAGS) -Wall -Wextra -pedantic -std=c++17 -Wno-unused-command-line-argument
 
-CXXFLAGS+= `pkg-config --cflags --libs /usr/local/Cellar/opencv/4.3.0_3/lib/pkgconfig/opencv4.pc`
-LDFLAGS+=  `pkg-config --cflags --libs /usr/local/Cellar/opencv/4.3.0_3/lib/pkgconfig/opencv4.pc`
+CXXFLAGS+= `pkg-config --cflags --libs /usr/local/Cellar/opencv/4.4.0_1/lib/pkgconfig/opencv4.pc`
+LDFLAGS+=  `pkg-config --cflags --libs /usr/local/Cellar/opencv/4.4.0_1/lib/pkgconfig/opencv4.pc`
 
 all: $(ELF)
 

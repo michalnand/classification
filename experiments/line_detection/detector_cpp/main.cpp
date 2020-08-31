@@ -93,7 +93,7 @@ cv::Mat get_prediction(cv::Mat &frame, ModelInterface &model, float threshold = 
 int main()
 {
     LineNetwork model;
-
+    
     auto cap = cv::VideoCapture("/Users/michal/Movies/line_path_video.mp4");
     
     double fps = 0.0;
@@ -113,7 +113,7 @@ int main()
         //frame = frame(myROI);
 
         double time_start = get_time();
-        auto prediction   = 255*get_prediction(frame, model, 0.3);
+        auto prediction   = 255*get_prediction(frame, model, 0.12);
         double time_stop  = get_time();
 
         cv::Mat prediction_resized(cv::Size(frame.cols, frame.rows), CV_8U);
@@ -144,7 +144,7 @@ int main()
 
         imshow("frame", result) ;
     }
-
+    
     std::cout << "program done\n";
 	return 0;
 }
