@@ -610,7 +610,7 @@ MagnetometetNetwork::MagnetometetNetwork()
 	: ModelInterface()
 {
 	init_buffer(2048);
-	total_macs = 1194240;
+	total_macs = 615616;
 	input_channels = 4;
 	input_height = 1;
 	input_width = 512;

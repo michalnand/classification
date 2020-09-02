@@ -113,7 +113,7 @@ int main()
         //frame = frame(myROI);
 
         double time_start = get_time();
-        auto prediction   = 255*get_prediction(frame, model, 0.12);
+        auto prediction   = 255*get_prediction(frame, model, 0.2);
         double time_stop  = get_time();
 
         cv::Mat prediction_resized(cv::Size(frame.cols, frame.rows), CV_8U);
