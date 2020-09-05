@@ -51,3 +51,22 @@ model.load(model_path + "trained/")
 export = libs.ExportNetwork(model, input_shape, export_path = model_path + "/export/", network_prefix = "MagnetometetNetwork")
 
 
+
+
+model_path = "./models/net_4/"
+import models.net_4.model as Net4
+
+model = Net4.Create(input_shape, output_shape)
+model.load(model_path + "trained/")
+
+export = libs.ExportNetwork(model, input_shape, export_path = model_path + "/export/", network_prefix = "MagnetometetNetwork")
+
+
+model_path = "./models/net_5/"
+import models.net_5.model as Net5
+
+model = Net5.Create(input_shape, output_shape)
+model.load(model_path + "trained/")
+
+export = libs.ExportNetwork(model, input_shape, export_path = model_path + "/export/", network_prefix = "MagnetometetNetwork")
+
