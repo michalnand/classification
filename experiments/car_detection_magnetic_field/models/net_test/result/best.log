@@ -1,0 +1,33 @@
+new best net in 5
+TRAINING result
+accuracy   = 74.452 [%]
+hit_count  = 14128
+miss_count = 4848
+
+class_accuracy = 92.203%   70.373%   66.107%   68.802%   
+
+
+confusion_matrix = 
+4411	 474	 22	 164	 
+144	 3361	 778	 458	 
+62	 662	 3070	 867	 
+166	 278	 773	 3286	 
+
+
+
+TESTING result
+accuracy   = 89.5 [%]
+hit_count  = 1432
+miss_count = 168
+
+class_accuracy = 92.698%   86.438%   69.388%   77.193%   
+
+
+confusion_matrix = 
+876	 25	 0	 0	 
+24	 478	 7	 7	 
+12	 32	 34	 5	 
+32	 17	 7	 44	 
+
+
+
