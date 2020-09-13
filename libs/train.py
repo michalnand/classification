@@ -25,7 +25,7 @@ class Train:
 
         for epoch in range(epoch_count):
             learning_rate = self.learning_rates[epoch_count%len(self.learning_rates)]
-            training_confussion_matrix, testing_confussion_matrix, training_loss, testing_loss = self.step_epoch(learning_rate)
+            training_confussion_matrix, testing_confussion_matrix, training_loss, testing_loss = self.step_epoch(learning_rate, epoch, epoch_count)
 
             training_accuracy   = training_confussion_matrix.accuracy
             testing_accuracy    = testing_confussion_matrix.accuracy
@@ -74,7 +74,10 @@ class Train:
         f_training_log.close()
     
 
-    def step_epoch(self, learning_rate):
+    def step_epoch(self, learning_rate, epoch, epoch_count):
+
+        if hasattr(self.model, 'epoch_start'):
+            self.model.epoch_start(epoch, epoch_count)
 
         optimizer  = torch.optim.Adam(self.model.parameters(), lr=learning_rate, weight_decay=learning_rate*self.weight_decay)  
 
@@ -84,7 +87,7 @@ class Train:
         
         training_loss = []
         for batch_id in range(batch_count):
-            training_x, training_y = self.dataset.get_training_batch()
+            training_x, training_y = self.dataset.get_training_batch(self.batch_size)
 
             training_x = training_x.to(self.model.device)
             training_y = training_y.to(self.model.device)
@@ -108,7 +111,7 @@ class Train:
 
         testing_loss = []
         for batch_id in range(batch_count):
-            testing_x, testing_y = self.dataset.get_testing_batch()
+            testing_x, testing_y = self.dataset.get_testing_batch(self.batch_size)
 
             testing_x = testing_x.to(self.model.device)
             testing_y = testing_y.to(self.model.device)

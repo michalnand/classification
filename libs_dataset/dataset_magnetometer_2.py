@@ -94,10 +94,10 @@ class DatasetMagnetometer2:
         return len(self.testing_x)
 
     def get_training_batch(self, batch_size = 32):
-        return self._get_batch(self.training_x, self.training_y, ballancer = self.class_balancer)
+        return self._get_batch(self.training_x, self.training_y, batch_size, ballancer = self.class_balancer)
 
     def get_testing_batch(self, batch_size = 32):
-        return self._get_batch(self.testing_x, self.testing_y)
+        return self._get_batch(self.testing_x, self.testing_y, batch_size)
 
 
     def _get_batch(self, x, y, batch_size = 32, ballancer = None):
@@ -233,17 +233,20 @@ class DatasetMagnetometer2:
 
         #process augmentation if necessary
         if augmentation:
+            #axis rotation
+            x_rot, y_rot, z_rot = self._augmentation_rotation(x[start:end], y[start:end], z[start:end])
+ 
             #axis noise
-            x_noised = self._augmentation_noise(x[start:end])
-            y_noised = self._augmentation_noise(y[start:end])
-            z_noised = self._augmentation_noise(z[start:end])
+            x_noised = self._augmentation_noise(x_rot)
+            y_noised = self._augmentation_noise(y_rot)
+            z_noised = self._augmentation_noise(z_rot)
 
             #axis rotation
-            x_rot, y_rot, z_rot = self._augmentation_rotation(x_noised, y_noised, z_noised)
+            x_noised, y_noised, z_noised = self._augmentation_rotation(x_noised, y_noised, z_noised)
  
-            input[0] = x_rot.copy()
-            input[1] = y_rot.copy()
-            input[2] = z_rot.copy()
+            input[0] = x_noised.copy()
+            input[1] = y_noised.copy()
+            input[2] = z_noised.copy()
         else:
             input[0] = x[start:end].copy()
             input[1] = y[start:end].copy()

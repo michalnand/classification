@@ -28,7 +28,6 @@ folders_list.append(dataset_path + "/Meranie_20_06_01-Lietavska_Lucka/02")
 dataset = libs_dataset.DatasetMagnetometer2(folders_list, width = 512, augmentations_count = 50, testing_ratio = 20)
 #dataset = libs_dataset.DatasetMagnetometer2(folders_list, width = 512, augmentations_count = 2, testing_ratio = 20)
 
-
 epoch_count = 200 
 learning_rates  = [0.001, 0.001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
 
@@ -54,4 +53,3 @@ train.step_epochs(epoch_count, log_path = "./models/net_5")
 
 #train = libs.Train(dataset, ModelTest, batch_size = 64, learning_rates = learning_rates)
 #train.step_epochs(epoch_count, log_path = "./models/net_test")
-
