@@ -7,7 +7,7 @@ class IDs
 - 1 : soft left
 - 2 : straight
 - 3 : soft right
-- 3 : sharp right
+- 4 : sharp right
 
 some basic augmentation used : white/black line, random noise, offsets, small rotation
 
