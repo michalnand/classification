@@ -21,7 +21,7 @@ class DatasetMagnetometer2:
         self.scale_max          = 1.5
         self.rotation_max       = 20
 
-        self.classes_count = 4
+        self.classes_count = 5
         self.output_shape  = (self.classes_count, )
 
         self.training_x = []
@@ -336,14 +336,15 @@ class DatasetMagnetometer2:
     def _get_class_id(self, raw_id):
         class_dict = {}
 
-        class_dict[0]   = 1
-        class_dict[1]   = 1
-        class_dict[2]   = 2
-        class_dict[3]   = 3
-        class_dict[4]   = 3
-        class_dict[5]   = 0
-        class_dict[6]   = 0
-        class_dict[7]   = 0
-        class_dict[-1]  = 0
+
+        class_dict[0]   = 1     #motocycle
+        class_dict[1]   = 1     #car
+        class_dict[2]   = 2     #supply 3.5t max
+        class_dict[3]   = 3     #truck 3.5t+, 13m
+        class_dict[4]   = 4     #heavy truck
+        class_dict[5]   = 0     #nothing
+        class_dict[6]   = 0     #nothing
+        class_dict[7]   = 0     #other
+
         
         return class_dict[raw_id]

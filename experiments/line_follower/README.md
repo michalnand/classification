@@ -11,7 +11,7 @@ class IDs
 
 some basic augmentation used : white/black line, random noise, offsets, small rotation
 
-dataset for 8x8 input (line sensors + time staps)
+dataset for 8x8 input (line sensors + time stamp)
 ![](images/lf_dataset_8x8.png)
 
 dataset for 64x64 input (small camera)

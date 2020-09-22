@@ -12,7 +12,9 @@ import models.net_5.model as Model5
 import models.net_test.model as ModelTest
 
 
-dataset_path = "/Users/michal/dataset/car_detection_2/"
+#dataset_path = "/Users/michal/dataset/car_detection_2/"
+dataset_path = "/home/michal/dataset/car_detection_2/"
+
 folders_list = []
  
 folders_list.append(dataset_path + "/Meranie_20_06_03-Kinekus/1")
@@ -21,6 +23,10 @@ folders_list.append(dataset_path + "/Porubka_03_06_2020")
 folders_list.append(dataset_path + "/Meranie_20_05_22-Pribovce_xyz")
 folders_list.append(dataset_path + "/Meranie_20_06_01-Lietavska_Lucka/01")
 folders_list.append(dataset_path + "/Meranie_20_06_01-Lietavska_Lucka/02")
+folders_list.append(dataset_path + "/Bytca")
+folders_list.append(dataset_path + "/Kysuce")
+folders_list.append(dataset_path + "/Martin_1")
+folders_list.append(dataset_path + "/Martin_2")
 
 #window size = 512
 #50x artifical data for training
@@ -31,25 +37,24 @@ dataset = libs_dataset.DatasetMagnetometer2(folders_list, width = 512, augmentat
 epoch_count = 200 
 learning_rates  = [0.001, 0.001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
 
-
-train = libs.Train(dataset, Model0, batch_size = 64, learning_rates = learning_rates)
-train.step_epochs(epoch_count, log_path = "./models/net_0")
-
-train = libs.Train(dataset, Model1, batch_size = 64, learning_rates = learning_rates)
-train.step_epochs(epoch_count, log_path = "./models/net_1")
-
-train = libs.Train(dataset, Model2, batch_size = 64, learning_rates = learning_rates)
-train.step_epochs(epoch_count, log_path = "./models/net_2")
-
-train = libs.Train(dataset, Model3, batch_size = 64, learning_rates = learning_rates)
-train.step_epochs(epoch_count, log_path = "./models/net_3")
-
-train = libs.Train(dataset, Model4, batch_size = 64, learning_rates = learning_rates)
+train = libs.Train(dataset, Model4, batch_size = 128, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/net_4")
 
-train = libs.Train(dataset, Model5, batch_size = 64, learning_rates = learning_rates)
+train = libs.Train(dataset, Model5, batch_size = 128, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/net_5")
 
+train = libs.Train(dataset, Model0, batch_size = 128, learning_rates = learning_rates)
+train.step_epochs(epoch_count, log_path = "./models/net_0")
 
-#train = libs.Train(dataset, ModelTest, batch_size = 64, learning_rates = learning_rates)
+train = libs.Train(dataset, Model1, batch_size = 128, learning_rates = learning_rates)
+train.step_epochs(epoch_count, log_path = "./models/net_1")
+
+train = libs.Train(dataset, Model2, batch_size = 128, learning_rates = learning_rates)
+train.step_epochs(epoch_count, log_path = "./models/net_2")
+
+train = libs.Train(dataset, Model3, batch_size = 128, learning_rates = learning_rates)
+train.step_epochs(epoch_count, log_path = "./models/net_3")
+
+ 
+#train = libs.Train(dataset, ModelTest, batch_size = 128, learning_rates = learning_rates)
 #train.step_epochs(epoch_count, log_path = "./models/net_test")
