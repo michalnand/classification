@@ -4,10 +4,9 @@ MODEL_PATH = ../models/net_0/export/
 
 
 
-EMBEDDED_NEURAL_NETWORK_PATH = ../../../embedded_neural_nework/
+EMBEDDED_NEURAL_NETWORK_PATH = ../../../embedded_inference/libs_embedded_neural_network/
 
 CXX_SRCS+= $(shell find  . -name '*.cpp')
-CXX_SRCS+= $(shell find  $(EMBEDDED_NEURAL_NETWORK_PATH) -name '*.cpp')
 CXX_SRCS+= $(shell find  $(MODEL_PATH) -name '*.cpp')
 
 INC = -I .

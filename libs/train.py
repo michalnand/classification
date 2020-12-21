@@ -1,12 +1,12 @@
 import numpy
 import torch
+import time
 
 from .loss import *
 from .confussion_matrix import *
 
 class Train:
-
-    def __init__(self, dataset, Model, batch_size = 64, learning_rates = [0.0001], weight_decay = 0.001, Loss = LossMSE):
+    def __init__(self, dataset, Model, batch_size = 64, learning_rates = [0.0001], weight_decay = 0.001, loss = LossMSE):
 
         self.dataset        = dataset
         self.model          = Model.Create(self.dataset.input_shape, self.dataset.output_shape)
@@ -15,17 +15,24 @@ class Train:
         self.learning_rates   = learning_rates
         self.weight_decay     = weight_decay
 
-        self.Loss             = Loss
-
+        self.loss             = loss
 
     def step_epochs(self, epoch_count, log_path = "./"):
-        accuracy_best = -1.0
+        accuracy_best       = -1.0
+        epoch_time_filtered = -1.0
 
-        f_training_log = open(log_path + "/result/training.log","w+")
+        f_training_log  = open(log_path + "/result/training.log","w+")
 
         for epoch in range(epoch_count):
             learning_rate = self.learning_rates[epoch_count%len(self.learning_rates)]
-            training_confussion_matrix, testing_confussion_matrix, training_loss, testing_loss = self.step_epoch(learning_rate, epoch, epoch_count)
+            training_confussion_matrix, testing_confussion_matrix, training_loss, testing_loss, epoch_time = self.step_epoch(learning_rate, epoch, epoch_count)
+
+            if epoch_time_filtered < 0.0:
+                epoch_time_filtered = epoch_time
+            else:
+                epoch_time_filtered = 0.9*epoch_time_filtered + 0.1*epoch_time
+
+            eta_time    = (epoch_count - epoch)*(epoch_time_filtered/3600.0)
 
             training_accuracy   = training_confussion_matrix.accuracy
             testing_accuracy    = testing_confussion_matrix.accuracy
@@ -44,10 +51,12 @@ class Train:
             log_str+= str(testing_loss_mean) + " "
             log_str+= str(training_loss_std) + " "
             log_str+= str(testing_loss_std) + " "
+            log_str+= str(round(eta_time, 2)) + " "
             log_str+= "\n"
 
             print(log_str)
             f_training_log.write(log_str)
+            f_training_log.flush()
 
             if testing_accuracy > accuracy_best:
                 self.model.save(log_path + "/trained/")
@@ -61,7 +70,6 @@ class Train:
                 log_str+= "TESTING result\n"
                 log_str+= testing_confussion_matrix.get_result() + "\n\n"
 
-               
                 print("\n\n\n")
                 print("=================================================")
                 print(log_str)
@@ -70,11 +78,12 @@ class Train:
                 f_best_log.write(log_str)
                 f_best_log.close()
 
-
         f_training_log.close()
     
 
     def step_epoch(self, learning_rate, epoch, epoch_count):
+
+        time_start = time.time()
 
         if hasattr(self.model, 'epoch_start'):
             self.model.epoch_start(epoch, epoch_count)
@@ -94,7 +103,7 @@ class Train:
 
             predicted_y = self.model.forward(training_x)
 
-            loss  = self.Loss(training_y, predicted_y)
+            loss  = self.loss(training_y, predicted_y)
             
             optimizer.zero_grad()
             loss.backward()
@@ -116,7 +125,6 @@ class Train:
             testing_x = testing_x.to(self.model.device)
             testing_y = testing_y.to(self.model.device)
 
-
             predicted_y = self.model.forward(testing_x)
 
             error = (testing_y - predicted_y)**2
@@ -127,6 +135,9 @@ class Train:
 
         testing_confussion_matrix.compute()
 
+        time_stop = time.time()
 
-        return training_confussion_matrix, testing_confussion_matrix, training_loss, testing_loss
+        epoch_time = time_stop - time_start
+
+        return training_confussion_matrix, testing_confussion_matrix, training_loss, testing_loss, epoch_time
   

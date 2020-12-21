@@ -4,7 +4,7 @@
 
 #include <ModelInterface.h>
 
-class LineNetwork : public ModelInterface
+class LineNetwork : public ModelInterface<int8_t>
 {
 	public:
 		 LineNetwork();

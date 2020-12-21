@@ -1,0 +1,41 @@
+#include <pybind11/pybind11.h>
+#include <iostream>
+#include <vector>
+
+#include <{}>
+
+class ModelInterfacePython
+{
+    public:
+        ModelInterfacePython()
+        {
+            std::cout << "ModelInterfacePython init done\n";
+        }
+
+        std::vector<float> forward(std::vector<float> &input)
+        {
+            std::vector<float> result(output_channels*output_height*output_width);
+
+            for (unsigned int i = 0; i < input_channels*input_height*input_width; i++)
+                model.input_buffer()[i] = input[i];
+            
+            model.forward();
+
+            for (unsigned int i = 0; i < result.size(); i++)
+                result[i] = model.output_buffer()[i];
+
+            return result;
+        }
+
+    private:
+        {} model;
+};
+
+namespace py = pybind11;
+
+PYBIND11_MODULE(lib_network_python, m) 
+{
+    py::class_<ModelInterfacePython>(m, "ModelInterfacePython")
+        .def(py::init<>())
+        .def("forward", &ModelInterfacePython::forward);
+}

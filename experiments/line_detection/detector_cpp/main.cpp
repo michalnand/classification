@@ -17,7 +17,7 @@ double get_time()
 }
 
 
-cv::Mat get_prediction(cv::Mat &frame, ModelInterface &model, float threshold = 0.25)
+cv::Mat get_prediction(cv::Mat &frame, LineNetwork &model, float threshold = 0.25)
 {
     cv::Mat frame_grayscale(cv::Size(frame.rows, frame.cols), CV_8U);
     cv::cvtColor(frame, frame_grayscale, cv::COLOR_BGR2GRAY);
@@ -34,7 +34,7 @@ cv::Mat get_prediction(cv::Mat &frame, ModelInterface &model, float threshold = 
         {
             model.input_buffer()[idx] = frame_resized.at<uint8_t>(y, x)/2;
             idx++;
-        } 
+        }  
 
     model.forward();
 
@@ -47,14 +47,14 @@ cv::Mat get_prediction(cv::Mat &frame, ModelInterface &model, float threshold = 
         for (unsigned int y = 0; y < model.output_height; y++)
             for (unsigned int x = 0; x < model.output_width; x++)
             {
-                int8_t v = model.output_buffer()[idx]; idx++;
+                float v = model.output_buffer()[idx]; idx++;
                 
                 if (v < 0)
                     v = 0;
                 
                 prediction.at<uint8_t>(y, x) = v;
 
-                if (v > 127*threshold)
+                if (v > 127*threshold)  
                     prediction.at<uint8_t>(y, x) = 1;
                 else
                     prediction.at<uint8_t>(y, x) = 0; 
