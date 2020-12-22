@@ -611,32 +611,35 @@ MagnetometetNetworkInt8::MagnetometetNetworkInt8()
 
 void MagnetometetNetworkInt8::forward()
 {
-	Conv1d<512, 4, 16, 5, 4, int8_t, int8_t, int32_t, 127, 127>(
+	Conv1d<512, 4, 16, 5, 4, int8_t, int8_t, int8_t, 127, 127>(
 		output_buffer(), input_buffer(), 
-		MagnetometetNetworkInt8_layer_0_weights, MagnetometetNetworkInt8_layer_0_bias, 45);
+		MagnetometetNetworkInt8_layer_0_weights, MagnetometetNetworkInt8_layer_0_bias, 364);
 	swap_buffer();
 
 	ReLU<int8_t>(	output_buffer(), input_buffer(), 2032);
 	swap_buffer();
 
-	Conv1d<127, 16, 32, 5, 4, int8_t, int8_t, int32_t, 127, 127>(
+	Conv1d<127, 16, 32, 5, 4, int8_t, int8_t, int8_t, 127, 127>(
 		output_buffer(), input_buffer(), 
-		MagnetometetNetworkInt8_layer_3_weights, MagnetometetNetworkInt8_layer_3_bias, 36);
+		MagnetometetNetworkInt8_layer_3_weights, MagnetometetNetworkInt8_layer_3_bias, 294);
 	swap_buffer();
 
 	ReLU<int8_t>(	output_buffer(), input_buffer(), 992);
 	swap_buffer();
 
-	Conv1d<31, 32, 64, 5, 4, int8_t, int8_t, int32_t, 127, 127>(
+	Conv1d<31, 32, 64, 5, 4, int8_t, int8_t, int8_t, 127, 127>(
 		output_buffer(), input_buffer(), 
-		MagnetometetNetworkInt8_layer_6_weights, MagnetometetNetworkInt8_layer_6_bias, 31);
+		MagnetometetNetworkInt8_layer_6_weights, MagnetometetNetworkInt8_layer_6_bias, 255);
 	swap_buffer();
 
 	ReLU<int8_t>(	output_buffer(), input_buffer(), 448);
 	swap_buffer();
 
-	Linear<448, 5, int8_t, int8_t, int32_t, 127, 127>(
-		output_buffer(), input_buffer(), MagnetometetNetworkInt8_layer_10_weights, MagnetometetNetworkInt8_layer_10_bias, 36);
+	ChannelReoder<int8_t, 64, 1, 7>(output_buffer(), input_buffer());
+	swap_buffer();
+
+	Linear<448, 5, int8_t, int8_t, int8_t, 127, 127>(
+		output_buffer(), input_buffer(), MagnetometetNetworkInt8_layer_10_weights, MagnetometetNetworkInt8_layer_10_bias, 288);
 	swap_buffer();
 
 	swap_buffer();

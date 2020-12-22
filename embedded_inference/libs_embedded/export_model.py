@@ -35,8 +35,8 @@ class Quantizer:
 
         tmp             = numpy.concatenate([weights.flatten(), bias.flatten()])
  
-        if self.mode == "all":
-            scale       = numpy.max(tmp.abs())
+        if self.mode == "all": 
+            scale       = numpy.max(numpy.abs(tmp))
             weights_    = value_max*(weights/scale)
             bias_       = value_max*(bias/scale)            
         elif self.mode == "sigma_1":
@@ -79,12 +79,17 @@ class ExportModel:
 
         layer_input_shape = model_input_shape
 
+        output_shape      = model_input_shape
+
+        required_memory   = 0
+
         code_weights = ""
         code_network = ""
         for i in range(len(model.layers)):
             layer = model.layers[i]
             
             if isinstance(layer, torch.nn.Linear):
+                print(">>>> layer_input_shape = ", layer_input_shape)
                 code, output_shape, required_memory, macs = self.export_Linear(layer, layer_input_shape, i)
 
                 code_network+= code[0]
@@ -222,20 +227,28 @@ class ExportModel:
 
         weights_quant, bias_quant, scale = self.quantizer_weights.get(weights, bias)
 
-        input_size      = weights.shape[1]
         output_size     = weights.shape[0]
+        input_size      = weights.shape[1]
 
         var_weights = layer_id + "_weights" + ", "
         var_bias    = layer_id + "_bias" + ", "
 
+        code_network = ""
+        if len(input_shape) == 2:
+            code_network+= "\tChannelReoder<" + self.IO_t + ", " + str(input_shape[0]) + ", " + "1, " + str(input_shape[1]) + ">(output_buffer(), input_buffer());\n"
+            code_network+= "\tswap_buffer();" + "\n\n"
+
+        if len(input_shape) == 3:
+            code_network+= "\tChannelReoder<" + self.IO_t + ", " + str(input_shape[0]) + ", " + str(input_shape[1]) + ", " + str(input_shape[1]) + ">(output_buffer(), input_buffer());\n"
+            code_network+= "\tswap_buffer();" + "\n\n"
         
         #layer call code
 
-        code_network = "\tLinear<" + str(input_size) + ", " + str(output_size) + ", " 
+        code_network+= "\tLinear<" + str(input_size) + ", " + str(output_size) + ", " 
         code_network+= self.IO_t + ", " + self.WEIGHT_t + ", " + self.ACC_t + ", "
         code_network+= str(self.quantizer_io.get_max())  + ", " + str(self.quantizer_weights.get_max())
         code_network+= ">"
-        code_network+= "(\n\t\toutput_buffer(), input_buffer(), " + var_weights + var_bias + str(int(128*scale)) + ");\n"
+        code_network+= "(\n\t\toutput_buffer(), input_buffer(), " + var_weights + var_bias + str(int(1024*scale)) + ");\n"
         code_network+= "\tswap_buffer();" + "\n\n"
 
         #weights
@@ -272,14 +285,15 @@ class ExportModel:
         layer_id = self.network_prefix + "_" + "layer_" + str(layer_num)
 
         weights = layer.weight.data.detach().to("cpu").numpy()
-        kernel_shape = weights.shape
-
         bias    = layer.bias.data.detach().to("cpu").numpy()
 
         weights_quant, bias_quant, scale = self.quantizer_weights.get(weights, bias)
 
+        kernel_shape = weights.shape
+
         output_channels = kernel_shape[0]
         input_width     = input_shape[1]
+        
         input_channels  = kernel_shape[1]
         kernel_size     = kernel_shape[2]
         kernel_stride   = layer.stride[0]
@@ -302,16 +316,16 @@ class ExportModel:
         code_network+= ">"
 
         code_network+= "(\n\t\toutput_buffer(), input_buffer(), \n"
-        code_network+= "\t\t" + var_weights + var_bias + str(int(128*scale)) + ");\n"
+        code_network+= "\t\t" + var_weights + var_bias + str(int(1024*scale)) + ");\n"
         
 
         code_network+= "\tswap_buffer();" + "\n\n"
 
         #weights
         code_weight = "const " + self.WEIGHT_t + " " + layer_id + "_weights[] = {" + "\n"
-        for k in range(kernel_shape[0]):
-            for kw in range(kernel_shape[2]):
-                for ch in range(kernel_shape[1]):
+        for k in range(output_channels):
+            for kw in range(kernel_size):
+                for ch in range(input_channels):
                     code_weight+= str(weights_quant[k][ch][kw]) + ", " 
                         
                 if ch > 1:
@@ -324,17 +338,17 @@ class ExportModel:
         
         #bias
         code_weight+= "const " + self.WEIGHT_t + " " + layer_id + "_bias[] = {" + "\n"
-        for i in range(len(bias)):
+        for i in range(output_channels):
             code_weight+= str(bias_quant[i]) + ", " 
         code_weight+= "};\n\n\n"
 
 
         code = (code_network, code_weight)
         
-        required_memory       = output_shape[0]*output_shape[1]
+        required_memory       = max(input_shape[0]*input_shape[1], output_shape[0]*output_shape[1])
 
-        macs = output_channels*kernel_size*input_channels*output_shape[1] #convolution
-        macs+= output_channels*output_shape[1]    #bias
+        macs = output_channels*kernel_size*input_channels*output_width #convolution
+        macs+= output_channels*output_width    #bias
 
 
         print("export_Conv1d :")
@@ -388,7 +402,7 @@ class ExportModel:
         code_network+= ">"
 
         code_network+= "(\n\t\toutput_buffer(), input_buffer(), \n"
-        code_network+= "\t\t" + var_weights + var_bias + str(int(128*scale)) + ");\n"
+        code_network+= "\t\t" + var_weights + var_bias + str(int(1024*scale)) + ");\n"
         
 
         code_network+= "\tswap_buffer();" + "\n\n"
@@ -481,14 +495,3 @@ class ExportModel:
         print("\n\n")
       
         return code, output_shape, size, macs
-
-
-    def quantize(self, weights, bias, dtype=numpy.int8):
-        tmp         = numpy.concatenate([weights.flatten(), bias.flatten()])
-        scale       = numpy.std(tmp)*2
-        
-        result_weights  = numpy.clip((weights*128)/scale, -127, 127).astype(dtype)
-        result_bias     = numpy.clip((bias*128)/scale, -127, 127).astype(dtype)
- 
-        return result_weights, result_bias, scale
-        

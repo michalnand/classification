@@ -12,17 +12,17 @@ void Linear(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *weights, co
     for (unsigned int j = 0; j < out_features; j++)
     {
         ACC_t result = dot_microkernel<in_features, IO_t, WEIGHT_t, ACC_t>(input_buffer, weights + j*in_features);
+ 
+        result = ((result + bias[j])*scale)/(1024*weight_max);
 
-        result = ((result + bias[j])*scale)/(128*weight_max);
-
-        if (io_max != 1)
+        if (io_max != 1) 
         {
             if (result > io_max) 
                 result = io_max;
                     
             if (result < -io_max)
                 result = -io_max;
-        }
+        }  
 
         output_buffer[j] = result;
     }

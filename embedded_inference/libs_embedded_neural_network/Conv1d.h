@@ -12,17 +12,17 @@ template<   unsigned int width,
 void Conv1d(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *kernel, const WEIGHT_t *bias, int scale)
 {
     auto output_width  = (width - (kernel_size - 1) - 1)/stride + 1;
-
+    
     for (unsigned int filter = 0; filter < output_channels; filter++)
         for (unsigned int x = 0; x < output_width; x++)
         {
             const WEIGHT_t *kernel_ =  &(kernel[filter*kernel_size*input_channels]);
 
-            IO_t *input_buffer_     = &(input_buffer[x*stride*input_channels]);              
+            IO_t *input_buffer_     = &(input_buffer[x*stride*input_channels]); 
                 
             ACC_t result = dot_microkernel<kernel_size*input_channels, IO_t, WEIGHT_t, ACC_t>(input_buffer_, kernel_);
 
-            result = ((result + bias[filter])*scale)/(128*weight_max);
+            result = ((result + bias[filter])*scale)/(1024*weight_max);
             
             if (io_max != 1)
             {
@@ -36,7 +36,6 @@ void Conv1d(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *kernel, con
             output_buffer[x*output_channels + filter]   = result;
         }
 }
-
 
 
 

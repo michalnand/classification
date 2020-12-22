@@ -613,7 +613,7 @@ void MagnetometetNetworkFloat::forward()
 {
 	Conv1d<512, 4, 16, 5, 4, float, float, float, 1, 1>(
 		output_buffer(), input_buffer(), 
-		MagnetometetNetworkFloat_layer_0_weights, MagnetometetNetworkFloat_layer_0_bias, 128);
+		MagnetometetNetworkFloat_layer_0_weights, MagnetometetNetworkFloat_layer_0_bias, 1024);
 	swap_buffer();
 
 	ReLU<float>(	output_buffer(), input_buffer(), 2032);
@@ -621,7 +621,7 @@ void MagnetometetNetworkFloat::forward()
 
 	Conv1d<127, 16, 32, 5, 4, float, float, float, 1, 1>(
 		output_buffer(), input_buffer(), 
-		MagnetometetNetworkFloat_layer_3_weights, MagnetometetNetworkFloat_layer_3_bias, 128);
+		MagnetometetNetworkFloat_layer_3_weights, MagnetometetNetworkFloat_layer_3_bias, 1024);
 	swap_buffer();
 
 	ReLU<float>(	output_buffer(), input_buffer(), 992);
@@ -629,14 +629,17 @@ void MagnetometetNetworkFloat::forward()
 
 	Conv1d<31, 32, 64, 5, 4, float, float, float, 1, 1>(
 		output_buffer(), input_buffer(), 
-		MagnetometetNetworkFloat_layer_6_weights, MagnetometetNetworkFloat_layer_6_bias, 128);
+		MagnetometetNetworkFloat_layer_6_weights, MagnetometetNetworkFloat_layer_6_bias, 1024);
 	swap_buffer();
 
 	ReLU<float>(	output_buffer(), input_buffer(), 448);
 	swap_buffer();
 
+	ChannelReoder<float, 64, 1, 7>(output_buffer(), input_buffer());
+	swap_buffer();
+
 	Linear<448, 5, float, float, float, 1, 1>(
-		output_buffer(), input_buffer(), MagnetometetNetworkFloat_layer_10_weights, MagnetometetNetworkFloat_layer_10_bias, 128);
+		output_buffer(), input_buffer(), MagnetometetNetworkFloat_layer_10_weights, MagnetometetNetworkFloat_layer_10_bias, 1024);
 	swap_buffer();
 
 	swap_buffer();

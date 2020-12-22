@@ -1,19 +1,17 @@
-LIB_NAME = build/network_python
+LIB_NAME = ./LibEmbeddedNetwork
 
-EMBEDDED_NEURAL_NETWORK_LIB_PATH = ../embedded_neural_nework/
+EMBEDDED_NEURAL_NETWORK_LIB_PATH = ../../../../../embedded_inference/libs_embedded_neural_network/
 
 CC 	= g++
-
-
 
 CFLAGS = -O3 -funroll-loops -Wall -Wextra -pedantic -std=c++17 -fPIC -shared -undefined dynamic_lookup
 
 INC = -I.
 INC+= -I$(EMBEDDED_NEURAL_NETWORK_LIB_PATH)
 INC+= `python3-config --include`
+INC+= `python3 -m pybind11 --includes`
 
 SRCS = $(shell find . -name '*.cpp')
-SRCS+= $(shell find $(EMBEDDED_NEURAL_NETWORK_LIB_PATH) -name '*.cpp')
 
 OBJS = $(SRCS:.cpp=.o)
 

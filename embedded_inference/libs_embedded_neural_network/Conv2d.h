@@ -32,7 +32,7 @@ void Conv2d(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *kernel, con
                     kernel_+= kernel_size*input_channels;
                 }
                 
-                result = ((result + bias[filter])*scale)/(128*weight_max);
+                result = ((result + bias[filter])*scale)/(1024*weight_max);
                
                 if (io_max != 1)
                 {
