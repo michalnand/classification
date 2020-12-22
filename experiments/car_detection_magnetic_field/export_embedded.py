@@ -5,7 +5,7 @@ import embedded_inference.libs_embedded
 
 
 input_shape     = (4, 512)
-output_shape    = (4, )
+output_shape    = (5, )
 
 '''
 supported bits : 
@@ -23,6 +23,7 @@ supported quantization mode :
 
 
 
+'''
 model_path = "./models/net_0/"
 import models.net_0.model as Net0
 
@@ -31,9 +32,6 @@ model.load(model_path + "trained/")
 
 export = embedded_inference.libs_embedded.ExportModel(model, input_shape, export_path = model_path + "/export/", network_prefix = "MagnetometetNetworkInt8", io_bits=8, weights_bits=8, accumulation_bits=32, quantization_mode="sigma_2")
 export = embedded_inference.libs_embedded.ExportModel(model, input_shape, export_path = model_path + "/export/", network_prefix = "MagnetometetNetworkFloat", io_bits=-1, weights_bits=-1, accumulation_bits=-1, quantization_mode="all")
-
-
-
 
 model_path = "./models/net_1/"
 import models.net_1.model as Net1
@@ -91,3 +89,15 @@ model.load(model_path + "trained/")
 export = embedded_inference.libs_embedded.ExportModel(model, input_shape, export_path = model_path + "/export/", network_prefix = "MagnetometetNetworkInt8", io_bits=8, weights_bits=8, accumulation_bits=32, quantization_mode="sigma_2")
 export = embedded_inference.libs_embedded.ExportModel(model, input_shape, export_path = model_path + "/export/", network_prefix = "MagnetometetNetworkFloat", io_bits=-1, weights_bits=-1, accumulation_bits=-1, quantization_mode="all")
 
+'''
+
+
+
+model_path = "./models/net_4/"
+import models.net_4.model as Net4
+
+model = Net4.Create(input_shape, output_shape)
+model.load(model_path + "trained/")
+
+export = embedded_inference.libs_embedded.ExportModel(model, input_shape, export_path = model_path + "/export/", network_prefix = "MagnetometetNetworkInt8", io_bits=8, weights_bits=8, accumulation_bits=32, quantization_mode="sigma_2")
+export = embedded_inference.libs_embedded.ExportModel(model, input_shape, export_path = model_path + "/export/", network_prefix = "MagnetometetNetworkFloat", io_bits=-1, weights_bits=-1, accumulation_bits=-1, quantization_mode="all")
