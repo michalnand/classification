@@ -11,7 +11,7 @@
 
 #include "GlobalAveragePooling1d.h"
 
-#include "ChannelReoder.h"
+#include "ChannelReorder.h"
 
 template<class DType>
 class ModelInterface

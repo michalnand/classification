@@ -635,7 +635,7 @@ void MagnetometetNetworkInt8::forward()
 	ReLU<int8_t>(	output_buffer(), input_buffer(), 448);
 	swap_buffer();
 
-	ChannelReoder<int8_t, 64, 1, 7>(output_buffer(), input_buffer());
+	ChannelReorder<int8_t, 64, 1, 7>(output_buffer(), input_buffer());
 	swap_buffer();
 
 	Linear<448, 5, int8_t, int8_t, int8_t, 127, 127>(

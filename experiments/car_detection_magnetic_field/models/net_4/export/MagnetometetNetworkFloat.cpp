@@ -635,7 +635,7 @@ void MagnetometetNetworkFloat::forward()
 	ReLU<float>(	output_buffer(), input_buffer(), 448);
 	swap_buffer();
 
-	ChannelReoder<float, 64, 1, 7>(output_buffer(), input_buffer());
+	ChannelReorder<float, 64, 1, 7>(output_buffer(), input_buffer());
 	swap_buffer();
 
 	Linear<448, 5, float, float, float, 1, 1>(

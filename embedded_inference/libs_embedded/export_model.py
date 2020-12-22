@@ -235,11 +235,11 @@ class ExportModel:
 
         code_network = ""
         if len(input_shape) == 2:
-            code_network+= "\tChannelReoder<" + self.IO_t + ", " + str(input_shape[0]) + ", " + "1, " + str(input_shape[1]) + ">(output_buffer(), input_buffer());\n"
+            code_network+= "\tChannelReorder<" + self.IO_t + ", " + str(input_shape[0]) + ", " + "1, " + str(input_shape[1]) + ">(output_buffer(), input_buffer());\n"
             code_network+= "\tswap_buffer();" + "\n\n"
 
         if len(input_shape) == 3:
-            code_network+= "\tChannelReoder<" + self.IO_t + ", " + str(input_shape[0]) + ", " + str(input_shape[1]) + ", " + str(input_shape[1]) + ">(output_buffer(), input_buffer());\n"
+            code_network+= "\tChannelReorder<" + self.IO_t + ", " + str(input_shape[0]) + ", " + str(input_shape[1]) + ", " + str(input_shape[1]) + ">(output_buffer(), input_buffer());\n"
             code_network+= "\tswap_buffer();" + "\n\n"
         
         #layer call code

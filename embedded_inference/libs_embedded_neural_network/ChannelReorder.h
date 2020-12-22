@@ -1,10 +1,10 @@
-#ifndef _ChannelReoder_H_
-#define _ChannelReoder_H_
+#ifndef _ChannelReorder_H_
+#define _ChannelReorder_H_
 
 #include <stdint.h>
 
 template<class DType, unsigned int channels, unsigned int height, unsigned int width>
-void ChannelReoder( DType *output_buffer, DType *input_buffer)
+void ChannelReorder( DType *output_buffer, DType *input_buffer)
 {
     for (unsigned int ch = 0; ch < channels; ch++)
         for (unsigned int h = 0; h < height; h++)
