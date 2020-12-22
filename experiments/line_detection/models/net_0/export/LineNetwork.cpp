@@ -554,14 +554,14 @@ const int8_t LineNetwork_layer_9_bias[] = {
 LineNetwork::LineNetwork()
 	: ModelInterface()
 {
-	init_buffer(524288);
-	total_macs = 27395072;
+	init_buffer(520200);
+	total_macs = 26721833;
 	input_channels = 1;
 	input_height = 512;
 	input_width = 512;
 	output_channels = 1;
-	output_height = 32;
-	output_width = 32;
+	output_height = 31;
+	output_width = 31;
 }
 
 void LineNetwork::forward()
@@ -571,34 +571,34 @@ void LineNetwork::forward()
 		LineNetwork_layer_0_weights, LineNetwork_layer_0_bias, 55);
 	swap_buffer();
 
-	ReLU<int8_t>(	output_buffer(), input_buffer(), 524288);
+	ReLU<int8_t>(	output_buffer(), input_buffer(), 520200);
 	swap_buffer();
 
-	Conv2d<256, 256, 8, 8, 3, 2, int8_t, int8_t, int32_t, 127, 127>(
+	Conv2d<255, 255, 8, 8, 3, 2, int8_t, int8_t, int32_t, 127, 127>(
 		output_buffer(), input_buffer(), 
 		LineNetwork_layer_2_weights, LineNetwork_layer_2_bias, 55);
 	swap_buffer();
 
-	ReLU<int8_t>(	output_buffer(), input_buffer(), 131072);
+	ReLU<int8_t>(	output_buffer(), input_buffer(), 129032);
 	swap_buffer();
 
-	Conv2d<128, 128, 8, 16, 3, 2, int8_t, int8_t, int32_t, 127, 127>(
+	Conv2d<127, 127, 8, 16, 3, 2, int8_t, int8_t, int32_t, 127, 127>(
 		output_buffer(), input_buffer(), 
 		LineNetwork_layer_4_weights, LineNetwork_layer_4_bias, 57);
 	swap_buffer();
 
-	ReLU<int8_t>(	output_buffer(), input_buffer(), 65536);
+	ReLU<int8_t>(	output_buffer(), input_buffer(), 63504);
 	swap_buffer();
 
-	Conv2d<64, 64, 16, 32, 3, 2, int8_t, int8_t, int32_t, 127, 127>(
+	Conv2d<63, 63, 16, 32, 3, 2, int8_t, int8_t, int32_t, 127, 127>(
 		output_buffer(), input_buffer(), 
 		LineNetwork_layer_6_weights, LineNetwork_layer_6_bias, 48);
 	swap_buffer();
 
-	ReLU<int8_t>(	output_buffer(), input_buffer(), 32768);
+	ReLU<int8_t>(	output_buffer(), input_buffer(), 30752);
 	swap_buffer();
 
-	Conv2d<32, 32, 32, 1, 1, 1, int8_t, int8_t, int32_t, 127, 127>(
+	Conv2d<31, 31, 32, 1, 1, 1, int8_t, int8_t, int32_t, 127, 127>(
 		output_buffer(), input_buffer(), 
 		LineNetwork_layer_9_weights, LineNetwork_layer_9_bias, 32);
 	swap_buffer();

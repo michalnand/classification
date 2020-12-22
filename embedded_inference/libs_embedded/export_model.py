@@ -284,7 +284,9 @@ class ExportModel:
         kernel_size     = kernel_shape[2]
         kernel_stride   = layer.stride[0]
 
-        output_shape    = (output_channels, input_width//kernel_stride)
+        output_width    = (input_width - (kernel_size - 1) - 1)//kernel_stride + 1
+
+        output_shape    = (output_channels, output_width)
 
         #layer call code
        
@@ -367,7 +369,10 @@ class ExportModel:
         kernel_size     = kernel_shape[2]
         kernel_stride   = layer.stride[0]
 
-        output_shape    = (output_channels, input_height//kernel_stride, input_width//kernel_stride)
+        height_         = (input_height  - (kernel_size - 1) - 1)//kernel_stride + 1
+        width_          = (input_width   - (kernel_size - 1) - 1)//kernel_stride + 1
+
+        output_shape    = (output_channels, height_, width_)
 
         #layer call code
        

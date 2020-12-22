@@ -345,6 +345,7 @@ class DatasetMagnetometer2:
         class_dict[5]   = 0     #nothing
         class_dict[6]   = 0     #nothing
         class_dict[7]   = 0     #other
+        class_dict[-1]  = 0     #other
 
         
         return class_dict[raw_id]

@@ -9,7 +9,6 @@ import models.net_2.model as Model2
 import models.net_3.model as Model3
 import models.net_4.model as Model4
 import models.net_5.model as Model5
-import models.net_test.model as ModelTest
 
 
 #dataset_path = "/Users/michal/dataset/car_detection_2/"
@@ -28,6 +27,7 @@ folders_list.append(dataset_path + "/Kysuce")
 folders_list.append(dataset_path + "/Martin_1")
 folders_list.append(dataset_path + "/Martin_2")
 
+
 #window size = 512
 #50x artifical data for training
 #20% of data for testing
@@ -40,9 +40,8 @@ learning_rates  = [0.001, 0.001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
 train = libs.Train(dataset, Model4, batch_size = 128, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/net_4")
 
-train = libs.Train(dataset, Model5, batch_size = 128, learning_rates = learning_rates)
-train.step_epochs(epoch_count, log_path = "./models/net_5")
 
+'''
 train = libs.Train(dataset, Model0, batch_size = 128, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/net_0")
 
@@ -55,6 +54,6 @@ train.step_epochs(epoch_count, log_path = "./models/net_2")
 train = libs.Train(dataset, Model3, batch_size = 128, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/net_3")
 
- 
-#train = libs.Train(dataset, ModelTest, batch_size = 128, learning_rates = learning_rates)
-#train.step_epochs(epoch_count, log_path = "./models/net_test")
+train = libs.Train(dataset, Model5, batch_size = 128, learning_rates = learning_rates)
+train.step_epochs(epoch_count, log_path = "./models/net_5")
+'''
