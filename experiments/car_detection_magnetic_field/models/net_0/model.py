@@ -15,32 +15,21 @@ class Create(torch.nn.Module):
         channels  = input_shape[0]
         sequence_length  = input_shape[1]
 
-        fc_length = sequence_length//(2**5)
-
         self.layers = [ 
-                        nn.Conv1d(channels, 8, kernel_size = 3, stride = 2, padding = 1),
-                        nn.ReLU(),  #length = 256
+                        nn.Conv1d(channels, 16, kernel_size = 5, stride = 4, padding = 0),
+                        nn.ReLU(),  #length = 127
 
-                        nn.Dropout(p=0.05),
-                        nn.Conv1d(8, 16, kernel_size = 3, stride = 2, padding = 1),
-                        nn.ReLU(),  #length = 128
+                        nn.Dropout(p=0.01),
+                        nn.Conv1d(16, 32, kernel_size = 5, stride = 4, padding = 0),
+                        nn.ReLU(),  #length = 31
 
-                        nn.Dropout(p=0.05),
-                        nn.Conv1d(16, 32, kernel_size = 3, stride = 2, padding = 1),
-                        nn.ReLU(),  #length = 64
+                        nn.Dropout(p=0.01),
+                        nn.Conv1d(32, 64, kernel_size = 5, stride = 4, padding = 0),
+                        nn.ReLU(),  #length = 7
 
-                        nn.Dropout(p=0.05),
-                        nn.Conv1d(32, 64, kernel_size = 3, stride = 2, padding = 1),
-                        nn.ReLU(),  #length = 32
-
-                        nn.Dropout(p=0.05),
-                        nn.Conv1d(64, 64, kernel_size = 3, stride = 2, padding = 1),
-                        nn.ReLU(),  #length = 16
-
-                        nn.Dropout(p=0.05),
-                        nn.Conv1d(64, output_shape[0], kernel_size = 1, stride = 1, padding = 0),
-                        nn.AvgPool1d(kernel_size=fc_length),
-                        Flatten()
+                        Flatten(), 
+                        nn.Dropout(p=0.01),
+                        nn.Linear(7*64, output_shape[0])
         ]
      
         for i in range(len(self.layers)):
@@ -67,3 +56,14 @@ class Create(torch.nn.Module):
 
         self.model.load_state_dict(torch.load(name, map_location = self.device))
         self.model.eval() 
+
+
+if __name__ == "__main__":
+    input_shape  = (4, 512)
+    output_shape = (5, )
+
+    model = Create(input_shape, output_shape)
+
+    x = torch.zeros(input_shape).unsqueeze(0)
+
+    y = model(x)

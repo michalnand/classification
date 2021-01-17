@@ -287,6 +287,10 @@ class DatasetMagnetometer2:
         result = (1.0 - self.level_white_noise)*scale*x + self.level_white_noise*white_noise
         result = result + self.level_offset_noise*offset_noise
 
+        #random saturation
+        if numpy.random.randint(2):
+            result = numpy.clip(result, -1.0, 1.0)
+
         return result
 
     def _augmentation_rotation(self, x, y, z):

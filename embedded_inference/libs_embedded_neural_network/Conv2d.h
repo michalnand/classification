@@ -8,8 +8,8 @@
 template<   unsigned int height, unsigned int width, 
             unsigned int input_channels, unsigned int output_channels, 
             unsigned int kernel_size, unsigned int stride,
-            class IO_t, class WEIGHT_t, class ACC_t, int io_max, int weight_max>
-void Conv2d(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *kernel, const WEIGHT_t *bias, int scale)
+            class IO_t, class WEIGHT_t, class ACC_t, int io_max, int zero_point, int scale>
+void Conv2d(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *kernel, const WEIGHT_t *bias)
 {
     auto output_height  = (height - (kernel_size - 1) - 1)/stride + 1;
     auto output_width   = (width  - (kernel_size - 1) - 1)/stride + 1;
@@ -27,12 +27,12 @@ void Conv2d(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *kernel, con
                     unsigned int input_idx = (y*stride*width + ky*width + x*stride)*input_channels;
                     IO_t *input_buffer_ = &(input_buffer[input_idx]);
                          
-                    result+= dot_microkernel<kernel_size*input_channels, IO_t, WEIGHT_t, ACC_t>(input_buffer_, kernel_);
+                    result+= dot_microkernel<kernel_size*input_channels, IO_t, WEIGHT_t, ACC_t, zero_point>(input_buffer_, kernel_);
  
                     kernel_+= kernel_size*input_channels;
                 }
                 
-                result = ((result + bias[filter])*scale)/(1024*weight_max);
+                result = ((result + bias[filter])*scale)/1024;
                
                 if (io_max != 1)
                 {

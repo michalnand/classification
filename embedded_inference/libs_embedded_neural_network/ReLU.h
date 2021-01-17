@@ -3,10 +3,9 @@
 
 #include <stdint.h>
 
-template<class DType>
+template<class DType, unsigned int size>
 void ReLU(  DType *output_buffer, 
-            DType *input_buffer, 
-            unsigned int size)
+            DType *input_buffer )
 {
     for (unsigned int i = 0; i < size; i++)
     {

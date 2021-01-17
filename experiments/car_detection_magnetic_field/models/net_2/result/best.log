@@ -1,33 +1,35 @@
-new best net in 176
+new best net in 25
 TRAINING result
-accuracy   = 94.284 [%]
-hit_count  = 55665
-miss_count = 3375
+accuracy   = 65.952 [%]
+hit_count  = 615414
+miss_count = 317706
 
-class_accuracy = 97.375%   89.51%   94.956%   95.259%   
+class_accuracy = 92.352%   72.387%   58.257%   30.248%   76.343%   
 
 
 confusion_matrix = 
-14393	 275	 3	 1	 
-269	 13200	 574	 284	 
-45	 872	 13987	 415	 
-73	 399	 165	 14085	 
+172642	 6152	 1543	 2057	 1434	 
+9321	 135489	 37664	 28959	 7231	 
+2187	 27577	 108357	 40556	 15008	 
+1233	 8771	 20679	 56332	 20513	 
+1556	 9182	 17755	 58328	 142594	 
 
 
 
 TESTING result
-accuracy   = 94.985 [%]
-hit_count  = 1307
-miss_count = 69
+accuracy   = 88.281 [%]
+hit_count  = 4068
+miss_count = 540
 
-class_accuracy = 98.829%   90.521%   71.429%   82.258%   
+class_accuracy = 93.16%   86.99%   49.265%   38.356%   70.548%   
 
 
 confusion_matrix = 
-844	 3	 0	 0	 
-7	 382	 6	 1	 
-1	 29	 30	 9	 
-1	 7	 5	 51	 
+2506	 13	 0	 0	 0	 
+138	 1364	 46	 11	 5	 
+18	 117	 67	 4	 11	 
+11	 39	 12	 28	 26	 
+16	 34	 10	 29	 103	 
 
 
 

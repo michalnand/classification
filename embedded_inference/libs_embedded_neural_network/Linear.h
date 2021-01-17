@@ -6,14 +6,14 @@
 
 
 template<   unsigned int in_features, unsigned int out_features, 
-            class IO_t, class WEIGHT_t, class ACC_t, int io_max, int weight_max>
-void Linear(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *weights, const WEIGHT_t *bias, int scale)
+            class IO_t, class WEIGHT_t, class ACC_t, int io_max, int zero_point, int scale>
+void Linear(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *weights, const WEIGHT_t *bias)
 { 
     for (unsigned int j = 0; j < out_features; j++)
     {
-        ACC_t result = dot_microkernel<in_features, IO_t, WEIGHT_t, ACC_t>(input_buffer, weights + j*in_features);
- 
-        result = ((result + bias[j])*scale)/(1024*weight_max);
+        ACC_t result = dot_microkernel<in_features, IO_t, WEIGHT_t, ACC_t, zero_point>(input_buffer, weights + j*in_features);
+        
+        result = ((result + bias[j])*scale)/1024;
 
         if (io_max != 1) 
         {
@@ -23,7 +23,7 @@ void Linear(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *weights, co
             if (result < -io_max)
                 result = -io_max;
         }  
-
+      
         output_buffer[j] = result;
     }
 }
