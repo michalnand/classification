@@ -33,6 +33,17 @@ class Create(torch.nn.Module):
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+
+        '''
+        self.layers = [ 
+                        nn.Conv2d(input_shape[0], 16, kernel_size = 3, stride = 1, padding = 1),
+                        nn.ReLU(), 
+                        nn.Conv2d(16, 32, kernel_size = 3, stride = 1, padding = 1),
+                        nn.ReLU(), 
+                        nn.Conv2d(32, output_shape[0], kernel_size = 1, stride = 1, padding = 0) 
+        ]
+        '''
+
         self.layers = [ 
                         nn.Conv2d(input_shape[0], 32, kernel_size = 3, stride = 2, padding = 1),
                         nn.ReLU(), 
