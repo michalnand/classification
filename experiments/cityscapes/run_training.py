@@ -13,7 +13,7 @@ epoch_count     = 100
 #use cyclic learning rate
 learning_rates  = [0.001, 0.001, 0.0001, 0.0001, 0.0001, 0.0001, 0.00001]
 
-dataset = libs_dataset.DatasetCityscapes("/Users/michal/dataset/cityscapes/", height=256, width=512)
+dataset = libs_dataset.DatasetCityscapes("/home/michal/dataset/cityscapes/", height=256, width=512)
 
-train = libs.Train(dataset, Model0, libs.MetricsSegmentation, batch_size = 8, learning_rates = learning_rates)
+train = libs.Train(dataset, Model0, libs.MetricsSegmentation, batch_size = 4, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/model_0")

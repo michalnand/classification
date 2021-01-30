@@ -2,7 +2,7 @@ import numpy
 import torch
 import os
 
-from .images_loader import *
+from images_loader import *
 
 from PIL import Image
 
@@ -127,12 +127,12 @@ class DatasetCityscapes:
         return self.testing_count
 
     def get_training_batch(self, batch_size = 32):
-        return self._get_batch(self.training_images, self.training_masks, batch_size)
+        return self._get_batch(self.training_images, self.training_masks, batch_size, True)
 
     def get_testing_batch(self, batch_size = 32):
-        return self._get_batch(self.training_images, self.training_masks, batch_size)
+        return self._get_batch(self.training_images, self.training_masks, batch_size, False)
 
-    def _get_batch(self, images, masks, batch_size):
+    def _get_batch(self, images, masks, batch_size, augmentation = False):
         result_x = torch.zeros((batch_size, self.channels, self.height, self.width)).float()
         result_y = torch.zeros((batch_size, self.classes_count, self.height, self.width)).float()
 
@@ -140,16 +140,37 @@ class DatasetCityscapes:
             city_idx  = numpy.random.randint(len(images))
             image_idx = numpy.random.randint(images[city_idx].count)
 
-            image     = numpy.array(images[city_idx].images[image_idx])/256.0
+            image_np  = numpy.array(images[city_idx].images[image_idx])/256.0
+
+            if augmentation:
+                image_np  = self._augmentation(image_np)
+
             mask      = numpy.array(masks[city_idx].images[image_idx]).mean(axis=0).astype(int)
 
             mask_one_hot = numpy.eye(self.classes_count)[mask]
             mask_one_hot = numpy.moveaxis(mask_one_hot, 2, 0)
 
-            result_x[i]  = torch.from_numpy(image).float()
+            result_x[i]  = torch.from_numpy(image_np).float()
             result_y[i]  = torch.from_numpy(mask_one_hot).float()
 
         return result_x, result_y
+
+
+    def _augmentation(self, image_np):
+        brightness = self._rnd(-0.5, 0.5)
+        contrast   = self._rnd(0.5, 1.5)
+        noise      = 0.1*(2.0*numpy.random.rand(self.channels, self.height, self.width) - 1.0)
+
+        result     = image_np + brightness
+        result     = 0.5 + contrast*(result - 0.5)
+        result     = result + noise
+
+        result     = numpy.clip(result, 0.0, 1.0)
+
+        return result
+
+    def _rnd(self, min_value, max_value):
+        return (max_value - min_value)*numpy.random.rand() + min_value
 
        
 
@@ -159,5 +180,6 @@ if __name__ == "__main__":
 
 
     x, y = dataset.get_training_batch(batch_size=64)
+    x, y = dataset.get_testing_batch(batch_size=64)
 
     print(x.shape, y.shape)
