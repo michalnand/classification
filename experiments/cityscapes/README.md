@@ -20,8 +20,8 @@ training 100 epoch, cyclic learning rate
 
 
 
-![](images/02.png)
-![](images/02_masked.jpg)
+![](images/03.png)
+![](images/03_masked.jpg)
 
 # model
 
