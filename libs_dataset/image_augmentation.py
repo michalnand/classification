@@ -1,59 +1,66 @@
 import numpy
-from PIL import Image
+from PIL import Image, ImageEnhance
 
 
 class ImageAugmentation:
 
     def __init__(self):
-        self.resize_min     = 0.25
-        self.resize_max     = 2.0
-        self.rotation_max   = 30.0
-        self.target_width   = 512
-        self.target_height  = 512
-        self.offset_noise   = 0.5
-        self.white_noise    = 0.2
+        self.rotation_max       = 30.0
+        
+        self.brightness_min     = 0.5
+        self.brightness_max     = 1.5
 
+        self.contrast_min       = 0.0
+        self.contrast_max       = 2.0
+
+        self.color_min          = 0.5
+        self.color_max          = 1.5
 
     def process(self, image_input):
-        image_pil = Image.from_array(image_input)   
+        image_pil = Image.fromarray(image_input)   
         
-        image_pil = self._random_flip(image_pil)
-        image_pil = self._random_resize(image_pil)
         image_pil = self._random_rotation(image_pil)
-        image_pil = self._random_crop(image_pil)
         image_pil = self._random_colors(image_pil)
-        image_pil = self._random_offset_noise(image_pil)
-        image_pil = self._random_white_noise(image_pil)
-
-        image_np  = numpy.array(image_pil)
-        image_np  = (image_np - image_np.mean())/image_np.std()
-
+       
+        image_np  = numpy.array(image_pil)/255.0
         return image_np
 
-    def _random_flip(self, image_input):
-        return image_input
-
-    def _random_resize(self, image_input):
-        #self.resize_min     = 0.5
-        #self.resize_max     = 2.0
-        return image_input
-
     def _random_rotation(self, image_input):
-        #self.rotation_max
-        return image_input
-
-    def _random_crop(self, image_input):
-        #self.rotation_max
-        return image_input
-
+        angle = self._rnd(-self.rotation_max, self.rotation_max)
+        return image_input.rotate(angle)
+  
     def _random_colors(self, image_input):
-        #self.offset_noise
-        return image_input
+        image_result    = image_input
 
-    def _random_offset_noise(self, image_input):
-        #self.offset_noise
-        return image_input
+        br              = self._rnd(self.brightness_min, self.brightness_max)
+        con             = self._rnd(self.contrast_min, self.contrast_max)
+        col             = self._rnd(self.color_min, self.color_max)
+        
+        fil             = ImageEnhance.Brightness(image_result)
+        image_result    = fil.enhance(br)
 
-    def _random_white_noise(self, image_input):
-        #self.white_noise
-        return image_input
+        fil             = ImageEnhance.Contrast(image_result)
+        image_result    = fil.enhance(con)
+
+        fil             = ImageEnhance.Color(image_result)
+        image_result    = fil.enhance(col)
+
+        return image_result
+
+    def _rnd(self, min_value, max_value):
+        return (max_value - min_value)*numpy.random.rand() + min_value
+
+if __name__ == "__main__":
+    input_image = Image.open("02.jpg")
+
+    augm = ImageAugmentation()
+
+    result = augm.process(numpy.array(input_image))
+
+    print("\n\n\n\n")
+    print(">>> ", result.shape)
+    print("\n\n\n\n")
+
+    output_image = Image.fromarray(numpy.array(result*255, dtype=numpy.uint8) )
+
+    output_image.show()

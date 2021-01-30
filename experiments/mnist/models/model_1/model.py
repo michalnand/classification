@@ -10,16 +10,26 @@ class Create(torch.nn.Module):
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        fc_size         = numpy.prod(input_shape)
-        classes_count   = numpy.prod(output_shape)
+        fc_size = (input_shape[1]//4)*(input_shape[2]//4)
 
         self.layers = [ 
-                        nn.Flatten(),
+                        nn.Conv2d(input_shape[0], 16, kernel_size = 3, stride = 1, padding = 1),
+                        nn.ReLU(),  
+                        nn.MaxPool2d(2, 2),
 
-                        nn.Linear(fc_size, 128),
+                        nn.Conv2d(16, 32, kernel_size = 3, stride = 1, padding = 1),
                         nn.ReLU(),
+                        nn.Conv2d(32, 32, kernel_size = 3, stride = 1, padding = 1),
+                        nn.ReLU(),
+                        nn.MaxPool2d(2, 2),
 
-                        nn.Linear(128, classes_count)
+                        nn.Conv2d(32, 64, kernel_size = 3, stride = 1, padding = 1),
+                        nn.ReLU(), 
+                        nn.Conv2d(64, 64, kernel_size = 3, stride = 1, padding = 1),
+                        nn.ReLU(), 
+
+                        nn.Flatten(),
+                        nn.Linear(fc_size*64, output_shape[0])
         ]
      
         for i in range(len(self.layers)):

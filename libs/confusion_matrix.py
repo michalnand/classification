@@ -1,7 +1,7 @@
 import numpy
 
 
-class ConfussionMatrix:
+class ConfusionMatrix:
     def __init__(self, classes_count):
         self.classes_count = classes_count
         self.clear()
@@ -65,7 +65,9 @@ class ConfussionMatrix:
 
         for target_idx in range(self.classes_count):
             for predicted_idx in range(self.classes_count):
-                 result_str+= str(self.confussion_matrix[target_idx][predicted_idx]) + "\t "
+                #result_str+= str(self.confussion_matrix[target_idx][predicted_idx]) + "\t\t "
+                result_str+= "{:>12}".format(self.confussion_matrix[target_idx][predicted_idx])
+                 
             result_str+= "\n"
         result_str+= "\n"
 

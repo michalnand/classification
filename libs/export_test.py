@@ -2,8 +2,8 @@ import numpy
 import torch
 import time
 
-from .loss import *
-from .confussion_matrix import *
+#from .loss import *
+#from .confussion_matrix import *
 
 
 class ExportTest:

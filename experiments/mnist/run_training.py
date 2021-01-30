@@ -16,5 +16,5 @@ learning_rates  = [0.001, 0.0001, 0.0001]
 
 dataset = libs_dataset.DatasetMnist()
 
-train = libs.Train(dataset, Model0, batch_size = 64, learning_rates = learning_rates)
+train = libs.Train(dataset, Model0, libs.MetricsClassification, batch_size = 64, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/model_0")

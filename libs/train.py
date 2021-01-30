@@ -2,20 +2,17 @@ import numpy
 import torch
 import time
 
-from .loss import *
-from .confussion_matrix import *
-
 class Train:
-    def __init__(self, dataset, Model, batch_size = 64, learning_rates = [0.0001], weight_decay = 0.001, loss = LossMSE):
+    def __init__(self, dataset, Model, Metrics, batch_size = 64, learning_rates = [0.0001], weight_decay = 0.001):
 
-        self.dataset        = dataset
-        self.model          = Model.Create(self.dataset.input_shape, self.dataset.output_shape)
+        self.dataset            = dataset
+        self.model              = Model.Create(self.dataset.input_shape, self.dataset.output_shape)
 
-        self.batch_size       = batch_size
-        self.learning_rates   = learning_rates
-        self.weight_decay     = weight_decay
+        self.batch_size         = batch_size
+        self.learning_rates     = learning_rates
+        self.weight_decay       = weight_decay
 
-        self.loss             = loss
+        self.Metrics            = Metrics
 
     def step_epochs(self, epoch_count, log_path = "./"):
         accuracy_best       = -1.0
@@ -23,9 +20,11 @@ class Train:
 
         f_training_log  = open(log_path + "/result/training.log","w+")
 
+        best_score = 0.0
+
         for epoch in range(epoch_count):
             learning_rate = self.learning_rates[epoch_count%len(self.learning_rates)]
-            training_confussion_matrix, testing_confussion_matrix, training_loss, testing_loss, epoch_time = self.step_epoch(learning_rate, epoch, epoch_count)
+            metrics, epoch_time = self.step_epoch(learning_rate, epoch, epoch_count)
 
             if epoch_time_filtered < 0.0:
                 epoch_time_filtered = epoch_time
@@ -34,23 +33,9 @@ class Train:
 
             eta_time    = (epoch_count - epoch)*(epoch_time_filtered/3600.0)
 
-            training_accuracy   = training_confussion_matrix.accuracy
-            testing_accuracy    = testing_confussion_matrix.accuracy
-
-            training_loss_mean  = numpy.mean(training_loss)
-            testing_loss_mean   = numpy.mean(testing_loss)
-
-            training_loss_std   = numpy.std(training_loss)
-            testing_loss_std    = numpy.std(testing_loss)
-
             log_str = ""
             log_str+= str(epoch) + " "
-            log_str+= str(training_accuracy) + " "
-            log_str+= str(testing_accuracy) + " "
-            log_str+= str(training_loss_mean) + " "
-            log_str+= str(testing_loss_mean) + " "
-            log_str+= str(training_loss_std) + " "
-            log_str+= str(testing_loss_std) + " "
+            log_str+= metrics.get_short() + " "
             log_str+= str(round(eta_time, 2)) + " "
             log_str+= "\n"
 
@@ -58,25 +43,20 @@ class Train:
             f_training_log.write(log_str)
             f_training_log.flush()
 
-            if testing_accuracy > accuracy_best:
+            if metrics.get_score() > best_score:
                 self.model.save(log_path + "/trained/")
 
-                accuracy_best = testing_accuracy
+                best_score = metrics.get_score()
 
-                log_str = ""
-                log_str+= "new best net in " + str(epoch) + "\n"
-                log_str+= "TRAINING result\n"
-                log_str+= training_confussion_matrix.get_result() + "\n\n"
-                log_str+= "TESTING result\n"
-                log_str+= testing_confussion_matrix.get_result() + "\n\n"
-
-                print("\n\n\n")
-                print("=================================================")
-                print(log_str)
-                
+                log_str = "best model\n"
+                log_str+= "epoch = " + str(epoch) + "\n\n"
+                log_str+= metrics.get_full()
+ 
                 f_best_log = open(log_path + "/result/best.log","w+")
                 f_best_log.write(log_str)
                 f_best_log.close()
+
+                print(log_str, "\n\n\n")
 
         f_training_log.close()
     
@@ -88,13 +68,11 @@ class Train:
         if hasattr(self.model, 'epoch_start'):
             self.model.epoch_start(epoch, epoch_count)
 
-        optimizer  = torch.optim.Adam(self.model.parameters(), lr=learning_rate, weight_decay=learning_rate*self.weight_decay)  
-
+        optimizer   = torch.optim.Adam(self.model.parameters(), lr=learning_rate, weight_decay=learning_rate*self.weight_decay)  
         batch_count = (self.dataset.get_training_count() + self.batch_size) // self.batch_size
 
-        training_confussion_matrix = ConfussionMatrix(self.dataset.classes_count)
-        
-        training_loss = []
+        metrics            = self.Metrics(self.dataset.output_shape)
+
         for batch_id in range(batch_count):
             training_x, training_y = self.dataset.get_training_batch(self.batch_size)
 
@@ -103,20 +81,15 @@ class Train:
 
             predicted_y = self.model.forward(training_x)
 
-            loss  = self.loss(training_y, predicted_y)
-            
+            loss  = metrics.loss_training(training_y, predicted_y)
+            metrics.add_training(training_y, predicted_y)
+
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
 
-            training_confussion_matrix.add_batch(training_y.detach().to("cpu").numpy(), predicted_y.detach().to("cpu").numpy())
-
-            training_loss.append(loss.detach().to("cpu").numpy())
-
-        training_confussion_matrix.compute()
- 
+            
         batch_count = (self.dataset.get_testing_count()+self.batch_size) // self.batch_size
-        testing_confussion_matrix = ConfussionMatrix(self.dataset.classes_count)
 
         testing_loss = []
         for batch_id in range(batch_count):
@@ -128,16 +101,14 @@ class Train:
             predicted_y = self.model.forward(testing_x)
 
             error = (testing_y - predicted_y)**2
-            loss  = error.mean()
+            loss  = metrics.loss_testing(training_y, predicted_y)
 
-            testing_confussion_matrix.add_batch(testing_y.detach().to("cpu").numpy(), predicted_y.detach().to("cpu").numpy())
-            testing_loss.append(loss.detach().to("cpu").numpy())
+            metrics.add_testing(testing_y, predicted_y)
 
-        testing_confussion_matrix.compute()
+        metrics.compute()
 
-        time_stop = time.time()
+        time_stop   = time.time()
+        epoch_time  = time_stop - time_start
 
-        epoch_time = time_stop - time_start
-
-        return training_confussion_matrix, testing_confussion_matrix, training_loss, testing_loss, epoch_time
+        return metrics, epoch_time
   
