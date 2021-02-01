@@ -1,5 +1,5 @@
 import numpy
-import torch
+import torch 
 import os
 
 from .images_loader import *
@@ -54,6 +54,7 @@ class DatasetCityscapes:
 
 
         testing_cities  = []
+        
         testing_cities.append("berlin")
         testing_cities.append("bielefeld")
         testing_cities.append("bonn")
@@ -80,22 +81,6 @@ class DatasetCityscapes:
             cc = masks.images.max()
             if cc > classes_count:
                 classes_count = cc
-
-
-        '''
-        for i in range(4):
-            city_idx  = numpy.random.randint(len(self.testing_images))
-            image_idx = numpy.random.randint(self.testing_images[city_idx].count)
-
-            image_np = self.testing_images[city_idx].images[image_idx]
-            mask_np  = self.testing_masks[city_idx].images[image_idx]
-
-            im = Image.fromarray(image_np)
-            im.show()
-
-            im = Image.fromarray(mask_np)
-            im.show()
-        '''
 
 
         self.channels      = 3
@@ -140,14 +125,15 @@ class DatasetCityscapes:
             city_idx  = numpy.random.randint(len(images))
             image_idx = numpy.random.randint(images[city_idx].count)
 
-            image_np  = numpy.array(images[city_idx].images[image_idx])/256.0
+            image_np    = numpy.array(images[city_idx].images[image_idx])/256.0
 
+            mask_np     = numpy.array(masks[city_idx].images[image_idx]).mean(axis=0).astype(int)
+            
             if augmentation:
-                image_np  = self._augmentation(image_np)
+                image_np  = self._augmentation_noise(image_np)
+                image_np, mask_np  = self._augmentation_flip(image_np, mask_np)
 
-            mask      = numpy.array(masks[city_idx].images[image_idx]).mean(axis=0).astype(int)
-
-            mask_one_hot = numpy.eye(self.classes_count)[mask]
+            mask_one_hot = numpy.eye(self.classes_count)[mask_np]
             mask_one_hot = numpy.moveaxis(mask_one_hot, 2, 0)
 
             result_x[i]  = torch.from_numpy(image_np).float()
@@ -156,10 +142,10 @@ class DatasetCityscapes:
         return result_x, result_y
 
 
-    def _augmentation(self, image_np):
+    def _augmentation_noise(self, image_np):
         brightness = self._rnd(-0.5, 0.5)
         contrast   = self._rnd(0.5, 1.5)
-        noise      = 0.1*(2.0*numpy.random.rand(self.channels, self.height, self.width) - 1.0)
+        noise      = 0.05*(2.0*numpy.random.rand(self.channels, self.height, self.width) - 1.0)
 
         result     = image_np + brightness
         result     = 0.5 + contrast*(result - 0.5)
@@ -168,6 +154,29 @@ class DatasetCityscapes:
         result     = numpy.clip(result, 0.0, 1.0)
 
         return result
+
+    def _augmentation_flip(self, image_np, mask_np, p = 0.2):
+        #random flips
+        if self._rnd(0, 1) < p:
+            image_np    = numpy.flip(image_np, axis=1)
+            mask_np     = numpy.flip(mask_np,  axis=0)
+
+        if self._rnd(0, 1) < p:
+            image_np    = numpy.flip(image_np, axis=2)
+            mask_np     = numpy.flip(mask_np,  axis=1)
+
+        #random rolling
+        if self._rnd(0, 1) < p:
+            r           = numpy.random.randint(-32, 32)
+            image_np    = numpy.roll(image_np, r, axis=1)
+            mask_np     = numpy.roll(mask_np, r, axis=0)
+
+        if self._rnd(0, 1) < p:
+            r           = numpy.random.randint(-32, 32)
+            image_np    = numpy.roll(image_np, r, axis=2)
+            mask_np     = numpy.roll(mask_np, r, axis=1)
+
+        return image_np.copy(), mask_np.copy()
 
     def _rnd(self, min_value, max_value):
         return (max_value - min_value)*numpy.random.rand() + min_value
@@ -178,8 +187,26 @@ class DatasetCityscapes:
 if __name__ == "__main__":
     dataset = DatasetCityscapes("/Users/michal/dataset/cityscapes/")
 
+    batch_size = 16
 
-    x, y = dataset.get_training_batch(batch_size=64)
-    x, y = dataset.get_testing_batch(batch_size=64)
-
+    x, y = dataset.get_testing_batch(batch_size)
+    x, y = dataset.get_training_batch(batch_size)
+    
+    
     print(x.shape, y.shape)
+
+    for i in range(batch_size):
+
+        image_np = x[i].detach().to("cpu").numpy()
+        mask_np  = y[i].detach().to("cpu").numpy()
+
+        image_np    = (255.0*image_np).astype(numpy.uint8)
+        mask_np     = (255.0*mask_np[1]).astype(numpy.uint8)
+
+        image_np    = numpy.moveaxis(image_np, 0, 2)
+
+        im = Image.fromarray(image_np, 'RGB')
+        im.show()
+
+        im = Image.fromarray(mask_np)
+        im.show()
