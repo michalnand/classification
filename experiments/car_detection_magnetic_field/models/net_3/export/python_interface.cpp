@@ -4,8 +4,7 @@
 #include <iostream>
 #include <vector>
 
-#include <MagnetometetNetworkFloat.h>
-#include <MagnetometetNetworkInt8.h>
+#include <MyModel.h>
 
 namespace py = pybind11;
 
@@ -53,7 +52,7 @@ class ModelInterfacePython
         }
 
     private:
-        MagnetometetNetworkFloat model;
+        MyModel model;
         //MagnetometetNetworkInt8 model;
 };
 

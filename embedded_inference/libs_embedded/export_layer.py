@@ -18,7 +18,7 @@ def export_Linear(network_prefix, layer_num, int8_export, input_shape, weights, 
         io_data_type    = "float"
         w_data_type     = "float"
         acc_data_type   = "float"
-        max_value       = 1
+        max_value       = 0
 
         weights_quant   = weights
         bias_quant      = bias
@@ -98,7 +98,7 @@ def export_Conv1d(network_prefix, layer_num, int8_export, input_shape, weights, 
         io_data_type    = "float"
         w_data_type     = "float"
         acc_data_type   = "float"
-        max_value       = 1
+        max_value       = 0
 
         weights_quant   = weights
         bias_quant      = bias
@@ -198,7 +198,7 @@ def export_Conv2d(network_prefix, layer_num, int8_export, input_shape, weights, 
         io_data_type    = "float"
         w_data_type     = "float"
         acc_data_type   = "float"
-        max_value       = 1
+        max_value       = 0
 
         weights_quant   = weights
         bias_quant      = bias
@@ -308,16 +308,25 @@ def export_ReLU(network_prefix, layer_num, int8_export, input_shape):
     
     return code, output_shape, size, macs
 
-'''
-def export_AvgPool1d(self, layer, input_shape, layer_num):
+
+def export_AvgPool1d(layer, input_shape, layer_num, int8_export):
     
     channels    = input_shape[0]
     width       = input_shape[1]
     
+    if int8_export:
+        io_data_type    = "int8_t"
+        acc_data_type   = "int32_t"
+        max_value       = 127
+    else:
+        io_data_type    = "float"
+        acc_data_type   = "float"
+        max_value       = 0
+
     output_shape = (1, 1, channels)
 
     code_network = "\tGlobalAveragePooling1d<"
-    code_network+= str(1) + ", " + str(width) + ", " + str(channels) + ", " + io_data_type + ", " + self.ACC_t + ", " + str(self.quantizer_io.get_max()) + ">(\n"
+    code_network+= str(1) + ", " + str(width) + ", " + str(channels) + ", " + str(io_data_type) + ", " + str(acc_data_type) + ", " + str(max_value) + ">(\n"
     code_network+= "\t\toutput_buffer(), input_buffer());\n" 
     code_network+= "\tswap_buffer();" + "\n\n"
 
@@ -333,4 +342,3 @@ def export_AvgPool1d(self, layer, input_shape, layer_num):
     print("\n\n")
     
     return code, output_shape, size, macs
-'''

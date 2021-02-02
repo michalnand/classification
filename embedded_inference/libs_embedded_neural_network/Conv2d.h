@@ -27,14 +27,14 @@ void Conv2d(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *kernel, con
                     unsigned int input_idx = (y*stride*width + ky*width + x*stride)*input_channels;
                     IO_t *input_buffer_ = &(input_buffer[input_idx]);
                          
-                    result+= dot_microkernel<kernel_size*input_channels, IO_t, WEIGHT_t, ACC_t, zero_point>(input_buffer_, kernel_);
+                    result+= dot_microkernel<kernel_size*input_channels, IO_t, WEIGHT_t, ACC_t>(input_buffer_, kernel_);
  
                     kernel_+= kernel_size*input_channels;
                 }
                 
-                result = ((result + bias[filter])*scale)/1024;
+                result = ((result + bias[filter])*scale + zero_point)/256;
                
-                if (io_max != 1)
+                if (io_max != 0)
                 {
                     if (result > io_max) 
                         result = io_max;

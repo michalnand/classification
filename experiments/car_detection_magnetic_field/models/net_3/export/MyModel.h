@@ -4,7 +4,7 @@
 
 #include <ModelInterface.h>
 
-class MyModel : public ModelInterface<float>
+class MyModel : public ModelInterface<int8_t>
 {
 	public:
 		 MyModel();

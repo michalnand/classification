@@ -20,11 +20,11 @@ void Conv1d(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *kernel, con
 
             IO_t *input_buffer_     = &(input_buffer[x*stride*input_channels]); 
                 
-            ACC_t result = dot_microkernel<kernel_size*input_channels, IO_t, WEIGHT_t, ACC_t, zero_point>(input_buffer_, kernel_);
+            ACC_t result = dot_microkernel<kernel_size*input_channels, IO_t, WEIGHT_t, ACC_t>(input_buffer_, kernel_);
 
-            result = ((result + bias[filter])*scale)/1024;
+            result = ((result + bias[filter])*scale + zero_point)/256;
             
-            if (io_max != 1)
+            if (io_max != 0)
             {
                 if (result > io_max) 
                     result = io_max;

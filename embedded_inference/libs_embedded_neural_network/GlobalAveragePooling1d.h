@@ -26,7 +26,7 @@ void GlobalAveragePooling1d(IO_t *output_buffer, IO_t *input_buffer)
     {
         ACC_t tmp = result[i]/size;
 
-        if (io_max != 1)
+        if (io_max != 0)
         {
             if (tmp > io_max)
                 tmp = io_max;

@@ -24,9 +24,9 @@ folders_list.append(dataset_path + "/Meranie_20_06_01-Lietavska_Lucka/02")
 '''
 
 folders_list.append(dataset_path + "/Bytca")
-folders_list.append(dataset_path + "/Kysuce")
-folders_list.append(dataset_path + "/Martin_1")
-folders_list.append(dataset_path + "/Martin_2")
+#folders_list.append(dataset_path + "/Kysuce")
+#folders_list.append(dataset_path + "/Martin_1")
+#folders_list.append(dataset_path + "/Martin_2")
 
 dataset = libs_dataset.DatasetMagnetometer2(folders_list, width = 512, augmentations_count = 1, testing_ratio = 20)
 
