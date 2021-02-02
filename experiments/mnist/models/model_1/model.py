@@ -10,26 +10,20 @@ class Create(torch.nn.Module):
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        fc_size = (input_shape[1]//4)*(input_shape[2]//4)
-
         self.layers = [ 
-                        nn.Conv2d(input_shape[0], 16, kernel_size = 3, stride = 1, padding = 1),
+                        nn.Conv2d(input_shape[0], 16, kernel_size = 3, stride = 2, padding = 0),
                         nn.ReLU(),  
-                        nn.MaxPool2d(2, 2),
 
-                        nn.Conv2d(16, 32, kernel_size = 3, stride = 1, padding = 1),
+                        nn.Conv2d(16, 32, kernel_size = 3, stride = 1, padding = 0),
                         nn.ReLU(),
-                        nn.Conv2d(32, 32, kernel_size = 3, stride = 1, padding = 1),
+                        nn.Conv2d(32, 64, kernel_size = 3, stride = 2, padding = 0),
                         nn.ReLU(),
-                        nn.MaxPool2d(2, 2),
 
-                        nn.Conv2d(32, 64, kernel_size = 3, stride = 1, padding = 1),
+                        nn.Conv2d(64, 128, kernel_size = 3, stride = 1, padding = 0),
                         nn.ReLU(), 
-                        nn.Conv2d(64, 64, kernel_size = 3, stride = 1, padding = 1),
-                        nn.ReLU(), 
-
+                       
                         nn.Flatten(),
-                        nn.Linear(fc_size*64, output_shape[0])
+                        nn.Linear(3*3*128, output_shape[0])
         ]
      
         for i in range(len(self.layers)):
@@ -55,3 +49,16 @@ class Create(torch.nn.Module):
 
         self.model.load_state_dict(torch.load(name, map_location = self.device))
         self.model.eval() 
+
+if __name__ == "__main__":
+
+    input_shape     = (1, 28, 28)
+    output_shape    = (10, )
+
+    model = Create(input_shape, output_shape)
+
+    x     = torch.randn((1, ) + input_shape)
+
+    y     = model(x)
+
+    print(y.shape)

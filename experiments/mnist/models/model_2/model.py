@@ -10,27 +10,21 @@ class Create(torch.nn.Module):
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        size = input_shape[1]//4
-
         self.layers = [ 
-                        nn.Conv2d(input_shape[0], 16, kernel_size = 3, stride = 1, padding = 1),
+                        nn.Conv2d(input_shape[0], 16, kernel_size = 3, stride = 2, padding = 0),
                         nn.ReLU(),  
-                        nn.MaxPool2d(2, 2),
 
-                        nn.Conv2d(16, 32, kernel_size = 3, stride = 1, padding = 1),
+                        nn.Conv2d(16, 32, kernel_size = 3, stride = 1, padding = 0),
                         nn.ReLU(),
-                        nn.Conv2d(32, 32, kernel_size = 3, stride = 1, padding = 1),
+                        nn.Conv2d(32, 64, kernel_size = 3, stride = 2, padding = 0),
                         nn.ReLU(),
-                        nn.MaxPool2d(2, 2),
 
-                        nn.Conv2d(32, 64, kernel_size = 3, stride = 1, padding = 1),
-                        nn.ReLU(), 
-                        nn.Conv2d(64, 64, kernel_size = 3, stride = 1, padding = 1),
+                        nn.Conv2d(64, 128, kernel_size = 3, stride = 1, padding = 0),
                         nn.ReLU(), 
 
-                        nn.Conv2d(64, output_shape[0], kernel_size = 1, stride = 1, padding = 0),
+                        nn.Conv2d(128, output_shape[0], kernel_size = 1, stride = 1, padding = 0),
 
-                        nn.AvgPool2d(size),
+                        nn.AvgPool2d(3),
                         nn.Flatten()
         ]
      
