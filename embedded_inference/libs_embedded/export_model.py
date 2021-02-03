@@ -46,7 +46,7 @@ class ExportModel:
             if isinstance(layer, torch.nn.Linear):
                 weights_quant, bias_quant, scale = self._quantize(layer.weight.to("cpu").detach().numpy(), layer.bias.to("cpu").detach().numpy(), r)
                 
-                code, output_shape, required_memory, macs = export_Linear(self.network_prefix, i, quantization_type, layer_input_shape, weights_quant, bias_quant, scale, 0)
+                code, output_shape, required_memory, macs = export_Linear(self.network_prefix, i, quantization_type, layer_input_shape, weights_quant, bias_quant, scale)
 
                 code_network+= code[0]
                 code_weights+= code[1]
@@ -55,7 +55,7 @@ class ExportModel:
             elif isinstance(layer, torch.nn.Conv1d):
                 weights_quant, bias_quant, scale = self._quantize(layer.weight.to("cpu").detach().numpy(), layer.bias.to("cpu").detach().numpy(), r)
              
-                code, output_shape, required_memory, macs = export_Conv1d(self.network_prefix, i, quantization_type, layer_input_shape, weights_quant, bias_quant, scale, 0, layer.stride[0])
+                code, output_shape, required_memory, macs = export_Conv1d(self.network_prefix, i, quantization_type, layer_input_shape, weights_quant, bias_quant, scale, layer.stride[0], layer.padding[0])
 
                 code_network+= code[0]
                 code_weights+= code[1]
@@ -63,7 +63,7 @@ class ExportModel:
             elif isinstance(layer, torch.nn.Conv2d):
                 weights_quant, bias_quant, scale = self._quantize(layer.weight.to("cpu").detach().numpy(), layer.bias.to("cpu").detach().numpy(), r)
                 
-                code, output_shape, required_memory, macs = export_Conv2d(self.network_prefix, i, quantization_type, layer_input_shape, weights_quant, bias_quant, scale, 0, layer.stride[0])
+                code, output_shape, required_memory, macs = export_Conv2d(self.network_prefix, i, quantization_type, layer_input_shape, weights_quant, bias_quant, scale, layer.stride[0], layer.padding[0])
 
                 code_network+= code[0]
                 code_weights+= code[1]
@@ -116,29 +116,29 @@ class ExportModel:
             layer = model.layers[i]
             
             if isinstance(layer, torch.nn.Linear):
-                weight_np   = layer.weight.detach().to("cpu").numpy()
-                bias_np     = layer.bias.detach().to("cpu").numpy()
+                weight_np   = 1.0*layer.weight.detach().to("cpu").numpy()
+                bias_np     = 1.0*layer.bias.detach().to("cpu").numpy()
                 
-                code, output_shape, required_memory, macs = export_Linear(self.network_prefix, i, "float", layer_input_shape, weight_np, bias_np, scale_quant, 0)
+                code, output_shape, required_memory, macs = export_Linear(self.network_prefix, i, "float", layer_input_shape, weight_np, bias_np, scale_quant)
 
                 code_network+= code[0]
                 code_weights+= code[1]
 
 
             elif isinstance(layer, torch.nn.Conv1d):
-                weight_np   = layer.weight.detach().to("cpu").numpy()
-                bias_np     = layer.bias.detach().to("cpu").numpy()
+                weight_np   = 1.0*layer.weight.detach().to("cpu").numpy()
+                bias_np     = 1.0*layer.bias.detach().to("cpu").numpy()
 
-                code, output_shape, required_memory, macs = export_Conv1d(self.network_prefix, i, "float", layer_input_shape, weight_np, bias_np, scale_quant, 0, layer.stride[0])
+                code, output_shape, required_memory, macs = export_Conv1d(self.network_prefix, i, "float", layer_input_shape, weight_np, bias_np, scale_quant, layer.stride[0], layer.padding[0])
 
                 code_network+= code[0]
                 code_weights+= code[1]
 
             elif isinstance(layer, torch.nn.Conv2d):
-                weight_np   = layer.weight.detach().to("cpu").numpy()
-                bias_np     = layer.bias.detach().to("cpu").numpy()
+                weight_np   = 1.0*layer.weight.detach().to("cpu").numpy()
+                bias_np     = 1.0*layer.bias.detach().to("cpu").numpy()
 
-                code, output_shape, required_memory, macs = export_Conv2d(self.network_prefix, i, "float", layer_input_shape, weight_np, bias_np, scale_quant, 0, layer.stride[0])
+                code, output_shape, required_memory, macs = export_Conv2d(self.network_prefix, i, "float", layer_input_shape, weight_np, bias_np, scale_quant, layer.stride[0], layer.padding[0])
 
                 code_network+= code[0]
                 code_weights+= code[1]
@@ -261,8 +261,17 @@ class ExportModel:
 
         tmp             = numpy.concatenate([weights.flatten(), bias.flatten()])
 
-        #scale           = 2.0*numpy.std(tmp) 
+        #scale           = 4.0*numpy.std(tmp) 
         scale           = numpy.max(numpy.abs(tmp))
+
+ 
+        print("layer stats")
+        print("mean = ", tmp.mean())
+        print("std =  ", tmp.std())
+        print("max =  ", tmp.max())
+        print("min =  ", tmp.min())
+        print("scale =", scale)
+        print("\n")
 
         weights_scaled  = weights/scale
         bias_scaled     = bias/scale

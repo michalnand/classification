@@ -24,9 +24,9 @@ class ModelInterfacePython
             
             for (unsigned int i = 0; i < in_count; i++)
             {
-                auto v = x[i]*128;
+                auto v = x[i]*128.0;
 
-                if (v > 127) 
+                if (v > 127)  
                     v = 127; 
 
                 if (v < -127)

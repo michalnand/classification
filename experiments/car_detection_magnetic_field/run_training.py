@@ -34,7 +34,7 @@ folders_list.append(dataset_path + "/Martin_2")
 dataset = libs_dataset.DatasetMagnetometer2(folders_list, width = 512, augmentations_count = 50, testing_ratio = 20)
 #dataset = libs_dataset.DatasetMagnetometer2(folders_list, width = 512, augmentations_count = 2, testing_ratio = 20)
 
-epoch_count = 200 
+epoch_count = 50 
 learning_rates  = [0.001, 0.001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
 
 train = libs.Train(dataset, Model0, libs.MetricsClassification, batch_size = 128, learning_rates = learning_rates)
@@ -54,3 +54,5 @@ train.step_epochs(epoch_count, log_path = "./models/net_4")
 
 train = libs.Train(dataset, Model5, libs.MetricsClassification, batch_size = 128, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/net_5")
+
+

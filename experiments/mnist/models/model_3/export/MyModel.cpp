@@ -2095,7 +2095,7 @@ MyModel::MyModel()
 
 void MyModel::forward()
 {
-	Conv2d<28, 28, 1, 16, 3, 2, int8_t, int8_t, int32_t, 127, 0, 297>(
+	Conv2d<28, 28, 1, 16, 3, 2, 0, int8_t, int8_t, int32_t, 127, 297>(
 		output_buffer(), input_buffer(), 
 		MyModel_layer_0_weights, MyModel_layer_0_bias);
 	swap_buffer();
@@ -2103,7 +2103,7 @@ void MyModel::forward()
 	ReLU<int8_t, 2704>(output_buffer(), input_buffer());
 	swap_buffer();
 
-	Conv2d<13, 13, 16, 32, 3, 1, int8_t, int8_t, int32_t, 127, 0, 334>(
+	Conv2d<13, 13, 16, 32, 3, 1, 0, int8_t, int8_t, int32_t, 127, 334>(
 		output_buffer(), input_buffer(), 
 		MyModel_layer_2_weights, MyModel_layer_2_bias);
 	swap_buffer();
@@ -2111,7 +2111,7 @@ void MyModel::forward()
 	ReLU<int8_t, 3872>(output_buffer(), input_buffer());
 	swap_buffer();
 
-	Conv2d<11, 11, 32, 64, 3, 2, int8_t, int8_t, int32_t, 127, 0, 227>(
+	Conv2d<11, 11, 32, 64, 3, 2, 0, int8_t, int8_t, int32_t, 127, 227>(
 		output_buffer(), input_buffer(), 
 		MyModel_layer_4_weights, MyModel_layer_4_bias);
 	swap_buffer();
@@ -2119,7 +2119,7 @@ void MyModel::forward()
 	ReLU<int8_t, 1600>(output_buffer(), input_buffer());
 	swap_buffer();
 
-	Conv2d<5, 5, 64, 128, 3, 1, int8_t, int8_t, int32_t, 127, 0, 268>(
+	Conv2d<5, 5, 64, 128, 3, 1, 0, int8_t, int8_t, int32_t, 127, 268>(
 		output_buffer(), input_buffer(), 
 		MyModel_layer_6_weights, MyModel_layer_6_bias);
 	swap_buffer();
@@ -2130,7 +2130,7 @@ void MyModel::forward()
 	ChannelReorder<int8_t, 128, 3, 3>(output_buffer(), input_buffer());
 	swap_buffer();
 
-	Linear<1152, 10, int8_t, int8_t, int32_t, 127, 0, 293>(
+	Linear<1152, 10, int8_t, int8_t, int32_t, 127, 293>(
 		output_buffer(), input_buffer(), 
 		MyModel_layer_9_weights, MyModel_layer_9_bias);
 	swap_buffer();

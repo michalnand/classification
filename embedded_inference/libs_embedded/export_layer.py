@@ -2,7 +2,7 @@ import torch
 import numpy
 
 
-def export_Linear(network_prefix, layer_num, quantization_type, input_shape, weights, bias, scale, zero_point):        
+def export_Linear(network_prefix, layer_num, quantization_type, input_shape, weights, bias, scale):        
     layer_id = network_prefix + "_" + "layer_" + str(layer_num)
 
     if quantization_type == "int8":
@@ -54,7 +54,7 @@ def export_Linear(network_prefix, layer_num, quantization_type, input_shape, wei
 
     code_network+= "\tLinear<" + str(input_size) + ", " + str(output_size) + ", " 
     code_network+= io_data_type + ", " + w_data_type + ", " + acc_data_type + ", "
-    code_network+= str(max_value)  + ", " + str(zero_point) + ", " + str(scale)
+    code_network+= str(max_value)  + ", " + str(scale)
     code_network+= ">"
 
     code_network+= "(\n\t\toutput_buffer(), input_buffer(), \n"
@@ -91,7 +91,7 @@ def export_Linear(network_prefix, layer_num, quantization_type, input_shape, wei
 
     return code, (output_size, ), output_size, macs
 
-def export_Conv1d(network_prefix, layer_num, quantization_type, input_shape, weights, bias, scale, zero_point, kernel_stride):        
+def export_Conv1d(network_prefix, layer_num, quantization_type, input_shape, weights, bias, scale, kernel_stride, kernel_padding):        
     layer_id = network_prefix + "_" + "layer_" + str(layer_num)
 
     if quantization_type == "int8":
@@ -134,7 +134,7 @@ def export_Conv1d(network_prefix, layer_num, quantization_type, input_shape, wei
     input_channels  = kernel_shape[1]
     kernel_size     = kernel_shape[2]
 
-    output_width    = (input_width - (kernel_size - 1) - 1)//kernel_stride + 1
+    output_width    = (input_width + 2*kernel_padding - (kernel_size - 1) - 1)//kernel_stride + 1
 
     output_shape    = (output_channels, output_width)
 
@@ -146,9 +146,9 @@ def export_Conv1d(network_prefix, layer_num, quantization_type, input_shape, wei
     code_network = "\tConv1d"
 
     code_network+= "<" + str(input_width) + ", " + str(input_channels) + ", " + str(output_channels) + ", "
-    code_network+= str(kernel_size) + ", " + str(kernel_stride) + ", "
+    code_network+= str(kernel_size) + ", " + str(kernel_stride) + ", " + str(kernel_padding) + ", "
     code_network+= io_data_type + ", " + w_data_type + ", " + acc_data_type + ", "
-    code_network+= str(max_value)  + ", " + str(zero_point) + ", " + str(scale)
+    code_network+= str(max_value)  + ", "  + str(scale)
     code_network+= ">"
 
     code_network+= "(\n\t\toutput_buffer(), input_buffer(), \n"
@@ -193,6 +193,7 @@ def export_Conv1d(network_prefix, layer_num, quantization_type, input_shape, wei
     print("input_channels  ", input_channels)
     print("kernel_size     ", kernel_size)
     print("stride          ", kernel_stride)
+    print("padding         ", kernel_padding)
     print("output_shape    ", output_shape)
     print("macs            ", macs)
     print("\n\n")
@@ -200,7 +201,7 @@ def export_Conv1d(network_prefix, layer_num, quantization_type, input_shape, wei
     return code, output_shape, required_memory, macs
 
 
-def export_Conv2d(network_prefix, layer_num, quantization_type, input_shape, weights, bias, scale, zero_point, kernel_stride):        
+def export_Conv2d(network_prefix, layer_num, quantization_type, input_shape, weights, bias, scale, kernel_stride, kernel_padding):        
     layer_id = network_prefix + "_" + "layer_" + str(layer_num)
 
     if quantization_type == "int8":
@@ -243,8 +244,8 @@ def export_Conv2d(network_prefix, layer_num, quantization_type, input_shape, wei
     input_channels  = kernel_shape[1]
     kernel_size     = kernel_shape[2]
 
-    height_         = (input_height  - (kernel_size - 1) - 1)//kernel_stride + 1
-    width_          = (input_width   - (kernel_size - 1) - 1)//kernel_stride + 1
+    height_         = (input_height + 2*kernel_padding - (kernel_size - 1) - 1)//kernel_stride + 1
+    width_          = (input_width  + 2*kernel_padding - (kernel_size - 1) - 1)//kernel_stride + 1
 
     output_shape    = (output_channels, height_, width_)
 
@@ -256,9 +257,9 @@ def export_Conv2d(network_prefix, layer_num, quantization_type, input_shape, wei
     code_network = "\tConv2d"
 
     code_network+= "<" + str(input_height) + ", " + str(input_width) + ", " + str(input_channels) + ", " + str(output_channels) + ", "
-    code_network+= str(kernel_size) + ", " + str(kernel_stride) + ", "
+    code_network+= str(kernel_size) + ", " + str(kernel_stride) + ", "  + str(kernel_padding) + ", "
     code_network+= io_data_type + ", " + w_data_type + ", " + acc_data_type + ", "
-    code_network+= str(max_value)  + ", " + str(zero_point) + ", " + str(scale)
+    code_network+= str(max_value)  + ", " + str(scale)
     code_network+= ">"
 
     code_network+= "(\n\t\toutput_buffer(), input_buffer(), \n"
@@ -305,6 +306,7 @@ def export_Conv2d(network_prefix, layer_num, quantization_type, input_shape, wei
     print("input_channels  ", input_channels)
     print("kernel_size     ", kernel_size)
     print("stride          ", kernel_stride)
+    print("padding         ", kernel_padding)
     print("output_shape    ", output_shape)
     print("macs            ", macs)
     print("\n\n")

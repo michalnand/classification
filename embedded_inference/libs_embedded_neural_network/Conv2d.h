@@ -2,18 +2,27 @@
 #define _Conv2d_H_
 
 #include <stdint.h>
+#include <typeinfo>
 
 #include "dot_microkernel.h"
-
+#include "Padding.h"
 
 template<   unsigned int height, unsigned int width, 
             unsigned int input_channels, unsigned int output_channels, 
-            unsigned int kernel_size, unsigned int stride,
-            class IO_t, class WEIGHT_t, class ACC_t, int io_max, int zero_point, int scale>
+            unsigned int kernel_size, unsigned int stride, unsigned int padding,
+            class IO_t, class WEIGHT_t, class ACC_t, int io_max, int scale>
 void Conv2d(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *kernel, const WEIGHT_t *bias)
 {
-    auto output_height  = (height - (kernel_size - 1) - 1)/stride + 1;
-    auto output_width   = (width  - (kernel_size - 1) - 1)/stride + 1;
+    if (padding != 0)
+    {
+        Padding<IO_t, input_channels, height, width, padding>(output_buffer, input_buffer);
+        auto tmp        = output_buffer;
+        output_buffer   = input_buffer;
+        input_buffer    = tmp;
+    }
+        
+    auto output_height  = (height + 2*padding - (kernel_size - 1) - 1)/stride + 1;
+    auto output_width   = (width  + 2*padding - (kernel_size - 1) - 1)/stride + 1;
 
     for (unsigned int filter = 0; filter < output_channels; filter++)
         for (unsigned int y = 0; y < output_height; y++)
@@ -32,10 +41,18 @@ void Conv2d(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *kernel, con
  
                     kernel_+= kernel_size*input_channels;
                 }
-          
-                result = (result*scale)/(1024*128);
-                result+= (bias[filter]*scale)/1024;
-        
+
+                if (typeid(IO_t) == typeid(float))
+                {
+                    result = (result*scale)/1024;
+                }
+                else
+                {
+                    result = (result*scale)/(128*1024);
+                }
+
+                result = result + (bias[filter]*scale)/1024;
+
                 if (io_max != 0)
                 {
                     if (result > io_max) 
