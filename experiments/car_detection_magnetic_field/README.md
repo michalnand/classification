@@ -97,7 +97,7 @@ confusion_matrix =
            3           6           0           0          96
 ```
 
-### exorted quantized **int8** result
+### exported quantized **int8** result
 
 ```
 accuracy   = 87.976 [%]
@@ -179,7 +179,7 @@ confusion_matrix =
           11          12           0           0         125
 ```
 
-### exorted quantized **int8** result
+### exported quantized **int8** result
 
 ```
 accuracy   = 84.103 [%]
