@@ -5,6 +5,8 @@
 
 #include "dot_microkernel.h"
 
+#include <iostream>
+
 template<   unsigned int width, 
             unsigned int input_channels, unsigned int output_channels, 
             unsigned int kernel_size, unsigned int stride,
@@ -22,9 +24,10 @@ void Conv1d(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *kernel, con
                 
             ACC_t result = dot_microkernel<kernel_size*input_channels, IO_t, WEIGHT_t, ACC_t>(input_buffer_, kernel_);
 
-            result = ((result + bias[filter])*scale + zero_point)/256;
-            
-            if (io_max != 0)
+            result = (result*scale)/(1024*128);
+            result+= (bias[filter]*scale)/1024;
+
+            if (io_max != 0) 
             {
                 if (result > io_max) 
                     result = io_max;

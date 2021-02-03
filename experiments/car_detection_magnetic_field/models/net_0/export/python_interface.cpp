@@ -21,10 +21,7 @@ class ModelInterfacePython
             auto in_count   = model.input_channels*model.input_height*model.input_width;
             auto out_count  = model.output_channels*model.output_height*model.output_width;
 
-            
-            for (unsigned int i = 0; i < in_count; i++)
-                model.input_buffer()[i] = x[i]; 
-            
+
             for (unsigned int i = 0; i < in_count; i++)
             {
                 auto v = x[i]*64;
@@ -51,7 +48,6 @@ class ModelInterfacePython
 
     private:
         MyModel model;
-        //MagnetometetNetworkInt8 model;
 };
 
 

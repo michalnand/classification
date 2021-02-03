@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include "dot_microkernel.h"
 
+#include <iostream>
+
 
 template<   unsigned int in_features, unsigned int out_features, 
             class IO_t, class WEIGHT_t, class ACC_t, int io_max, int zero_point, int scale>
@@ -13,8 +15,9 @@ void Linear(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *weights, co
     {
         ACC_t result = dot_microkernel<in_features, IO_t, WEIGHT_t, ACC_t>(input_buffer, weights + j*in_features);
         
-        result = ((result + bias[j])*scale + zero_point)/256;
-
+        result = (result*scale)/(1024*128);
+        result+= (bias[j]*scale)/1024;
+ 
         if (io_max != 0) 
         {
             if (result > io_max) 

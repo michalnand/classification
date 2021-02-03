@@ -16,20 +16,26 @@ class Create(torch.nn.Module):
         sequence_length  = input_shape[1]
 
         self.layers = [ 
-                        nn.Conv1d(channels, 16, kernel_size = 5, stride = 4, padding = 0),
-                        nn.ReLU(),  #length = 127
+                        nn.Conv1d(channels, 16, kernel_size = 3, stride = 2, padding = 0),
+                        nn.ReLU(), 
+
+                        nn.Conv1d(16, 16, kernel_size = 3, stride = 2, padding = 0),
+                        nn.ReLU(), 
+
+                        nn.Conv1d(16, 32, kernel_size = 3, stride = 2, padding = 0),
+                        nn.ReLU(), 
+
+                        nn.Conv1d(32, 32, kernel_size = 3, stride = 2, padding = 0),
+                        nn.ReLU(), 
+
+                        nn.Conv1d(32, 64, kernel_size = 3, stride = 2, padding = 0),
+                        nn.ReLU(), 
 
                         nn.Dropout(p=0.01),
-                        nn.Conv1d(16, 32, kernel_size = 5, stride = 4, padding = 0),
-                        nn.ReLU(),  #length = 31
-
-                        nn.Dropout(p=0.01),
-                        nn.Conv1d(32, 64, kernel_size = 5, stride = 4, padding = 0),
-                        nn.ReLU(),  #length = 7
-
+                       
                         Flatten(), 
                         nn.Dropout(p=0.01),
-                        nn.Linear(7*64, output_shape[0])
+                        nn.Linear(15*64, output_shape[0])
         ]
      
         for i in range(len(self.layers)):

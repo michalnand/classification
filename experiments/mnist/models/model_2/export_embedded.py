@@ -4,8 +4,8 @@ sys.path.insert(0,'../../../..')
 import embedded_inference.libs_embedded
 
 
-input_shape     = (4, 512)
-output_shape    = (5, )
+input_shape     = (1, 28, 28)
+output_shape    = (10, )
 
 
 

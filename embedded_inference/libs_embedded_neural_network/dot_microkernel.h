@@ -1,7 +1,6 @@
 #ifndef _dot_microkernel_H_
 #define _dot_microkernel_H_
 
-/*
 template<const unsigned int vector_size, class DATA_VA_t, class DATA_VB_t, class ACC_t>
 ACC_t dot_microkernel(const DATA_VA_t *va, const DATA_VB_t *vb)
 {    
@@ -12,9 +11,8 @@ ACC_t dot_microkernel(const DATA_VA_t *va, const DATA_VB_t *vb)
 
     return result; 
 }
-*/
 
-
+/*
 template<const unsigned int vector_size, class DATA_VA_t, class DATA_VB_t, class ACC_t>
 ACC_t dot_microkernel(const DATA_VA_t *va, const DATA_VB_t *vb)
 {    
@@ -108,6 +106,6 @@ ACC_t dot_microkernel(const DATA_VA_t *va, const DATA_VB_t *vb)
 
     return result;
 }
-
+*/
 
 #endif

@@ -2,14 +2,23 @@ import torch
 import numpy
 
 
-def export_Linear(network_prefix, layer_num, int8_export, input_shape, weights, bias, scale, zero_point):        
+def export_Linear(network_prefix, layer_num, quantization_type, input_shape, weights, bias, scale, zero_point):        
     layer_id = network_prefix + "_" + "layer_" + str(layer_num)
 
-    if int8_export:
+    if quantization_type == "int8":
         io_data_type    = "int8_t"
         w_data_type     = "int8_t"
         acc_data_type   = "int32_t"
-        max_value       = 127
+        max_value       = 128-1
+
+        weights_quant   = numpy.round(weights, 0).astype(int)
+        bias_quant      = numpy.round(bias, 0).astype(int)
+
+    elif quantization_type == "int16":
+        io_data_type    = "int16_t"
+        w_data_type     = "int8_t"
+        acc_data_type   = "int32_t"
+        max_value       = 32768-1
 
         weights_quant   = numpy.round(weights, 0).astype(int)
         bias_quant      = numpy.round(bias, 0).astype(int)
@@ -82,14 +91,23 @@ def export_Linear(network_prefix, layer_num, int8_export, input_shape, weights, 
 
     return code, (output_size, ), output_size, macs
 
-def export_Conv1d(network_prefix, layer_num, int8_export, input_shape, weights, bias, scale, zero_point, kernel_stride):        
+def export_Conv1d(network_prefix, layer_num, quantization_type, input_shape, weights, bias, scale, zero_point, kernel_stride):        
     layer_id = network_prefix + "_" + "layer_" + str(layer_num)
 
-    if int8_export:
+    if quantization_type == "int8":
         io_data_type    = "int8_t"
         w_data_type     = "int8_t"
         acc_data_type   = "int32_t"
-        max_value       = 127
+        max_value       = 128-1
+
+        weights_quant   = numpy.round(weights, 0).astype(int)
+        bias_quant      = numpy.round(bias, 0).astype(int)
+
+    elif quantization_type == "int16":
+        io_data_type    = "int16_t"
+        w_data_type     = "int8_t"
+        acc_data_type   = "int32_t"
+        max_value       = 32768-1
 
         weights_quant   = numpy.round(weights, 0).astype(int)
         bias_quant      = numpy.round(bias, 0).astype(int)
@@ -182,14 +200,23 @@ def export_Conv1d(network_prefix, layer_num, int8_export, input_shape, weights, 
     return code, output_shape, required_memory, macs
 
 
-def export_Conv2d(network_prefix, layer_num, int8_export, input_shape, weights, bias, scale, zero_point, kernel_stride):        
+def export_Conv2d(network_prefix, layer_num, quantization_type, input_shape, weights, bias, scale, zero_point, kernel_stride):        
     layer_id = network_prefix + "_" + "layer_" + str(layer_num)
 
-    if int8_export:
+    if quantization_type == "int8":
         io_data_type    = "int8_t"
         w_data_type     = "int8_t"
         acc_data_type   = "int32_t"
-        max_value       = 127
+        max_value       = 128-1
+
+        weights_quant   = numpy.round(weights, 0).astype(int)
+        bias_quant      = numpy.round(bias, 0).astype(int)
+
+    elif quantization_type == "int16":
+        io_data_type    = "int16_t"
+        w_data_type     = "int8_t"
+        acc_data_type   = "int32_t"
+        max_value       = 32768-1
 
         weights_quant   = numpy.round(weights, 0).astype(int)
         bias_quant      = numpy.round(bias, 0).astype(int)
@@ -285,14 +312,30 @@ def export_Conv2d(network_prefix, layer_num, int8_export, input_shape, weights, 
     return code, output_shape, required_memory, macs
 
 
-def export_ReLU(network_prefix, layer_num, int8_export, input_shape):
+def export_ReLU(network_prefix, layer_num, quantization_type, input_shape):
     
     output_shape = input_shape
 
-    if int8_export:
+    if quantization_type == "int8":
         io_data_type    = "int8_t"
+        w_data_type     = "int8_t"
+        acc_data_type   = "int32_t"
+        max_value       = 128-1
+
+    elif quantization_type == "int16":
+        io_data_type    = "int16_t"
+        w_data_type     = "int8_t"
+        acc_data_type   = "int32_t"
+        max_value       = 32768-1
+
+       
     else:
         io_data_type    = "float"
+        w_data_type     = "float"
+        acc_data_type   = "float"
+        max_value       = 0
+
+       
 
     size            = numpy.prod(output_shape)
     macs            = 4*size
@@ -309,19 +352,29 @@ def export_ReLU(network_prefix, layer_num, int8_export, input_shape):
     return code, output_shape, size, macs
 
 
-def export_AvgPool1d(layer, input_shape, layer_num, int8_export):
+def export_AvgPool1d(layer, input_shape, layer_num, quantization_type):
     
     channels    = input_shape[0]
     width       = input_shape[1]
     
-    if int8_export:
+    if quantization_type == "int8":
         io_data_type    = "int8_t"
+        w_data_type     = "int8_t"
         acc_data_type   = "int32_t"
-        max_value       = 127
+        max_value       = 128-1
+
+    elif quantization_type == "int16":
+        io_data_type    = "int16_t"
+        w_data_type     = "int8_t"
+        acc_data_type   = "int32_t"
+        max_value       = 32768-1
+
     else:
         io_data_type    = "float"
+        w_data_type     = "float"
         acc_data_type   = "float"
         max_value       = 0
+
 
     output_shape = (1, 1, channels)
 

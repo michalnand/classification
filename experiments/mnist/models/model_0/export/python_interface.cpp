@@ -24,7 +24,13 @@ class ModelInterfacePython
             
             for (unsigned int i = 0; i < in_count; i++)
             {
-                auto v = x[i]*128;
+                model.input_buffer()[i] = x[i]*127;
+            }
+            
+            /*
+            for (unsigned int i = 0; i < in_count; i++)
+            {
+                auto v = x[i]*4;
 
                 if (v > 127) 
                     v = 127; 
@@ -34,6 +40,7 @@ class ModelInterfacePython
                     
                 model.input_buffer()[i] = v; 
             }
+            */
 
 
             model.forward(); 

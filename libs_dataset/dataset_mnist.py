@@ -79,7 +79,7 @@ class DatasetMnist:
         return len(self.training_x)
 
     def get_testing_count(self):
-        return len(self.testing_x)
+        return len(self.testing_x)//10
 
     def get_training_batch(self, batch_size = 32):
         return self._get_batch(self.training_x, self.training_y, batch_size)
