@@ -26,8 +26,6 @@ class Create(torch.nn.Module):
 
                         nn.Conv1d(32, 64, kernel_size = 3, stride = 2, padding = 0),
                         nn.ReLU(), 
-
-                        nn.Dropout(p=0.01),
                        
                         nn.Flatten(), 
                         nn.Dropout(p=0.01),
