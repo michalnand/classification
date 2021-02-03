@@ -37,3 +37,12 @@ learning_rates  = [0.001, 0.001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
 
 train = libs.Train(dataset, Model0, batch_size = 128, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/net_0")
+
+train = libs.Train(dataset, Model1, batch_size = 128, learning_rates = learning_rates)
+train.step_epochs(epoch_count, log_path = "./models/net_1")
+
+train = libs.Train(dataset, Model2, batch_size = 128, learning_rates = learning_rates)
+train.step_epochs(epoch_count, log_path = "./models/net_2")
+
+train = libs.Train(dataset, Model3, batch_size = 128, learning_rates = learning_rates)
+train.step_epochs(epoch_count, log_path = "./models/net_3")
