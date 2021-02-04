@@ -250,9 +250,9 @@ class DatasetMagnetometer2:
             mean = numpy.mean([x_noised, y_noised, z_noised])
             std  = numpy.std([x_noised, y_noised, z_noised])
 
-            x_normalised = (x_noised - x_noised.mean())/x_noised.std()
-            y_normalised = (y_noised - y_noised.mean())/y_noised.std()
-            z_normalised = (z_noised - z_noised.mean())/z_noised.std()
+            x_normalised = (x_noised - x_noised.mean())/(x_noised.std() + 0.0000001)
+            y_normalised = (y_noised - y_noised.mean())/(y_noised.std() + 0.0000001)
+            z_normalised = (z_noised - z_noised.mean())/(z_noised.std() + 0.0000001)
 
             input[0] = x_normalised.copy()
             input[1] = y_normalised.copy()
@@ -262,11 +262,11 @@ class DatasetMagnetometer2:
             mean = numpy.mean([xs, ys, zs])
             std  = numpy.std([xs, ys, zs])
 
-            x_normalised = (xs - xs.mean())/xs.std()
-            y_normalised = (ys - ys.mean())/ys.std()
-            z_normalised = (zs - zs.mean())/zs.std()
+            x_normalised = (xs - xs.mean())/(xs.std() + 0.0000001)
+            y_normalised = (ys - ys.mean())/(ys.std() + 0.0000001)
+            z_normalised = (zs - zs.mean())/(zs.std() + 0.0000001)
 
-            input[0] = x_normalised.copy()
+            input[0] = x_normalised.copy() 
             input[1] = y_normalised.copy()
             input[2] = z_normalised.copy()
 
@@ -304,10 +304,6 @@ class DatasetMagnetometer2:
         #mix all
         result = (1.0 - self.level_white_noise)*scale*x + self.level_white_noise*white_noise
         result = result + self.level_offset_noise*offset_noise
-
-        #random saturation
-        if numpy.random.randint(8) == 0:
-            result = numpy.clip(result, min, max)
 
         return result
 
