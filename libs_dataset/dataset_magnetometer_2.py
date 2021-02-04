@@ -16,7 +16,7 @@ class DatasetMagnetometer2:
 
         self.idx_offset_noise   = 32 
         self.level_white_noise  = 0.1 
-        self.level_offset_noise = 0.8
+        self.level_offset_noise = 0.2
         self.scale_min          = 0.5
         self.scale_max          = 1.5
         self.rotation_max       = 20
@@ -234,31 +234,41 @@ class DatasetMagnetometer2:
         ys = y[start:end]
         zs = z[start:end]
 
-        #normalise
-        x_filtered = (xs - xs.mean())/xs.std()
-        y_filtered = (ys - ys.mean())/ys.std()
-        z_filtered = (zs - zs.mean())/zs.std()
+       
 
         #process augmentation if necessary
         if augmentation:
-            #axis rotation
-            x_rot, y_rot, z_rot = self._augmentation_rotation(x_filtered, y_filtered, z_filtered)
- 
             #axis noise
-            x_noised = self._augmentation_noise(x_rot)
-            y_noised = self._augmentation_noise(y_rot)
-            z_noised = self._augmentation_noise(z_rot)
+            x_noised = self._augmentation_noise(xs)
+            y_noised = self._augmentation_noise(ys)
+            z_noised = self._augmentation_noise(zs)
 
             #axis rotation
             x_noised, y_noised, z_noised = self._augmentation_rotation(x_noised, y_noised, z_noised)
  
-            input[0] = x_noised.copy()
-            input[1] = y_noised.copy()
-            input[2] = z_noised.copy()
+            #normalise
+            mean = numpy.mean([xs, ys, zx])
+            std  = numpy.std([xs, ys, zx])
+            
+            x_normalised = (xs - mean)/std
+            y_normalised = (ys - mean)/std
+            z_normalised = (zs - mean)/std
+
+            input[0] = x_normalised.copy()
+            input[1] = y_normalised.copy()
+            input[2] = z_normalised.copy()
         else:
-            input[0] = x_filtered.copy()
-            input[1] = y_filtered.copy()
-            input[2] = z_filtered.copy()
+            #normalise
+            mean = numpy.mean([xs, ys, zx])
+            std  = numpy.std([xs, ys, zx])
+
+            x_normalised = (xs - mean)/std
+            y_normalised = (ys - mean)/std
+            z_normalised = (zs - mean)/std
+
+            input[0] = x_normalised.copy()
+            input[1] = y_normalised.copy()
+            input[2] = z_normalised.copy()
 
         return input
 
@@ -296,8 +306,8 @@ class DatasetMagnetometer2:
         result = result + self.level_offset_noise*offset_noise
 
         #random saturation
-        if numpy.random.randint(2):
-            result = numpy.clip(result, -1.0, 1.0)
+        if numpy.random.randint(8) == 0:
+            result = numpy.clip(result, min, max)
 
         return result
 
