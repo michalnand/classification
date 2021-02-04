@@ -247,24 +247,30 @@ class DatasetMagnetometer2:
             x_noised, y_noised, z_noised = self._augmentation_rotation(x_noised, y_noised, z_noised)
  
             #normalise
-            mean = numpy.mean([x_noised, y_noised, z_noised])
-            std  = numpy.std([x_noised, y_noised, z_noised])
+            '''
+            x_normalised = self._standardize(x_noised)
+            y_normalised = self._standardize(y_noised)
+            z_normalised = self._standardize(z_noised)
+            '''
 
-            x_normalised = (x_noised - x_noised.mean())/(x_noised.std() + 0.0000001)
-            y_normalised = (y_noised - y_noised.mean())/(y_noised.std() + 0.0000001)
-            z_normalised = (z_noised - z_noised.mean())/(z_noised.std() + 0.0000001)
-
+            x_normalised = self._normalise(x_noised -1.0, 1.0)
+            y_normalised = self._normalise(y_noised -1.0, 1.0)
+            z_normalised = self._normalise(z_noised -1.0, 1.0)
+            
             input[0] = x_normalised.copy()
             input[1] = y_normalised.copy()
             input[2] = z_normalised.copy()
         else:
             #normalise
-            mean = numpy.mean([xs, ys, zs])
-            std  = numpy.std([xs, ys, zs])
+            '''
+            x_normalised = self._standardize(xs)
+            y_normalised = self._standardize(ys)
+            z_normalised = self._standardize(zs)
+            '''
 
-            x_normalised = (xs - xs.mean())/(xs.std() + 0.0000001)
-            y_normalised = (ys - ys.mean())/(ys.std() + 0.0000001)
-            z_normalised = (zs - zs.mean())/(zs.std() + 0.0000001)
+            x_normalised = self._normalise(xs -1.0, 1.0)
+            y_normalised = self._normalise(ys -1.0, 1.0)
+            z_normalised = self._normalise(zs -1.0, 1.0)
 
             input[0] = x_normalised.copy() 
             input[1] = y_normalised.copy()
@@ -367,3 +373,20 @@ class DatasetMagnetometer2:
 
         
         return class_dict[raw_id]
+
+
+    def _normalise(self, x, min_value, max_value):
+        min_s = numpy.min(x)
+        max_s = numpy.max(x)
+
+        if max_s > min_s:
+            k = (max_value - min_value)/(max_s - min_s)
+            q = max_value - k*max_s
+        else:
+            k = 0.0
+            q = 0.0
+
+        return k*x + q
+
+    def _standardize(self, x):
+        return (x - x.mean())/(x.std() + 0.00000001)

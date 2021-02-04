@@ -42,15 +42,15 @@ some basic preprocessing was used
 - dropout     : 1%
 
 
-## net_4
+## net_0
 
 
-- pytorch model   [model.py](models/net_4/model.py)
-- pytorch weights [model.pt](models/net_4/trained)
-- embedded export float [export_float](models/net_4/export_float)
-- embedded export int8 [export_int8](models/net_4/export_int8)
+- pytorch model   [model.py](models/net_0/model.py)
+- pytorch weights [model.pt](models/net_0/trained)
+- embedded export float [export_float](models/net_0/export_float)
+- embedded export int8 [export_int8](models/net_0/export_int8)
 - for embedded run use **/embedded_inference/libs_embedded_neural_network**
-- best model result [best.log](models/net_4/result/best.log)
+- best model result [best.log](models/net_0/result/best.log)
 - **need multiply input by x64** for int8 quantized
 
 ### architecture
@@ -73,44 +73,44 @@ nn.Linear(6*32, 5)
 ### training progress
 note - training data are heavily noised, that's why training set have higher loss
 
-![](models/net_4/result/loss.png)
-![](models/net_4/result/accuracy.png)
+![](models/net_0/result/loss.png)
+![](models/net_0/result/accuracy.png)
 
 
 ### exported **float32** result
 
 ```
-accuracy   = 92.391 [%]
-hit_count  = 1360
-miss_count = 112
+accuracy   = 91.644 [%]
+hit_count  = 1349
+miss_count = 123
 
-class_accuracy = 97.791%   88.785%   52.5%   70.968%   81.356%   
+class_accuracy = 97.821%   82.103%   75.0%   85.714%   90.265%   
 
 
 confusion_matrix = 
-         841           4           0           0           0
-           8         380          16           3           0
-           2          18          21           5           5
-           5          19           2          22          16
-           3           6           0           0          96
+         808           4           0           0           0
+           4         367           5           1           0
+           0          39          42           0           5
+           5          28           8          30           5
+           8           8           0           3         102
 ```
 
 ### exported quantized **int8** result
 
 ```
-accuracy   = 87.976 [%]
-hit_count  = 1295
-miss_count = 177
+accuracy   = 78.601 [%]
+hit_count  = 1157
+miss_count = 315
 
-class_accuracy = 98.601%   73.286%   65.0%   51.282%   79.487%   
+class_accuracy = 98.71%   39.48%   31.111%   73.171%   90.435%   
 
 
 confusion_matrix = 
-         846           9           0           1           2
-           4         310          11           2           0
-           0          81          26          12           3
-           0          19           2          20          18
-           7           3           0           3          93
+         842          11           2           0           0
+           0         167           4           0           0
+           0          71          14           6           4
+           6         158          24          30           6
+           4          15           0           4         104
 
 ```
 
@@ -124,15 +124,15 @@ confusion_matrix =
 
 
 
-## net_5
+## net_1
 
-- pytorch model   [model.py](models/net_5/model.py)
-- pytorch weights [model.pt](models/net_5/trained)
-- embedded export float [export_float](models/net_5/export_float)
-- embedded export int8 [export_int8](models/net_5/export_int8)
+- pytorch model   [model.py](models/net_1/model.py)
+- pytorch weights [model.pt](models/net_1/trained)
+- embedded export float [export_float](models/net_1/export_float)
+- embedded export int8 [export_int8](models/net_1/export_int8)
 - for embedded run use **/embedded_inference/libs_embedded_neural_network**
-- best model result [best.log](models/net_5/result/best.log)
-- **need multiply input by x32** for int8 quantized
+- best model result [best.log](models/net_1/result/best.log)
+- **need multiply input by x64** for int8 quantized
 
 
 ### architecture
@@ -155,43 +155,43 @@ nn.Linear(6*64, 5)
 ### training progress
 note - training data are heavily noised, that's why training set have higher loss
 
-![](models/net_5/result/loss.png)
-![](models/net_5/result/accuracy.png)
+![](models/net_1/result/loss.png)
+![](models/net_1/result/accuracy.png)
 
 
 ### exported **float32** result
 
 ```
-accuracy   = 92.663 [%]
-hit_count  = 1364
-miss_count = 108
+accuracy   = 95.584 [%]
+hit_count  = 1407
+miss_count = 65
 
-class_accuracy = 97.33%   83.333%   84.615%   94.286%   93.284%   
+class_accuracy = 98.817%   88.107%   87.273%   97.778%   97.5%   
 
 
 confusion_matrix = 
-         802           2           0           0           0
-           6         360           6           0           0
-           0          40          44           1           3
-           4          17           1          33           5
-          11          12           0           0         125
+         835           3           0           0           0
+           1         363           4           0           0
+           1          29          48           0           1
+           1          10           2          44           1
+           6           6           0           0         117
 ```
 
 ### exported quantized **int8** result
 
 ```
-accuracy   = 84.103 [%]
-hit_count  = 1238
-miss_count = 234
+accuracy   = 88.723 [%]
+hit_count  = 1306
+miss_count = 166
 
-class_accuracy = 97.573%   62.441%   65.517%   58.065%   81.159%   
+class_accuracy = 98.307%   84.163%   2.041%   8.333%   95.122%   
 
 
 confusion_matrix = 
-         804           3           0           0           2
-           1         266           4           2           0
-           9          58          38           4           2
-           0          65          13          18          21
-           9          33           2           6         112
+         813           9           0           1           1
+           1         372          26           8           3
+           0           0           1           0           0
+           3          13          13           3           1
+           9          47           8          23         117
 ```
 
