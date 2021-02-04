@@ -247,20 +247,20 @@ class DatasetMagnetometer2:
             x_noised, y_noised, z_noised = self._augmentation_rotation(x_noised, y_noised, z_noised)
  
             #normalise
-            mean = numpy.mean([xs, ys, zx])
-            std  = numpy.std([xs, ys, zx])
-            
-            x_normalised = (xs - mean)/std
-            y_normalised = (ys - mean)/std
-            z_normalised = (zs - mean)/std
+            mean = numpy.mean([x_noised, y_noised, z_noised])
+            std  = numpy.std([x_noised, y_noised, z_noised])
+
+            x_normalised = (x_noised - mean)/std
+            y_normalised = (y_noised - mean)/std
+            z_normalised = (z_noised - mean)/std
 
             input[0] = x_normalised.copy()
             input[1] = y_normalised.copy()
             input[2] = z_normalised.copy()
         else:
             #normalise
-            mean = numpy.mean([xs, ys, zx])
-            std  = numpy.std([xs, ys, zx])
+            mean = numpy.mean([xs, ys, zs])
+            std  = numpy.std([xs, ys, zs])
 
             x_normalised = (xs - mean)/std
             y_normalised = (ys - mean)/std
