@@ -58,7 +58,6 @@ class DatasetMagnetometer2:
         print("real testing_count  = ", self.testing_idx)
         '''
 
-        '''
         for i in range(len(self.training_x)):
             mean = numpy.mean(self.training_x[i])
             std  = numpy.std(self.training_x[i])
@@ -70,8 +69,7 @@ class DatasetMagnetometer2:
             std  = numpy.std(self.testing_x[i])
 
             self.testing_x[i] = (self.testing_x[i] - mean)/std
-        '''
-
+        
         self.class_balancer = ClassBalancer(self.training_y, self.classes_count)
 
         print("\n\n\n\n")
@@ -84,11 +82,6 @@ class DatasetMagnetometer2:
         print("training_y shape ", self.training_y.shape)
         print("testing_x shape  ", self.testing_x.shape) 
         print("testing_y shape  ", self.testing_y.shape)
-        print("training_mean =  ", self.training_x.mean())
-        print("training_std =   ", self.training_x.std())
-        print("testing_mean =   ", self.testing_x.mean())
-        print("testing_std  =   ", self.testing_x.std())
-        
         self.class_stats.print_info()
         print("\n")
 
@@ -154,6 +147,15 @@ class DatasetMagnetometer2:
         z = numpy.transpose(data)[8]
 
     
+        #normalise
+        x_filtered = (x  - numpy.mean(x))/numpy.std(x)
+        y_filtered = (y  - numpy.mean(y))/numpy.std(y)
+        z_filtered = (z  - numpy.mean(z))/numpy.std(z) 
+
+        #x_filtered = x - numpy.roll(x, 1)
+        #y_filtered = y - numpy.roll(y, 1)
+        #z_filtered = z - numpy.roll(z, 1)
+
         for i in range(len(annotation_data)-2):
             if self._is_valid(annotation_data, i+1):
 
@@ -229,20 +231,10 @@ class DatasetMagnetometer2:
 
         input = numpy.zeros((self.channels, self.width))
 
-        #select sequence
-        xs = x[start:end]
-        ys = y[start:end]
-        zs = z[start:end]
-
-        #normalise
-        xs = (xs - xs.mean())/xs.std()
-        ys = (ys - ys.mean())/ys.std()
-        zs = (zs - zs.mean())/zs.std()
-
         #process augmentation if necessary
         if augmentation:
             #axis rotation
-            x_rot, y_rot, z_rot = self._augmentation_rotation(xs, ys, zs)
+            x_rot, y_rot, z_rot = self._augmentation_rotation(x[start:end], y[start:end], z[start:end])
  
             #axis noise
             x_noised = self._augmentation_noise(x_rot)
@@ -256,9 +248,9 @@ class DatasetMagnetometer2:
             input[1] = y_noised.copy()
             input[2] = z_noised.copy()
         else:
-            input[0] = xs.copy()
-            input[1] = ys.copy()
-            input[2] = zs.copy()
+            input[0] = x[start:end].copy()
+            input[1] = y[start:end].copy()
+            input[2] = z[start:end].copy()
 
         return input
 

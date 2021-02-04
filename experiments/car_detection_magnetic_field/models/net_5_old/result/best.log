@@ -1,0 +1,47 @@
+best model
+epoch = 45
+
+TRAINING result
+
+loss_mean = 0.05990421
+loss_std  = 0.0060833087
+
+
+accuracy   = 82.566 [%]
+hit_count  = 770444
+miss_count = 162676
+
+class_accuracy = 97.833%   79.353%   73.188%   77.784%   84.689%   
+
+
+confusion_matrix = 
+      182169        3439         938        1117        1201
+        1358      147703       24382       10492        3230
+         717       20600      136214       16121        7874
+         858        9973       15977      145846       16352
+        1101        4418        8604       13924      158512
+
+
+
+
+
+TESTING result
+
+loss_mean = 0.032664042
+loss_std  = 0.00648331
+
+
+accuracy   = 92.405 [%]
+hit_count  = 4258
+miss_count = 350
+
+class_accuracy = 99.001%   88.307%   60.526%   44.828%   77.519%   
+
+
+confusion_matrix = 
+        2577          15           0           0           0
+           4        1450          33           4           2
+           6         111          92          10           2
+           5          49          18          39          24
+          10          16           8          33         100
+
