@@ -197,7 +197,7 @@ class DatasetMagnetometer2:
 
                     #create samples with augmentation
                     for a in range(self.augmentations_count):
-                        input               = self._create_sample(idx, x_filtered, y_filtered, z_filtered, True)
+                        input               = self._create_sample(idx, x, y, z, True)
 
                         if self.training_idx < self.training_count:
                             self.training_x[self.training_idx] = input.copy().astype(numpy.float32)
