@@ -253,9 +253,9 @@ class DatasetMagnetometer2:
             z_normalised = self._standardize(z_noised)
             '''
 
-            x_normalised = self._normalise(x_noised -1.0, 1.0)
-            y_normalised = self._normalise(y_noised -1.0, 1.0)
-            z_normalised = self._normalise(z_noised -1.0, 1.0)
+            x_normalised = self._normalise(x_noised, -1.0, 1.0)
+            y_normalised = self._normalise(y_noised, -1.0, 1.0)
+            z_normalised = self._normalise(z_noised, -1.0, 1.0)
             
             input[0] = x_normalised.copy()
             input[1] = y_normalised.copy()
@@ -268,9 +268,9 @@ class DatasetMagnetometer2:
             z_normalised = self._standardize(zs)
             '''
 
-            x_normalised = self._normalise(xs -1.0, 1.0)
-            y_normalised = self._normalise(ys -1.0, 1.0)
-            z_normalised = self._normalise(zs -1.0, 1.0)
+            x_normalised = self._normalise(xs, -1.0, 1.0)
+            y_normalised = self._normalise(ys, -1.0, 1.0)
+            z_normalised = self._normalise(zs, -1.0, 1.0)
 
             input[0] = x_normalised.copy() 
             input[1] = y_normalised.copy()
