@@ -4,7 +4,7 @@ sys.path.insert(0,'../..')
 import libs
 import libs_dataset
 
-#import models.model_0.model as Model0
+import models.model_0.model as Model0
 import models.model_1.model as Model1
 
 
@@ -18,3 +18,7 @@ dataset = libs_dataset.DatasetCityscapes("/home/michal/dataset/cityscapes/", hei
 
 train = libs.Train(dataset, Model1, libs.MetricsSegmentation, batch_size = 4, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/model_1")
+
+
+train = libs.Train(dataset, Model0, libs.MetricsSegmentation, batch_size = 4, learning_rates = learning_rates)
+train.step_epochs(epoch_count, log_path = "./models/model_0")
