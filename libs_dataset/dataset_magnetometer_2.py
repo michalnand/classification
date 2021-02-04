@@ -250,9 +250,9 @@ class DatasetMagnetometer2:
             mean = numpy.mean([x_noised, y_noised, z_noised])
             std  = numpy.std([x_noised, y_noised, z_noised])
 
-            x_normalised = (x_noised - mean)/std
-            y_normalised = (y_noised - mean)/std
-            z_normalised = (z_noised - mean)/std
+            x_normalised = (x_noised - x_noised.mean())/x_noised.std()
+            y_normalised = (y_noised - y_noised.mean())/y_noised.std()
+            z_normalised = (z_noised - z_noised.mean())/z_noised.std()
 
             input[0] = x_normalised.copy()
             input[1] = y_normalised.copy()
@@ -262,9 +262,9 @@ class DatasetMagnetometer2:
             mean = numpy.mean([xs, ys, zs])
             std  = numpy.std([xs, ys, zs])
 
-            x_normalised = (xs - mean)/std
-            y_normalised = (ys - mean)/std
-            z_normalised = (zs - mean)/std
+            x_normalised = (xs - xs.mean())/xs.std()
+            y_normalised = (ys - ys.mean())/ys.std()
+            z_normalised = (zs - zs.mean())/zs.std()
 
             input[0] = x_normalised.copy()
             input[1] = y_normalised.copy()
