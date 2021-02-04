@@ -165,7 +165,7 @@ class DatasetMagnetometer2:
                 #determine testing or training 
                 if self._is_testing(self.data_idx):
                     #create input sample, no augmentation
-                    input               = self._create_sample(idx, x_filtered, y_filtered, z_filtered, False)
+                    input               = self._create_sample(idx, x, y, z, False)
 
                     #create one hot encoding target
                     target              = numpy.zeros(self.classes_count)
@@ -180,7 +180,7 @@ class DatasetMagnetometer2:
                     self.class_stats.add(target)
                 else:
                     #create input sample, no augmentation - keep one sample original
-                    input               = self._create_sample(idx, x_filtered, y_filtered, z_filtered, False)
+                    input               = self._create_sample(idx, x, y, z, False)
 
                     #create one hot encoding target
                     target              = numpy.zeros(self.classes_count)
@@ -235,14 +235,14 @@ class DatasetMagnetometer2:
         zs = z[start:end]
 
         #normalise
-        xs = (xs - xs.mean())/xs.std()
-        ys = (ys - ys.mean())/ys.std()
-        zs = (zs - zs.mean())/zs.std()
+        x_filtered = (xs - xs.mean())/xs.std()
+        y_filtered = (ys - ys.mean())/ys.std()
+        z_filtered = (zs - zs.mean())/zs.std()
 
         #process augmentation if necessary
         if augmentation:
             #axis rotation
-            x_rot, y_rot, z_rot = self._augmentation_rotation(xs, ys, zs)
+            x_rot, y_rot, z_rot = self._augmentation_rotation(x_filtered, y_filtered, z_filtered)
  
             #axis noise
             x_noised = self._augmentation_noise(x_rot)
@@ -256,9 +256,9 @@ class DatasetMagnetometer2:
             input[1] = y_noised.copy()
             input[2] = z_noised.copy()
         else:
-            input[0] = xs.copy()
-            input[1] = ys.copy()
-            input[2] = zs.copy()
+            input[0] = x_filtered.copy()
+            input[1] = y_filtered.copy()
+            input[2] = z_filtered.copy()
 
         return input
 

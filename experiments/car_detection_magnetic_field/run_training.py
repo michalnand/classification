@@ -37,6 +37,7 @@ dataset = libs_dataset.DatasetMagnetometer2(folders_list, width = 512, augmentat
 epoch_count = 50 
 learning_rates  = [0.001, 0.001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
 
+'''
 train = libs.Train(dataset, Model0, libs.MetricsClassification, batch_size = 128, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/net_0")
 
@@ -48,6 +49,7 @@ train.step_epochs(epoch_count, log_path = "./models/net_2")
 
 train = libs.Train(dataset, Model3, libs.MetricsClassification, batch_size = 128, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/net_3")
+'''
 
 train = libs.Train(dataset, Model4, libs.MetricsClassification, batch_size = 128, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/net_4")
