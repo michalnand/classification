@@ -24,15 +24,7 @@ class ModelInterfacePython
 
             for (unsigned int i = 0; i < in_count; i++)
             {
-                auto v = x[i]*128;
-
-                if (v > 127) 
-                    v = 127; 
-
-                if (v < -127)
-                    v = -127;
-                    
-                model.input_buffer()[i] = v; 
+                model.input_buffer()[i] = x[i]; 
             }
 
 

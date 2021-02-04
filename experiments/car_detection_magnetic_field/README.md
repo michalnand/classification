@@ -51,7 +51,16 @@ some basic preprocessing was used
 - embedded export int8 [export_int8](models/net_0/export_int8)
 - for embedded run use **/embedded_inference/libs_embedded_neural_network**
 - best model result [best.log](models/net_0/result/best.log)
-- **need multiply input by x64** for int8 quantized
+- notes for **embedded int8** usage : input is streched  (normalsied) in range <-127, 127>, axis-wise
+- notes for **embedded float** usage : input is streched (normalsied) in range <-1, 1>, axis-wise
+
+### normalisation for int8: 
+
+for each axis x, y, z compute :
+
+- k = (127 - (-127)) / (x.max() - x.min())
+- q = 127 - k*x.max()
+- x_normalsied = k*x + q
 
 ### architecture
 
@@ -80,37 +89,37 @@ note - training data are heavily noised, that's why training set have higher los
 ### exported **float32** result
 
 ```
-accuracy   = 91.644 [%]
-hit_count  = 1349
-miss_count = 123
+accuracy   = 91.168 [%]
+hit_count  = 1342
+miss_count = 130
 
-class_accuracy = 97.821%   82.103%   75.0%   85.714%   90.265%   
+class_accuracy = 98.274%   79.128%   90.698%   91.667%   84.173%   
 
 
 confusion_matrix = 
-         808           4           0           0           0
-           4         367           5           1           0
-           0          39          42           0           5
-           5          28           8          30           5
-           8           8           0           3         102
+         797           3           0           0           0
+           2         345           2           0           0
+           4          58          39           3           2
+           4          21           1          44          19
+           3           8           0           0         117
 ```
 
 ### exported quantized **int8** result
 
 ```
-accuracy   = 78.601 [%]
-hit_count  = 1157
-miss_count = 315
+accuracy   = 90.761 [%]
+hit_count  = 1336
+miss_count = 136
 
-class_accuracy = 98.71%   39.48%   31.111%   73.171%   90.435%   
+class_accuracy = 98.912%   78.125%   79.545%   95.556%   79.646%   
 
 
 confusion_matrix = 
-         842          11           2           0           0
-           0         167           4           0           0
-           0          71          14           6           4
-           6         158          24          30           6
-           4          15           0           4         104
+         818          11           2           0           3
+           0         350           4           0           0
+           2          60          35           1           4
+           3          21           2          43          15
+           3           5           0           0          90
 
 ```
 
@@ -132,7 +141,19 @@ confusion_matrix =
 - embedded export int8 [export_int8](models/net_1/export_int8)
 - for embedded run use **/embedded_inference/libs_embedded_neural_network**
 - best model result [best.log](models/net_1/result/best.log)
-- **need multiply input by x64** for int8 quantized
+- notes for **embedded int8** usage : input is streched  (normalsied) in range <-127, 127>, axis-wise
+- notes for **embedded float** usage : input is streched (normalsied) in range <-1, 1>, axis-wise
+
+### normalisation for int8: 
+
+for each axis x, y, z compute :
+
+- k = (127 - (-127)) / (x.max() - x.min())
+- q = 127 - k*x.max()
+- x_normalsied = k*x + q
+
+
+
 
 
 ### architecture
@@ -162,36 +183,36 @@ note - training data are heavily noised, that's why training set have higher los
 ### exported **float32** result
 
 ```
-accuracy   = 95.584 [%]
-hit_count  = 1407
-miss_count = 65
+accuracy   = 93.003 [%]
+hit_count  = 1369
+miss_count = 103
 
-class_accuracy = 98.817%   88.107%   87.273%   97.778%   97.5%   
+class_accuracy = 98.568%   79.724%   92.105%   96.429%   97.122%   
 
 
 confusion_matrix = 
-         835           3           0           0           0
-           1         363           4           0           0
-           1          29          48           0           1
-           1          10           2          44           1
-           6           6           0           0         117
+         826           8           0           0           0
+           3         346           2           0           0
+           1          39          35           0           3
+           5          31           0          27           0
+           2           9           0           0         135
 ```
 
 ### exported quantized **int8** result
 
 ```
-accuracy   = 88.723 [%]
-hit_count  = 1306
-miss_count = 166
+accuracy   = 93.478 [%]
+hit_count  = 1376
+miss_count = 96
 
-class_accuracy = 98.307%   84.163%   2.041%   8.333%   95.122%   
+class_accuracy = 97.663%   84.828%   86.207%   95.238%   95.349%   
 
 
 confusion_matrix = 
-         813           9           0           1           1
-           1         372          26           8           3
-           0           0           1           0           0
-           3          13          13           3           1
-           9          47           8          23         117
+         794           7           0           0           0
+           6         369           4           0           0
+           0          30          50           1           2
+           7          15           0          40           3
+           5          13           3           0         123
 ```
 
