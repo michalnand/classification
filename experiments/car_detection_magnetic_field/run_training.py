@@ -5,6 +5,8 @@ import libs
 import libs_dataset
 import models.net_0.model as Model0
 import models.net_1.model as Model1
+import models.net_2.model as Model2
+import models.net_3.model as Model3
 
 
 
@@ -34,10 +36,18 @@ dataset = libs_dataset.DatasetMagnetometer2(folders_list, width = 512, augmentat
 epoch_count = 50 
 learning_rates  = [0.001, 0.001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
 
+
+'''
 train = libs.Train(dataset, Model0, libs.MetricsClassification, batch_size = 128, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/net_0")
 
 train = libs.Train(dataset, Model1, libs.MetricsClassification, batch_size = 128, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/net_1")
+'''
 
 
+train = libs.Train(dataset, Model2, libs.MetricsClassification, batch_size = 128, learning_rates = learning_rates)
+train.step_epochs(epoch_count, log_path = "./models/net_2")
+
+train = libs.Train(dataset, Model3, libs.MetricsClassification, batch_size = 128, learning_rates = learning_rates)
+train.step_epochs(epoch_count, log_path = "./models/net_3")

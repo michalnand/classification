@@ -1,8 +1,7 @@
 import numpy
 import torch
-import matplotlib.pyplot as plt
-from .class_balancer import *
-from .class_stats import *
+from class_balancer import *
+from class_stats import *
 
 class DatasetMagnetometer2:
 
@@ -390,3 +389,30 @@ class DatasetMagnetometer2:
 
     def _standardize(self, x):
         return (x - x.mean())/(x.std() + 0.00000001)
+
+
+if __name__ == "__main__":
+    dataset_path = "/Users/michal/dataset/car_detection_2/"
+
+    folders_list = []
+ 
+    folders_list.append(dataset_path + "/Bytca")
+    folders_list.append(dataset_path + "/Kysuce")
+    folders_list.append(dataset_path + "/Martin_1")
+
+
+    dataset = DatasetMagnetometer2(folders_list, width = 512, augmentations_count = 50, testing_ratio = 20)
+
+    x_train, y_train = dataset.get_training_batch()
+    x_test,  y_test = dataset.get_testing_batch()
+
+    print(x_train[0].mean(dim=1), x_train[0].std(dim=1))
+    print(x_train[0].max(dim=1))
+    print(x_train[0].min(dim=1))
+    print("\n\n\n")
+
+
+    print(x_test[0].mean(dim=1), x_test.std(dim=1))
+    print(x_test[0].max(dim=1))
+    print(x_test[0].min(dim=1))
+    print("\n\n\n")
