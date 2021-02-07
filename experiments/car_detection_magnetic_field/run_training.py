@@ -46,6 +46,9 @@ train.step_epochs(epoch_count, log_path = "./models/net_1")
 '''
 
 
+
+learning_rates  = [0.001, 0.001, 0.0001, 0.0001, 0.0001]
+
 train = libs.Train(dataset, Model2, libs.MetricsClassification, batch_size = 128, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/net_2")
 
