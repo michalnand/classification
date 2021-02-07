@@ -51,14 +51,14 @@ class ImagesLoader:
         return result
 
     def _load_image(self, file_name):
-        image       = Image.open(file_name).convert('RGB')
-        image       = image.resize((self.width, self.height))
+        image       = Image.open(file_name).convert("RGB")
         
         if self.postprocessing is not None:
             image = self.postprocessing(image)
-        
-        image_np    = numpy.array(image)
+        else:
+            image       = image.resize((self.width, self.height))
 
+        image_np    = numpy.array(image) 
         if self.channel_first and len(image_np.shape) > 2:
             image_np    = numpy.moveaxis(image_np, 2, 0)
         

@@ -8,9 +8,12 @@ from PIL import Image, ImageEnhance
 
 class DatasetSegmentation:
 
-    def __init__(self, folders_training, folders_testing, classes_count, height = 256, width = 512):
+    def __init__(self, folders_training, folders_testing, classes_ids, height = 256, width = 512):
 
-        self.classes_count      = classes_count
+        self.classes_ids        = classes_ids
+        self.classes_count      = len(classes_ids)
+        self.height             = height
+        self.width              = width
 
         self.palette = []
         for i in range(self.classes_count):
@@ -143,26 +146,13 @@ class DatasetSegmentation:
 
 
     def _mask_postprocessing(self, image):
-
-        #enhancer = ImageEnhance.Contrast(image)
-        #image = enhancer.enhance(4.0)
-
-        '''
-        image.putpixel((0, 0), 0)
-        image.putpixel((0, 1), 17)
-        image.putpixel((0, 2), 117)
-        image.putpixel((0, 3), 217)
-        image.putpixel((0, 4), 255)
-        '''
-
-        for i in range(self.classes_count):
-            v = int(255*i/(self.classes_count-1))
-            image.putpixel((i*10, i*10), v)
+        image    = image.resize((self.width, self.height), Image.NEAREST)
+        image    = image.convert("L")
+        
+        for i in range(len(self.classes_ids)):
+            image.putpixel((10*i, 10*i), self.classes_ids[i])
 
         image = image.quantize(self.classes_count)
-
-        image_np = numpy.array(image)
-        print(numpy.unique(image_np))
 
         return image
        
@@ -173,9 +163,12 @@ if __name__ == "__main__":
     folders_training = []
     folders_training.append("/Users/michal/dataset/outdoor/lietavska_lucka/")
 
-    classes_count = 5
 
-    dataset = DatasetSegmentation(folders_training, folders_training, classes_count)
+    classes_ids     = [8, 12, 21, 22, 23]
+
+    classes_count   = len(classes_ids)
+
+    dataset = DatasetSegmentation(folders_training, folders_training, classes_ids)
 
     batch_size = 8
 
