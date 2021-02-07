@@ -3,10 +3,12 @@ from os import walk
 from PIL import Image
 
 class ImagesLoader:
-    def __init__(self, folders_path, height = 256, width = 256, channel_first = False, file_mask = None):
+    def __init__(self, folders_path, height = 256, width = 256, channel_first = False, file_mask = None, postprocessing = None):
         self.channels       = 3
         self.height         = height
         self.width          = width
+
+        self.postprocessing = postprocessing
 
         self.file_mask      = file_mask
         
@@ -51,9 +53,13 @@ class ImagesLoader:
     def _load_image(self, file_name):
         image       = Image.open(file_name).convert('RGB')
         image       = image.resize((self.width, self.height))
+        
+        if self.postprocessing is not None:
+            image = self.postprocessing(image)
+        
         image_np    = numpy.array(image)
 
-        if self.channel_first:
+        if self.channel_first and len(image_np.shape) > 2:
             image_np    = numpy.moveaxis(image_np, 2, 0)
         
         return image_np
