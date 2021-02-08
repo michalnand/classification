@@ -1,0 +1,36 @@
+set   autoscale                        # scale axes automatically
+unset log                              # remove any log-scaling
+unset label                            # remove any previous labels
+set xtic auto                         	# set xtics automatically
+set ytic auto                         # set ytics automatically
+set ztic auto
+
+
+set grid ytics lt 0.1 lw 0.1 lc rgb "#bbbbbb"
+set grid xtics lt 0.1 lw 0.1 lc rgb "#bbbbbb"
+
+set terminal png size 1000,800 enhanced font "Helvetica,20"
+
+set key left top
+
+# set style fill solid 1.0
+
+
+
+set ylabel "loss"
+
+set xlabel "epoch"
+set output 'loss.png'
+plot 'training.log' using 1:2 title 'training'  with lines lw 2 lc 'blue', \
+     'training.log' using 1:5 title 'testing'  with lines lw 2 lc 'red'
+
+
+
+set key right bottom
+
+set ylabel "accuracy [%]"
+
+set xlabel "epoch"
+set output 'accuracy.png'
+plot 'training.log' using 1:4 title 'training'  with lines lw 2 lc 'blue', \
+     'training.log' using 1:7 title 'testing'  with lines lw 2 lc 'red'

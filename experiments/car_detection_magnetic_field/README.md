@@ -216,3 +216,59 @@ confusion_matrix =
            5          13           3           0         123
 ```
 
+
+
+
+
+## net_2
+
+- pytorch model   [model.py](models/net_2/model.py)
+- pytorch weights [.pt](models/net_2/trained)
+- TODO embedded export float [export_float](models/net_2/export_float)
+- TODO embedded export int8 [export_int8](models/net_2/export_int8)
+- for embedded run use **/embedded_inference/libs_embedded_neural_network**
+- best model result [best.log](models/net_2/result/best.log)
+- notes for **embedded int8** usage : input is streched  (normalsied) in range <-127, 127>, axis-wise
+- notes for **embedded float** usage : input is streched (normalsied) in range <-1, 1>, axis-wise
+
+
+### architecture
+
+```python
+nn.LSTM(input_size=input_shape[0], hidden_size=64, batch_first=True)
+nn.Dropout(p=0.01)
+nn.Linear(64, output_shape[0])
+```
+
+### training progress
+note - training data are heavily noised, that's why training set have higher loss
+
+![](models/net_2/result/loss.png)
+![](models/net_2/result/accuracy.png)
+
+
+## net_3
+
+- pytorch model   [model.py](models/net_3/model.py)
+- pytorch weights [.pt](models/net_3/trained)
+- TODO embedded export float [export_float](models/net_3/export_float)
+- TODO embedded export int8 [export_int8](models/net_3/export_int8)
+- for embedded run use **/embedded_inference/libs_embedded_neural_network**
+- best model result [best.log](models/net_3/result/best.log)
+- notes for **embedded int8** usage : input is streched  (normalsied) in range <-127, 127>, axis-wise
+- notes for **embedded float** usage : input is streched (normalsied) in range <-1, 1>, axis-wise
+
+
+### architecture
+
+```python
+nn.LSTM(input_size=input_shape[0], hidden_size=128, batch_first=True)
+nn.Dropout(p=0.01)
+nn.Linear(128, output_shape[0])
+```
+
+### training progress
+note - training data are heavily noised, that's why training set have higher loss
+
+![](models/net_3/result/loss.png)
+![](models/net_3/result/accuracy.png)
