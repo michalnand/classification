@@ -272,3 +272,61 @@ note - training data are heavily noised, that's why training set have higher los
 
 ![](models/net_3/result/loss.png)
 ![](models/net_3/result/accuracy.png)
+
+
+
+
+
+
+## net_4
+
+- pytorch model   [model.py](models/net_4/model.py)
+- pytorch weights [.pt](models/net_4/trained)
+- TODO embedded export float [export_float](models/net_4/export_float)
+- TODO embedded export int8 [export_int8](models/net_4/export_int8)
+- for embedded run use **/embedded_inference/libs_embedded_neural_network**
+- best model result [best.log](models/net_4/result/best.log)
+- notes for **embedded int8** usage : input is streched  (normalsied) in range <-127, 127>, axis-wise
+- notes for **embedded float** usage : input is streched (normalsied) in range <-1, 1>, axis-wise
+
+
+### architecture
+
+```python
+nn.GRU(input_size=input_shape[0], hidden_size=64, batch_first=True)
+nn.Dropout(p=0.01)
+nn.Linear(64, output_shape[0])
+```
+
+### training progress
+note - training data are heavily noised, that's why training set have higher loss
+
+![](models/net_4/result/loss.png)
+![](models/net_4/result/accuracy.png)
+
+
+## net_4
+
+- pytorch model   [model.py](models/net_4/model.py)
+- pytorch weights [.pt](models/net_4/trained)
+- TODO embedded export float [export_float](models/net_4/export_float)
+- TODO embedded export int8 [export_int8](models/net_4/export_int8)
+- for embedded run use **/embedded_inference/libs_embedded_neural_network**
+- best model result [best.log](models/net_4/result/best.log)
+- notes for **embedded int8** usage : input is streched  (normalsied) in range <-127, 127>, axis-wise
+- notes for **embedded float** usage : input is streched (normalsied) in range <-1, 1>, axis-wise
+
+
+### architecture
+
+```python
+nn.GRU(input_size=input_shape[0], hidden_size=128, batch_first=True)
+nn.Dropout(p=0.01)
+nn.Linear(128, output_shape[0])
+```
+
+### training progress
+note - training data are heavily noised, that's why training set have higher loss
+
+![](models/net_4/result/loss.png)
+![](models/net_4/result/accuracy.png)

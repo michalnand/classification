@@ -459,27 +459,14 @@ def export_LSTM(layer, input_shape, layer_num, quantization_type):
 
 
 
-def export_LSTM(network_prefix, layer_num, quantization_type, input_shape, weights, bias, scale):        
+def export_GRU(network_prefix, layer_num, quantization_type, input_shape, weights, bias, scale):        
     layer_id = network_prefix + "_" + "layer_" + str(layer_num)
 
-    #extract LSTM layer weights
-    w_ii, w_if, w_ic, w_io = layer.weight_ih_l0.chunk(4, 0)
-    w_hi, w_hf, w_hc, w_ho = layer.weight_hh_l0.chunk(4, 0)
+    #extract GRU layer weights
 
-    b_ii, b_if, b_ic, b_io = layer.bias_ih_l0.chunk(4, 0)
-    b_hi, b_hf, b_hc, b_ho = layer.bias_hh_l0.chunk(4, 0)
-    
-    #compute output
-    #input  : x, hidden state h, cell state c
-    #output : new hidden state h, new cell state c
+    weights_hh, weights_ih      = weights
+    bias_hh, bias_ih            = bias
 
-    input       = sigmoid(w_ii*x + b_ii + w_hi*h + b_hi)
-    forget      = sigmoid(w_if*x + b_if + w_hf*h + b_hf)
-    candidate   = tanh(w_ic*x + b_ic + w_hc*h + b_hc)
-    output      = sigmoid(w_io*x + b_io + w_ho*h + b_ho)
-
-    c           = forget*c + input*candidate
-    h           = output*tanh(c)
 
     if quantization_type == "int8":
         io_data_type    = "int8_t"
@@ -487,8 +474,10 @@ def export_LSTM(network_prefix, layer_num, quantization_type, input_shape, weigh
         acc_data_type   = "int32_t"
         max_value       = 128-1
 
-        weights_quant   = numpy.round(weights, 0).astype(int)
-        bias_quant      = numpy.round(bias, 0).astype(int)
+        weights_hh_quant    = numpy.round(weights_hh, 0).astype(int)
+        weights_ih_quant    = numpy.round(weights_ih, 0).astype(int)
+        bias_hh_quant       = numpy.round(bias_hh, 0).astype(int)
+        bias_ih_quant       = numpy.round(bias_ih, 0).astype(int)
 
     elif quantization_type == "int16":
         io_data_type    = "int16_t"
@@ -496,8 +485,10 @@ def export_LSTM(network_prefix, layer_num, quantization_type, input_shape, weigh
         acc_data_type   = "int32_t"
         max_value       = 32768-1
 
-        weights_quant   = numpy.round(weights, 0).astype(int)
-        bias_quant      = numpy.round(bias, 0).astype(int)
+        weights_hh_quant    = numpy.round(weights_hh, 0).astype(int)
+        weights_ih_quant    = numpy.round(weights_ih, 0).astype(int)
+        bias_hh_quant       = numpy.round(bias_hh, 0).astype(int)
+        bias_ih_quant       = numpy.round(bias_ih, 0).astype(int)
 
     else:
         io_data_type    = "float"
@@ -505,30 +496,23 @@ def export_LSTM(network_prefix, layer_num, quantization_type, input_shape, weigh
         acc_data_type   = "float"
         max_value       = 0
 
-        weights_quant   = weights
-        bias_quant      = bias
+        weights_hh_quant    = weights_hh
+        weights_ih_quant    = weights_ih
+        bias_hh_quant       = bias_hh
+        bias_ih_quant       = bias_ih
 
 
     output_size     = weights.shape[0]
-    input_size      = weights.shape[1]
+    input_size      = weights_ih.shape[1]
 
     var_weights = layer_id + "_weights"
     var_bias    = layer_id + "_bias"
 
     code_network = ""
-
-    #flatten code
-    if len(input_shape) == 2:
-        code_network+= "\tChannelReorder<" + io_data_type + ", " + str(input_shape[0]) + ", " + "1, " + str(input_shape[1]) + ">(output_buffer(), input_buffer());\n"
-        code_network+= "\tswap_buffer();" + "\n\n"
-
-    if len(input_shape) == 3:
-        code_network+= "\tChannelReorder<" + io_data_type + ", " + str(input_shape[0]) + ", " + str(input_shape[1]) + ", " + str(input_shape[1]) + ">(output_buffer(), input_buffer());\n"
-        code_network+= "\tswap_buffer();" + "\n\n"
-    
+   
     #layer call code
 
-    code_network+= "\tLinear<" + str(input_size) + ", " + str(output_size) + ", " 
+    code_network+= "\tGRU<" + str(input_size) + ", " + str(output_size) + ", " 
     code_network+= io_data_type + ", " + w_data_type + ", " + acc_data_type + ", "
     code_network+= str(max_value)  + ", " + str(scale)
     code_network+= ">"
@@ -558,7 +542,7 @@ def export_LSTM(network_prefix, layer_num, quantization_type, input_shape, weigh
     code = (code_network, code_weight)
     macs = output_size*input_size + output_size
 
-    print("export_Linear :")
+    print("export_GRU :")
     print("output_size    ", output_size)
     print("input_size     ", input_size)
     print("macs           ", macs)
