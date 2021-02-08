@@ -7,6 +7,8 @@ import models.net_0.model as Model0
 import models.net_1.model as Model1
 import models.net_2.model as Model2
 import models.net_3.model as Model3
+import models.net_4.model as Model4
+import models.net_5.model as Model5
 
 
 
@@ -43,9 +45,6 @@ train.step_epochs(epoch_count, log_path = "./models/net_0")
 
 train = libs.Train(dataset, Model1, libs.MetricsClassification, batch_size = 128, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/net_1")
-'''
-
-
 
 learning_rates  = [0.001, 0.001, 0.0001, 0.0001, 0.0001]
 
@@ -54,3 +53,14 @@ train.step_epochs(epoch_count, log_path = "./models/net_2")
 
 train = libs.Train(dataset, Model3, libs.MetricsClassification, batch_size = 128, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/net_3")
+
+'''
+
+
+learning_rates  = [0.001, 0.001, 0.0001, 0.0001, 0.0001]
+
+train = libs.Train(dataset, Model4, libs.MetricsClassification, batch_size = 128, learning_rates = learning_rates)
+train.step_epochs(epoch_count, log_path = "./models/net_4")
+
+train = libs.Train(dataset, Model5, libs.MetricsClassification, batch_size = 128, learning_rates = learning_rates)
+train.step_epochs(epoch_count, log_path = "./models/net_5")
