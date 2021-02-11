@@ -5,12 +5,11 @@ from PIL import Image
 from segmentation_inference import *
 
 
-#si = SegmentationInference(Model, "models/model_0/trained/")
-si = SegmentationInference(Model, None, 5)
+si = SegmentationInference(Model, "models/model_0/trained/", 5)
 
 
 def compute(si, input_file_name_prefix):
-    image       = Image.open(input_file_name_prefix + ".png")
+    image       = Image.open(input_file_name_prefix + ".jpg")
     image       = image.resize((640, 480))
     image_np    = numpy.array(image)
 
@@ -24,6 +23,6 @@ def compute(si, input_file_name_prefix):
     image.save(input_file_name_prefix + "_mask.jpg")
     
 
-compute(si, "images/01")
-compute(si, "images/02")
-compute(si, "images/03")
+compute(si, "images/0")
+compute(si, "images/1")
+compute(si, "images/2")

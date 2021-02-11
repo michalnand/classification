@@ -42,6 +42,7 @@ class SegmentationInference:
 
         return prediction_np
 
+    '''
     def _make_colors(self, count):
 
         hsv_tuples = []
@@ -60,5 +61,21 @@ class SegmentationInference:
 
      
         return numpy.array(result)
+    '''
 
 
+    def _make_colors(self, count):
+
+        result = []
+        for i in range(count):  
+
+            phi = 2.0*numpy.pi*i/count
+
+            r = (numpy.cos(phi + 0.0*2.0*numpy.pi/3.0) + 1.0)/2.0
+            g = (numpy.cos(phi + 1.0*2.0*numpy.pi/3.0) + 1.0)/2.0
+            b = (numpy.cos(phi + 2.0*2.0*numpy.pi/3.0) + 1.0)/2.0
+
+            result.append([r, g, b])
+     
+        return numpy.array(result)
+        

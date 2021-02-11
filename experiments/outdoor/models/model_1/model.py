@@ -11,26 +11,26 @@ class Create(torch.nn.Module):
         self.layers_encoder_0 = [ 
                         self.conv_bn(input_shape[0], 32, 2),
 
-                        self.conv_dw(32, 64, 1),
-                        self.conv_dw(64, 128, 2),
+                        self.conv_bn(32, 64, 1),
+                        self.conv_bn(64, 128, 2),
 
-                        self.conv_dw(128, 128, 1),
-                        self.conv_dw(128, 256, 2)
+                        self.conv_bn(128, 128, 1),
+                        self.conv_bn(128, 256, 2)
         ]
 
 
         self.layers_encoder_1 = [
-                        self.conv_dw(256, 256, 1),
-                        self.conv_dw(256, 256, 2),
+                        self.conv_bn(256, 256, 1),
+                        self.conv_bn(256, 256, 2),
 
-                        self.conv_dw(256, 256, 1),
-                        self.conv_dw(256, 256, 2)
+                        self.conv_bn(256, 256, 1),
+                        self.conv_bn(256, 256, 2)
         ]
 
         self.layers_decoder = [
-            self.conv_dw(256 + 256, 256, 1),
-            self.conv_dw(256, 128, 1),
-            self.conv_dw(128, 128, 1),
+            self.conv_bn(256 + 256, 256, 1),
+            self.conv_bn(256, 128, 1),
+            self.conv_bn(128, 128, 1),
 
             nn.Conv2d(128, output_shape[0], kernel_size = 1, stride = 1, padding = 0),
             nn.Upsample(scale_factor=8, mode="bilinear", align_corners=False)
@@ -91,18 +91,6 @@ class Create(torch.nn.Module):
     def conv_bn(self, inputs, outputs, stride):
         return nn.Sequential(
                 nn.Conv2d(inputs, outputs, kernel_size = 3, stride = stride, padding = 1),
-                nn.BatchNorm2d(outputs),
-                nn.ReLU(inplace=True))
-
-    def conv_dw(self, inputs, outputs, stride):
-        return nn.Sequential(
-                # dw
-                nn.Conv2d(inputs, inputs, kernel_size = 3, stride = stride, padding = 1, groups=inputs),
-                nn.BatchNorm2d(inputs),
-                nn.ReLU(inplace=True),
-
-                # pw
-                nn.Conv2d(inputs, outputs, kernel_size = 1, stride = 1, padding = 0),
                 nn.BatchNorm2d(outputs),
                 nn.ReLU(inplace=True))
     
