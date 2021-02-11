@@ -9,3 +9,4 @@ from .dataset_line_follower     import *
 
 from .dataset_mnist             import *
 from .dataset_cityscapes        import *
+from .dataset_segmentaion       import *
