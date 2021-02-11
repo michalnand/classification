@@ -2,13 +2,13 @@ import numpy
 import torch 
 import os
 
-from .images_loader import *
+from images_loader import *
 
 from PIL import Image, ImageEnhance
 
 class DatasetSegmentation:
 
-    def __init__(self, folders_training, folders_testing, classes_ids, height = 256, width = 512):
+    def __init__(self, folders_training, folders_testing, classes_ids, height = 480, width = 640):
 
         self.classes_ids        = classes_ids
         self.classes_count      = len(classes_ids)
@@ -80,12 +80,12 @@ class DatasetSegmentation:
         result_y = torch.zeros((batch_size, self.classes_count, self.height, self.width)).float()
 
         for i in range(batch_size): 
-            city_idx  = numpy.random.randint(len(images))
-            image_idx = numpy.random.randint(images[city_idx].count)
+            group_idx = numpy.random.randint(len(images))
+            image_idx = numpy.random.randint(images[group_idx].count)
 
-            image_np    = numpy.array(images[city_idx].images[image_idx])/256.0
+            image_np    = numpy.array(images[group_idx].images[image_idx])/256.0
 
-            mask_np     = numpy.array(masks[city_idx].images[image_idx]).mean(axis=0).astype(int)
+            mask_np     = numpy.array(masks[group_idx].images[image_idx]).mean(axis=0).astype(int)
             
             if augmentation:
                 image_np  = self._augmentation_noise(image_np)
@@ -101,7 +101,7 @@ class DatasetSegmentation:
 
 
     def _augmentation_noise(self, image_np):
-        brightness = self._rnd(-0.5, 0.5)
+        brightness = self._rnd(-0.25, 0.25)
         contrast   = self._rnd(0.5, 1.5)
         noise      = 0.05*(2.0*numpy.random.rand(self.channels, self.height, self.width) - 1.0)
 
@@ -157,18 +157,22 @@ if __name__ == "__main__":
 
     folders_training = []
     folders_training.append("/Users/michal/dataset/outdoor/lietavska_lucka/")
+    folders_training.append("/Users/michal/dataset/outdoor/istrobotics_0/")
+    folders_training.append("/Users/michal/dataset/outdoor/istrobotics_1/")
 
 
     classes_ids     = [8, 12, 21, 22, 23]
 
-    classes_count   = len(classes_ids)
-
+    
     dataset = DatasetSegmentation(folders_training, folders_training, classes_ids)
 
-    batch_size = 8
+    batch_size = 4
 
     x, y = dataset.get_testing_batch(batch_size)
     x, y = dataset.get_training_batch(batch_size)
+
+
+    classes_count   = len(classes_ids)
     
     for i in range(batch_size):
 
