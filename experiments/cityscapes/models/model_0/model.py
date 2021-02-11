@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import numpy
 
-
 class ResidualBlock(torch.nn.Module):
     def __init__(self, channels, weight_init_gain = 1.0):
         super(ResidualBlock, self).__init__()

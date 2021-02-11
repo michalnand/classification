@@ -4,19 +4,22 @@ import colorsys
 
 class SegmentationInference:
     def __init__(self, Model, model_pretrained_path):
-        self.classes_count  = 37
-
         channels            = 3
         height              = 512
         width               = 1024
-
-        self.colors     = self._make_colors(self.classes_count)
 
         self.model      = Model.Create((channels, height, width), (self.classes_count, height, width))
 
         if model_pretrained_path is not None:
             self.model.load(model_pretrained_path)
         self.model.eval()
+
+        image_t         = torch.zeros((channels, height, width)).unsqueeze(0).to(self.model.device).float()
+        prediction_t    = self.model(image_t)
+
+        self.classes_count = prediction_t.shape[1]
+
+        self.colors     = self._make_colors(self.classes_count)
 
 
     def process(self, image_np, channel_first = False, alpha = 0.5):

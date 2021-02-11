@@ -15,11 +15,6 @@ class DatasetSegmentation:
         self.height             = height
         self.width              = width
 
-        self.palette = []
-        for i in range(self.classes_count):
-            v = i
-            self.palette.extend((v, v, v))
-
         self.training_images    = []
         self.training_masks     = []
         self.training_count     = 0
@@ -186,7 +181,7 @@ if __name__ == "__main__":
         tmp         = numpy.zeros((mask_np.shape[1], mask_np.shape[2]))
 
         for ch in range(classes_count):
-            tmp+= (ch/classes_count)*mask_np[ch]
+            tmp+= (ch/(classes_count-1))*mask_np[ch]
 
         mask_np     = (255.0*tmp).astype(numpy.uint8)
 
