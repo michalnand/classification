@@ -73,6 +73,7 @@ class Train:
 
         metrics            = self.Metrics(self.dataset.output_shape)
 
+        self.model.train()
         for batch_id in range(batch_count):
             training_x, training_y = self.dataset.get_training_batch(self.batch_size)
 
@@ -92,6 +93,8 @@ class Train:
         batch_count = (self.dataset.get_testing_count()+self.batch_size) // self.batch_size
 
         testing_loss = []
+
+        self.model.eval()
         for batch_id in range(batch_count):
             testing_x, testing_y = self.dataset.get_testing_batch(self.batch_size)
 
