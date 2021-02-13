@@ -7,25 +7,43 @@
 #include "dot_microkernel.h"
 
 
-#include <math.h>
-
 
 template<class DType>
-float _sigmoid(float x) 
+float _tanh(float value) 
 {
-    if (typeid(DType) == typeid(float)) 
-        return 1.0/(1.0 + exp(-x));  
-    else  
-        return 127.0/(1.0 + exp(-x/127.0));  
+    if(value < -3)
+        return -1;
+    else if(value > 3)
+        return 1;
+    else
+        return value * (27 + value*value)/(27+ 9*value*value);
 }
 
+
 template<class DType>
-float _tanh(float x) 
+float _sigmoid(float value) 
 {
-    if (typeid(DType) == typeid(float)) 
-        return tanh(x);    
+    float x = value;
+    if (x < 0)
+        x = -x;
+
+    float x2 = x*x;
+    float e = 1.0f + x + x2*0.555f + x2*x2*0.143f;
+
+    return 1.0f / (1.0f + (value > 0 ? 1.0f / e : e));
+}
+
+template<class DType, int scale>
+float _quantize(float value, float bias)
+{
+    float result;
+
+    if (typeid(DType) != typeid(float))
+        result  = (value*scale)/(128*128*1024.0) + (bias*scale)/(128*1024.0);
     else
-        return 127.0*tanh(x/127.0);    
+        result  = value + bias;
+ 
+    return result;
 }
 
 
@@ -49,57 +67,37 @@ void GRUStep(float *hidden_buffer_next, float *hidden_buffer, IO_t *input_buffer
     for (unsigned int i = 0; i < hidden_size; i++)
     {
         if (typeid(IO_t) == typeid(float))
-        { 
             hidden_buffer_quant[i] = hidden_buffer[i];
-        }
         else
-        {
             hidden_buffer_quant[i] = (IO_t)(hidden_buffer[i]*127.0);
-        }
     } 
 
     for (unsigned int i = 0; i < hidden_size; i++)
     {       
         float ra  = dot_microkernel<hidden_size, WEIGHT_t, IO_t, ACC_t>(whr + i*hidden_size, hidden_buffer_quant);
-        if (typeid(IO_t) != typeid(float))
-            ra  = (ra*hr_scale)/(128*128*1024.0) + (bhr[i]*hr_scale)/(128*1024.0);
-        else
-            ra  = ra + bhr[i];
-
+        ra = _quantize<IO_t, hr_scale>(ra, bhr[i]);
+        
         float rb  = dot_microkernel<in_features, WEIGHT_t, IO_t, ACC_t>(wir + i*in_features, input_buffer);
-        if (typeid(IO_t) != typeid(float))
-            rb  = (rb*hr_scale)/(128*128*1024.0) + (bir[i]*hr_scale)/(128*1024.0);
-        else
-            rb  = rb + bir[i];
-
+        rb = _quantize<IO_t, hr_scale>(rb, bir[i]);
+        
         float r = _sigmoid<float>(ra + rb);
 
-        float za  = dot_microkernel<hidden_size, WEIGHT_t, IO_t, ACC_t>(whz + i*hidden_size, hidden_buffer_quant);
-        if (typeid(IO_t) != typeid(float))
-            za  = (za*hz_scale)/(128*128*1024.0) + (bhz[i]*hz_scale)/(128*1024.0);
-        else
-            za  = za + bhz[i];
 
+        float za  = dot_microkernel<hidden_size, WEIGHT_t, IO_t, ACC_t>(whz + i*hidden_size, hidden_buffer_quant);
+        za = _quantize<IO_t, hz_scale>(za, bhz[i]);
+        
         float zb  = dot_microkernel<in_features, WEIGHT_t, IO_t, ACC_t>(wiz + i*in_features, input_buffer);
-        if (typeid(IO_t) != typeid(float))
-            zb  = (zb*iz_scale)/(128*128*1024.0) + (biz[i]*iz_scale)/(128*1024.0);
-        else
-            zb  = zb + biz[i];
+        zb = _quantize<IO_t, iz_scale>(zb, biz[i]);
 
         float z = _sigmoid<float>(za + zb);
  
+
         float na  = dot_microkernel<hidden_size, WEIGHT_t, IO_t, ACC_t>(whn + i*hidden_size, hidden_buffer_quant);
-        if (typeid(IO_t) != typeid(float))
-            na  = (na*hn_scale)/(128*128*1024.0) + (bhn[i]*hn_scale)/(128*1024.0);
-        else
-            na  = na + bhn[i];
+        na = _quantize<IO_t, hn_scale>(na, bhn[i]);
 
         float nb  = dot_microkernel<in_features, WEIGHT_t, IO_t, ACC_t>(win + i*in_features, input_buffer);
-        if (typeid(IO_t) != typeid(float))
-            nb  = (nb*in_scale)/(128*128*1024.0) + (bin[i]*in_scale)/(128*1024.0);
-        else 
-            nb  = nb + bin[i];
-
+        nb = _quantize<IO_t, in_scale>(nb, bin[i]);
+        
         float n = _tanh<float>(r*na + nb); 
 
         hidden_buffer_next[i] = (1.0 - z)*n + z*hidden_buffer[i];
@@ -151,13 +149,9 @@ void GRU(   IO_t *output_buffer, IO_t *input_buffer, unsigned int sequence_lengt
     for (unsigned int i = 0; i < hidden_size; i++)
     {
         if (typeid(IO_t) == typeid(float))
-        {
             output_buffer[i] = hidden_buffer[i];
-        }
         else
-        {
             output_buffer[i] = (IO_t)(hidden_buffer[i]*127.0);
-        }
     }
 }
 
