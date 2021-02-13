@@ -7,6 +7,8 @@
 #include "Conv1d.h"
 #include "Conv2d.h"
 
+#include "GRU.h"
+
 #include "ReLU.h"
 
 #include "GlobalAveragePooling1d.h"

@@ -289,6 +289,11 @@ note - training data are heavily noised, that's why training set have higher los
 - notes for **embedded int8** usage : input is streched  (normalsied) in range <-127, 127>, axis-wise
 - notes for **embedded float** usage : input is streched (normalsied) in range <-1, 1>, axis-wise
 
+**quantization note** 
+  - matmul are performed in int8, accumulation into int32
+  - hidden state is stored as float32
+
+
 
 ### architecture
 
@@ -305,17 +310,62 @@ note - training data are heavily noised, that's why training set have higher los
 ![](models/net_4/result/accuracy.png)
 
 
+### exported **float32** result
+
+```
+testing result
+accuracy   = 97.011 [%]
+hit_count  = 1428
+miss_count = 44
+
+class_accuracy = 98.625%   91.768%   97.674%   96.429%   99.167%   
+
+
+confusion_matrix = 
+         861           2           0           0           0
+           7         379           0           0           0
+           0          18          42           0           0
+           1          10           0          27           0
+           3           3           0           0         119
+```
+
+### exported quantized **int8** result
+
+```
+testing result
+accuracy   = 89.538 [%]
+hit_count  = 1318
+miss_count = 154
+
+class_accuracy = 95.689%   81.818%   69.231%   75.61%   82.707%   
+
+
+confusion_matrix = 
+         799           2           0           0           0
+          30         351           7           2           3
+           0          55          27           5           1
+           3          18           4          31          18
+           2           2           0           2         110
+```
+
+
+
+
+
 ## net_5
 
 - pytorch model   [model.py](models/net_5/model.py)
 - pytorch weights [.pt](models/net_5/trained)
-- TODO embedded export float [export_float](models/net_5/export_float)
-- TODO embedded export int8 [export_int8](models/net_5/export_int8)
+- embedded export float [export_float](models/net_5/export_float)
+- embedded export int8 [export_int8](models/net_5/export_int8)
 - for embedded run use **/embedded_inference/libs_embedded_neural_network**
 - best model result [best.log](models/net_5/result/best.log)
 - notes for **embedded int8** usage : input is streched  (normalsied) in range <-127, 127>, axis-wise
 - notes for **embedded float** usage : input is streched (normalsied) in range <-1, 1>, axis-wise
 
+**quantization note** 
+  - matmul are performed in int8, accumulation into int32
+  - hidden state is stored as float32
 
 ### architecture
 
@@ -330,3 +380,43 @@ note - training data are heavily noised, that's why training set have higher los
 
 ![](models/net_5/result/loss.png)
 ![](models/net_5/result/accuracy.png)
+
+
+
+### exported **float32** result
+
+```
+testing result
+accuracy   = 97.396 [%]
+hit_count  = 374
+miss_count = 10
+
+class_accuracy = 98.047%   93.458%   90.909%   83.333%   88.889%   
+
+
+confusion_matrix = 
+         251           0           0           0           0
+           3         100           0           0           0
+           1           6          10           0           0
+           0           0           0           5           0
+           0           0           0           0           8
+```
+
+### exported quantized **int8** result
+
+```
+testing result
+accuracy   = 99.049 [%]
+hit_count  = 1458
+miss_count = 14
+
+class_accuracy = 99.095%   98.091%   97.436%   97.059%   99.01%   
+
+
+confusion_matrix = 
+         876           2           0           0           0
+           5         411           0           0           0
+           0           3          38           0           0
+           2           0           0          33           0
+           0           2           0           0         100
+```

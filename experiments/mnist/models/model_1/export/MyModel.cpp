@@ -106,7 +106,7 @@ MyModel::MyModel()
 
 void MyModel::forward()
 {
-	Conv2d<28, 28, 1, 64, 8, 1, int8_t, int8_t, int32_t, 127, 0, 171>(
+	Conv2d<28, 28, 1, 64, 8, 1, 0, int8_t, int8_t, int32_t, 127, 171>(
 		output_buffer(), input_buffer(), 
 		MyModel_layer_0_weights, MyModel_layer_0_bias);
 	swap_buffer();
@@ -117,7 +117,7 @@ void MyModel::forward()
 	ChannelReorder<int8_t, 64, 21, 21>(output_buffer(), input_buffer());
 	swap_buffer();
 
-	Linear<28224, 10, int8_t, int8_t, int32_t, 127, 0, 153>(
+	Linear<28224, 10, int8_t, int8_t, int32_t, 127, 153>(
 		output_buffer(), input_buffer(), 
 		MyModel_layer_3_weights, MyModel_layer_3_bias);
 	swap_buffer();

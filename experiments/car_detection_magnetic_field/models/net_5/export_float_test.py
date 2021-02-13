@@ -15,9 +15,9 @@ dataset_path = "/Users/michal/dataset/car_detection_2/"
 folders_list = []
 
 folders_list.append(dataset_path + "/Bytca")
-folders_list.append(dataset_path + "/Kysuce")
-folders_list.append(dataset_path + "/Martin_1")
-folders_list.append(dataset_path + "/Martin_2")
+#folders_list.append(dataset_path + "/Kysuce")
+#folders_list.append(dataset_path + "/Martin_1")
+#folders_list.append(dataset_path + "/Martin_2")
 
 
 

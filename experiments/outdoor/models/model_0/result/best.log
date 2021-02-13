@@ -1,0 +1,22 @@
+best model
+epoch = 850
+
+TRAINING result
+
+loss_mean = 0.07340842
+loss_std  = 0.01361932
+iou_mean = 0.7443383473015622
+iou_std  = 0.053477250394001356
+class_iou  = 
+     0.45708         0.0     0.47819     0.33704     0.75832
+
+
+
+TESTING result
+
+loss_mean = 0.05441141
+loss_std  = 0.011227288
+iou_mean = 0.8210795209848352
+iou_std  = 0.04521158732339198
+class_iou  = 
+     0.42854         0.0     0.56963     0.44911     0.84532

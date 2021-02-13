@@ -3,12 +3,12 @@ import cv2
 import time
 
 from segmentation_inference import *
-import models.model_0.model as Model
+import models.model_1.model as Model
 
 #cap = cv2.VideoCapture(0)
 cap = cv2.VideoCapture("/Users/michal/Movies/innsbruck.mp4")
 
-si = SegmentationInference(Model, "models/model_0/trained/", 5)
+si = SegmentationInference(Model, "models/model_1/trained/", 5)
 
 writer = None
 #fourcc = cv2.VideoWriter_fourcc(*'XVID') 

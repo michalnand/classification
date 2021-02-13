@@ -18,11 +18,13 @@ class SegmentationInference:
         self.colors     = self._make_colors(classes_count)
 
 
-    def process(self, image_np, channel_first = False, alpha = 0.5):
+    def process(self, image_np, channel_first = False, alpha = 0.35):
         
         image_np        = image_np/256.0
 
         prediction_np   = self._predict(image_np, channel_first)
+
+        #prediction_np   = (prediction_np == 4).astype(int)
 
         mask            = self.colors[prediction_np, :]
         result          = (1.0 - alpha)*image_np + alpha*mask
@@ -42,28 +44,20 @@ class SegmentationInference:
 
         return prediction_np
 
-    '''
+ 
+
     def _make_colors(self, count):
 
-        hsv_tuples = []
-        for i in range(count):
-            j   = i//4
-            
-            h = j*1.0/(count//4)
-            s = (i%4)/4.0 + 0.25
-            v = 0.5 
-            
-            hsv_tuples.append([h, s, v])
-
         result = []
-        for i in range(count):
-            result.append(colorsys.hsv_to_rgb(hsv_tuples[i][0], hsv_tuples[i][1], hsv_tuples[i][2]))
+        result.append([0, 0, 1])
+        result.append([1, 1, 0])
+        result.append([0, 1, 0])
+        result.append([0, 1, 1])
+        result.append([1, 0, 0])
 
-     
         return numpy.array(result)
+
     '''
-
-
     def _make_colors(self, count):
 
         result = []
@@ -71,11 +65,11 @@ class SegmentationInference:
 
             phi = 2.0*numpy.pi*i/count
 
-            r = (numpy.cos(phi + 0.0*2.0*numpy.pi/3.0) + 1.0)/2.0
-            g = (numpy.cos(phi + 1.0*2.0*numpy.pi/3.0) + 1.0)/2.0
-            b = (numpy.cos(phi + 2.0*2.0*numpy.pi/3.0) + 1.0)/2.0
+            r = (numpy.sin(phi + 1.0*2.0*numpy.pi/3.0) + 1.0)/2.0
+            g = (numpy.sin(phi + 2.0*2.0*numpy.pi/3.0) + 1.0)/2.0
+            b = (numpy.sin(phi + 0.0*2.0*numpy.pi/3.0) + 1.0)/2.0
 
             result.append([r, g, b])
      
         return numpy.array(result)
-        
+    '''

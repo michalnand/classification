@@ -11,7 +11,9 @@ class DatasetSegmentation:
     def __init__(self, folders_training, folders_testing, classes_ids, height = 480, width = 640):
 
         self.classes_ids        = classes_ids
+
         self.classes_count      = len(classes_ids)
+
         self.height             = height
         self.width              = width
 

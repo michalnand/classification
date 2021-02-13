@@ -1,11 +1,11 @@
 import numpy
-import models.model_0.model as Model
+import models.model_1.model as Model
 from PIL import Image
 
 from segmentation_inference import *
 
 
-si = SegmentationInference(Model, "models/model_0/trained/", 5)
+si = SegmentationInference(Model, "models/model_1/trained/", 5)
 
 
 def compute(si, input_file_name_prefix):
@@ -26,3 +26,8 @@ def compute(si, input_file_name_prefix):
 compute(si, "images/0")
 compute(si, "images/1")
 compute(si, "images/2")
+compute(si, "images/3")
+compute(si, "images/4")
+compute(si, "images/5")
+compute(si, "images/6")
+compute(si, "images/7")
