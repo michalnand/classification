@@ -32,8 +32,8 @@ class SegmentationInference:
                             do_constant_folding=True,  # whether to execute constant folding for optimization
                             input_names = ['input'],   # the model's input names
                             output_names = ['output'], # the model's output names
-                            dynamic_axes={'input' : {0 : 'batch_size'},    # 0 for variable lenght axes
-                                            'output' : {0 : 'batch_size'}})
+                            dynamic_axes={'input' : {1 : 'batch_size'},    # 0 for variable lenght axes
+                                            'output' : {1 : 'batch_size'}})
 
             self.onnx_model = onnxruntime.InferenceSession("model.onnx")
 
