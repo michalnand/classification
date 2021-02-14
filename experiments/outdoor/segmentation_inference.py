@@ -1,15 +1,15 @@
 import numpy
 import torch
+import colorsys
 
-import onnxruntime
+if torch.cuda.is_available():
+    from torch2trt import torch2trt
 
 class SegmentationInference:
-    def __init__(self, Model, model_pretrained_path, classes_count, use_onnx_model = True):
+    def __init__(self, Model, model_pretrained_path, classes_count):
         channels            = 3
         height              = 480
         width               = 640
-
-        self.use_onnx_model = use_onnx_model 
 
         print("creating model")
         self.model      = Model.Create((channels, height, width), (classes_count, height, width))
@@ -19,23 +19,10 @@ class SegmentationInference:
             self.model.load(model_pretrained_path)
         self.model.eval()
 
-        if self.use_onnx_model:
-            print("converting model into ONNX")
-            x = torch.ones((1, channels, height, width)).to(self.model.device)
-
-            # Export the model
-            torch.onnx.export(self.model,               # model being run
-                            x,                         # model input (or a tuple for multiple inputs)
-                            "model.onnx",   # where to save the model (can be a file or file-like object)
-                            export_params=True,        # store the trained parameter weights inside the model file
-                            opset_version=10,          # the ONNX version to export the model to
-                            do_constant_folding=True,  # whether to execute constant folding for optimization
-                            input_names = ['input'],   # the model's input names
-                            output_names = ['output'], # the model's output names
-                            dynamic_axes={'input' : {1 : 'batch_size'},    # 0 for variable lenght axes
-                                            'output' : {1 : 'batch_size'}})
-
-            self.onnx_model = onnxruntime.InferenceSession("model.onnx")
+        if torch.cuda.is_available():
+            print("converting model into torchRT")
+            x = torch.ones((1, channels, height, width)).to("cuda")
+            self.model = torch2trt(self.model, [x])
 
         self.colors     = self._make_colors(classes_count)
 
@@ -60,16 +47,14 @@ class SegmentationInference:
         if channel_first == False:
             image_np    = numpy.moveaxis(image_np, 2, 0)
 
-        if self.use_onnx_model:
-            image_np        = numpy.expand_dims(image_np, 0).astype(numpy.float32)
-            ort_inputs      = {self.onnx_model.get_inputs()[0].name: image_np}
-            prediction_l    = self.onnx_model.run(None, ort_inputs)
-            prediction_np   = numpy.squeeze(prediction_l[0], 0)
-        else:
-            image_t         = torch.from_numpy(image_np).unsqueeze(0).float().to(self.model.device)
-            prediction_np   = self.model(image_t).squeeze(0).detach().to("cpu").numpy()
-        
-        prediction_np   = numpy.argmax(prediction_np, axis=0)
+        image_t     = torch.from_numpy(image_np).unsqueeze(0).float()
+
+        if torch.cuda.is_available():
+            image_t = image_t.to("cuda")
+
+        prediction_t    = self.model(image_t).squeeze(0)
+        prediction_t    = torch.argmax(prediction_t, dim=0)
+        prediction_np   = prediction_t.detach().to("cpu").numpy()
 
         return prediction_np
 
