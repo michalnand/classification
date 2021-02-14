@@ -116,6 +116,7 @@ if __name__ == "__main__":
     model = Create((channels, height, width), (classes_count, height, width))
 
     x = torch.randn((batch_size, channels, height, width))
+    x = x.to(model.device)
 
     model.eval()
 
