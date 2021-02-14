@@ -5,7 +5,8 @@ from segmentation_inference import *
 import models.model_1.model as Model
 
 #cap = cv2.VideoCapture(0)
-cap = cv2.VideoCapture("/Users/michal/Movies/park.mp4")
+#cap = cv2.VideoCapture("/Users/michal/Movies/park.mp4")
+cap = cv2.VideoCapture("/home/michal/Videos/park.mp4")
 
 si = SegmentationInference(Model, "models/model_1/trained/", 5)
 

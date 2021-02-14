@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 
+import time
+
 class Create(torch.nn.Module):
 
     def __init__(self, input_shape, output_shape):
@@ -103,7 +105,7 @@ class Create(torch.nn.Module):
                 
 
 if __name__ == "__main__":
-    batch_size = 8
+    batch_size = 1
 
     channels    = 3
     height      = 480
@@ -116,7 +118,15 @@ if __name__ == "__main__":
     x = torch.randn((batch_size, channels, height, width))
 
     model.eval()
-    y = model.forward(x)
+
+    for i in range(1000):
+        time_start = time.time()
+        y = model.forward(x)
+        time_end = time.time()
+
+        fps = batch_size*1.0/(time_end - time_start)
+
+        print("fps = ", round(fps, 2))
 
     print(x.shape, y.shape)
 
