@@ -21,7 +21,7 @@ class SegmentationInference:
 
         if torch.cuda.is_available():
             print("converting model into torchRT")
-            x = torch.ones((1, channels, height, width)).to(self.model.device)
+            x = torch.ones((1, channels, height, width)).to("cuda")
             self.model = torch2trt(self.model, [x])
 
         self.colors     = self._make_colors(classes_count)
@@ -47,7 +47,10 @@ class SegmentationInference:
         if channel_first == False:
             image_np    = numpy.moveaxis(image_np, 2, 0)
 
-        image_t     = torch.from_numpy(image_np).unsqueeze(0).to(self.model.device).float()
+        image_t     = torch.from_numpy(image_np).unsqueeze(0).float()
+
+        if torch.cuda.is_available():
+            image_t = image_t.to("cuda")
 
         prediction_t    = self.model(image_t).squeeze(0)
         prediction_t    = torch.argmax(prediction_t, dim=0)

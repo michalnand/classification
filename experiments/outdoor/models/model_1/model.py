@@ -3,9 +3,6 @@ import torch.nn as nn
 
 import time
 
-if torch.cuda.is_available():
-    from torch2trt import torch2trt
-
 class Create(torch.nn.Module):
 
     def __init__(self, input_shape, output_shape):
@@ -117,14 +114,7 @@ if __name__ == "__main__":
     classes_count = 5
 
     model = Create((channels, height, width), (classes_count, height, width))
-
     model.eval()
-
-    if torch.cuda.is_available():
-        print("converting model into torchRT")
-        x = torch.ones((1, channels, height, width)).to(model.device)
-        model = torch2trt(model, [x])
-
 
     x = torch.randn((batch_size, channels, height, width)).to(model.device)
     x = x.to(model.device)
