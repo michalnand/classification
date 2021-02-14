@@ -2,20 +2,31 @@ import numpy
 import torch
 import colorsys
 
+if torch.cuda.is_available():
+    from torch2trt import torch2trt
+
 class SegmentationInference:
     def __init__(self, Model, model_pretrained_path, classes_count):
         channels            = 3
-        height              = 512
-        width               = 1024
+        height              = 480
+        width               = 640
 
+        print("creating model")
         self.model      = Model.Create((channels, height, width), (classes_count, height, width))
 
         if model_pretrained_path is not None:
+            print("loading wights")
             self.model.load(model_pretrained_path)
         self.model.eval()
 
-    
+        if torch.cuda.is_available():
+            print("converting model into torchRT")
+            x = torch.ones((1, channels, height, width)).to(self.model.device)
+            self.model = torch2trt(self.model, [x])
+
         self.colors     = self._make_colors(classes_count)
+
+        print("SegmentationInference ready")
 
 
     def process(self, image_np, channel_first = False, alpha = 0.35):
