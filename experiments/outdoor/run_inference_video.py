@@ -8,11 +8,19 @@ import models.model_1.model as Model
 #cap = cv2.VideoCapture("/Users/michal/Movies/park.mp4")
 cap = cv2.VideoCapture("/home/michal/Videos/park.mp4")
 
-si = SegmentationInference(Model, "models/model_1/trained/", 5)
+show_video = False
+save_video = True
 
-writer = None
-fourcc = cv2.VideoWriter_fourcc(*'XVID') 
-writer = cv2.VideoWriter('output.avi', fourcc, 25.0, (640, 480)) 
+height  = 256 #480
+width   = 256 #640
+
+
+si = SegmentationInference(Model,  "models/model_1/trained/", 5, height, width)
+
+
+if save_video:
+    fourcc = cv2.VideoWriter_fourcc(*'XVID') 
+    writer = cv2.VideoWriter('output.avi', fourcc, 25.0, (width, height)) 
 
 
 fps_smooth = 0.0
@@ -21,12 +29,15 @@ next_frame = 0
 cnt = 0
 
 def print_video(image, text):
-    x = cv2.putText(image,text,(40,40), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(255,255,255),1,lineType=cv2.LINE_AA)
+    x = cv2.putText(image,text,(20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(255,255,255),1,lineType=cv2.LINE_AA)
 
-while(True):
+while(True): 
     ret, frame = cap.read()
 
-    frame = cv2.resize(frame, (640, 480), interpolation = cv2.INTER_AREA)
+    if ret == False:
+        break
+
+    frame = cv2.resize(frame, (width, height), interpolation = cv2.INTER_AREA)
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     
@@ -43,9 +54,11 @@ while(True):
 
         im_bgr = cv2.cvtColor(result, cv2.COLOR_RGB2BGR)
         print_video(im_bgr, text)
-        #cv2.imshow('frame', im_bgr)
 
-        if writer is not None:
+        if show_video:
+            cv2.imshow('frame', im_bgr)
+
+        if save_video:
             writer.write(im_bgr)
 
         frame_skip = 25/fps

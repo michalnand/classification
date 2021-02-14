@@ -6,12 +6,9 @@ if torch.cuda.is_available():
     from torch2trt import torch2trt
 
 class SegmentationInference:
-    def __init__(self, Model, model_pretrained_path, classes_count):
-        channels            = 3
-        height              = 480
-        width               = 640
-
+    def __init__(self, Model, model_pretrained_path, classes_count, height = 480, width = 640):
         print("creating model")
+        channels = 3
         self.model      = Model.Create((channels, height, width), (classes_count, height, width))
 
         if model_pretrained_path is not None:
