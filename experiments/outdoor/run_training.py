@@ -23,7 +23,7 @@ folders_training = []
 folders_training.append("/home/michal/dataset/outdoor/lietavska_lucka/")
 folders_training.append("/home/michal/dataset/outdoor/istrobotics_0/")
 folders_training.append("/home/michal/dataset/outdoor/istrobotics_1/")
-folders_training.append("/Users/michal/dataset/outdoor/istrobotics_2/")
+folders_training.append("/home/michal/dataset/outdoor/istrobotics_2/")
  
 
 classes_ids     = [8, 12, 21, 22, 23]
