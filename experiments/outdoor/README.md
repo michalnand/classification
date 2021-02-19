@@ -1,8 +1,10 @@
 # image segmentation
 
 ![](images/segmentation.jpg)
+![](images/video.gif)
 
-trained on cityscapes dataset
+
+trained on custom dataset
 
 using only small model - for future usage on NVIDIA Jetson Nano
 
