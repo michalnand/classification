@@ -5,11 +5,12 @@ from segmentation_inference import *
 import models.model_1.model as Model
 
 #cap = cv2.VideoCapture(0)
-cap = cv2.VideoCapture("/Users/michal/Movies/park.mp4")
+#cap = cv2.VideoCapture("/Users/michal/Movies/park.mp4")
+cap = cv2.VideoCapture("/Users/michal/Movies/california.mp4")
 #cap = cv2.VideoCapture("/home/michal/Videos/park.mp4")
 
 show_video = True
-save_video = False
+save_video = True
 
 height  = 256 #480
 width   = 512 #640
@@ -20,7 +21,7 @@ si = SegmentationInference(Model,  "models/model_1/trained/", 5, height, width)
 
 if save_video:
     fourcc = cv2.VideoWriter_fourcc(*'XVID') 
-    writer = cv2.VideoWriter('output.avi', fourcc, 25.0, (width, height)) 
+    writer = cv2.VideoWriter('california_output.avi', fourcc, 5.0, (width, height)) 
 
 
 fps_smooth = 0.0

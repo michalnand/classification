@@ -10,7 +10,7 @@ si = SegmentationInference(Model, "models/model_1/trained/", 5)
 
 def compute(si, input_file_name_prefix):
     image       = Image.open(input_file_name_prefix + ".jpg")
-    image       = image.resize((640, 480))
+    image       = image.resize((512, 256))
     image_np    = numpy.array(image)
 
     prediction_np, mask, result = si.process(image_np)

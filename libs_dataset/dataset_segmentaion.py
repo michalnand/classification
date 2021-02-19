@@ -4,11 +4,11 @@ import os
 
 from .images_loader import *
 
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageFilter
 
 class DatasetSegmentation:
 
-    def __init__(self, folders_training, folders_testing, classes_ids, height = 480, width = 640):
+    def __init__(self, folders_training, folders_testing, classes_ids, height = 480, width = 640, augmentation_count = 5):
 
         self.classes_ids        = classes_ids
 
@@ -25,10 +25,17 @@ class DatasetSegmentation:
             images = ImagesLoader([folder + "/images/"], height, width, channel_first=True)
             masks  = ImagesLoader([folder + "/mask/"], height, width, channel_first=True, file_mask = "_watershed_mask", postprocessing = self._mask_postprocessing)
             
-            self.training_images.append(images)
-            self.training_masks.append(masks)
+            self.training_images.append(images.images)
+            self.training_masks.append(masks.images)
+
+            print("processing augmentation\n")
+
+            images_aug, masks_aug = self._augmentation(images.images, masks.images, augmentation_count)
+
+            self.training_images.append(images_aug)
+            self.training_masks.append(masks_aug)
             
-            self.training_count+= images.count
+            self.training_count+= images.count*(1 + augmentation_count) 
 
 
         self.testing_images    = []
@@ -39,8 +46,8 @@ class DatasetSegmentation:
             images = ImagesLoader([folder + "/images/"], height, width, channel_first=True)
             masks  = ImagesLoader([folder + "/mask/"], height, width, channel_first=True, file_mask = "_watershed_mask", postprocessing = self._mask_postprocessing)
             
-            self.testing_images.append(images)
-            self.testing_masks.append(masks)
+            self.testing_images.append(images.images)
+            self.testing_masks.append(masks.images)
             
             self.testing_count+= images.count
 
@@ -83,11 +90,11 @@ class DatasetSegmentation:
 
         for i in range(batch_size): 
             group_idx = numpy.random.randint(len(images))
-            image_idx = numpy.random.randint(images[group_idx].count)
+            image_idx = numpy.random.randint(len(images[group_idx]))
 
-            image_np    = numpy.array(images[group_idx].images[image_idx])/256.0
+            image_np    = numpy.array(images[group_idx][image_idx])/256.0
 
-            mask_np     = numpy.array(masks[group_idx].images[image_idx]).mean(axis=0).astype(int)
+            mask_np     = numpy.array(masks[group_idx][image_idx]).mean(axis=0).astype(int)
             
             if augmentation:
                 image_np  = self._augmentation_noise(image_np)
@@ -101,6 +108,72 @@ class DatasetSegmentation:
 
         return result_x, result_y
 
+
+    def _augmentation(self, images, masks, augmentation_count):
+
+        angle_max = 45
+        crop_prop = 0.2
+
+        count = images.shape[0]
+        total_count = count*augmentation_count
+
+        images_result   = numpy.zeros((total_count, images.shape[1], images.shape[2], images.shape[3]), dtype=numpy.uint8)
+        mask_result     = numpy.zeros((total_count, masks.shape[1], masks.shape[2], masks.shape[3]), dtype=numpy.uint8)
+
+        ptr = 0
+        for j in range(count):
+ 
+            image_in = Image.fromarray(numpy.moveaxis(images[j], 0, 2), 'RGB')
+            mask_in  = Image.fromarray(numpy.moveaxis(masks[j], 0, 2), 'RGB')
+
+            for i in range(augmentation_count):
+                angle       = self._rnd(-angle_max, angle_max)
+
+                image_aug   = image_in.rotate(angle)
+                mask_aug    = mask_in.rotate(angle)
+
+                c_left      = int(self._rnd(0, crop_prop)*self.width)
+                c_top       = int(self._rnd(0, crop_prop)*self.height)
+
+                c_right     = int(self._rnd(1.0 - crop_prop, 1.0)*self.width)
+                c_bottom    = int(self._rnd(1.0 - crop_prop, 1.0)*self.height)
+            
+                image_aug   = image_aug.crop((c_left, c_top, c_right, c_bottom))
+                mask_aug    = mask_aug.crop((c_left, c_top, c_right, c_bottom)) 
+
+                
+                if numpy.random.rand() < 0.5:
+                    fil = numpy.random.randint(6)
+ 
+                    if fil == 0:
+                        image_aug   = image_aug.filter(ImageFilter.BLUR)
+                    elif fil == 1:
+                        image_aug   = image_aug.filter(ImageFilter.EDGE_ENHANCE)
+                    elif fil == 2:
+                        image_aug   = image_aug.filter(ImageFilter.EDGE_ENHANCE_MORE)
+                    elif fil == 3:
+                        image_aug   = image_aug.filter(ImageFilter.SHARPEN)
+                    elif fil == 4:
+                        image_aug   = image_aug.filter(ImageFilter.SMOOTH)
+                    elif fil == 5:
+                        image_aug   = image_aug.filter(ImageFilter.SMOOTH_MORE)
+
+
+                image_aug   = image_aug.resize((self.width, self.height))
+                mask_aug    = mask_aug.resize((self.width, self.height))
+
+                image_aug   = numpy.array(image_aug)  
+                mask_aug    = numpy.array(mask_aug) 
+
+                image_aug   = numpy.moveaxis(image_aug, 2, 0)
+                mask_aug    = numpy.moveaxis(mask_aug, 2, 0)
+
+                images_result[ptr]  = image_aug
+                mask_result[ptr]    = mask_aug
+
+                ptr+=1
+
+        return images_result, mask_result
 
     def _augmentation_noise(self, image_np):
         brightness = self._rnd(-0.25, 0.25)
@@ -125,6 +198,7 @@ class DatasetSegmentation:
             image_np    = numpy.flip(image_np, axis=2)
             mask_np     = numpy.flip(mask_np,  axis=1)
 
+        '''
         #random rolling
         if self._rnd(0, 1) < p:
             r           = numpy.random.randint(-32, 32)
@@ -135,6 +209,7 @@ class DatasetSegmentation:
             r           = numpy.random.randint(-32, 32)
             image_np    = numpy.roll(image_np, r, axis=2)
             mask_np     = numpy.roll(mask_np, r, axis=1)
+        '''
 
         return image_np.copy(), mask_np.copy()
 
@@ -147,7 +222,7 @@ class DatasetSegmentation:
         image    = image.convert("L")
         
         for i in range(len(self.classes_ids)):
-            image.putpixel((10*i, 10*i), self.classes_ids[i])
+            image.putpixel((4*i + self.width//2, 4*i + self.height//2), self.classes_ids[i])
 
         image = image.quantize(self.classes_count)
 
@@ -160,7 +235,7 @@ if __name__ == "__main__":
     folders_training = []
     folders_training.append("/Users/michal/dataset/outdoor/lietavska_lucka/")
     folders_training.append("/Users/michal/dataset/outdoor/istrobotics_0/")
-    folders_training.append("/Users/michal/dataset/outdoor/istrobotics_1/")
+    folders_training.append("/Users/michal/dataset/outdoor/street/")
 
 
     classes_ids     = [8, 12, 21, 22, 23]
@@ -168,7 +243,7 @@ if __name__ == "__main__":
     
     dataset = DatasetSegmentation(folders_training, folders_training, classes_ids)
 
-    batch_size = 4
+    batch_size = 8
 
     x, y = dataset.get_testing_batch(batch_size)
     x, y = dataset.get_training_batch(batch_size)

@@ -1,6 +1,7 @@
 import torch
 import numpy
 
+
 class MetricsSegmentation:
     def __init__(self, output_shape):
         self.classes_count  = output_shape[0]

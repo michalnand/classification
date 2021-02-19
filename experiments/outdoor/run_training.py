@@ -21,6 +21,7 @@ folders_training = []
 #folders_training.append("/Users/michal/dataset/outdoor/istrobotics_2/")
 #folders_training.append("/Users/michal/dataset/outdoor/nature/")
 #folders_training.append("/Users/michal/dataset/outdoor/za_park/") 
+#folders_training.append("/Users/michal/dataset/outdoor/street/") 
 
 folders_training.append("/home/michal/dataset/outdoor/lietavska_lucka/")
 folders_training.append("/home/michal/dataset/outdoor/istrobotics_0/")
@@ -28,6 +29,7 @@ folders_training.append("/home/michal/dataset/outdoor/istrobotics_1/")
 folders_training.append("/home/michal/dataset/outdoor/istrobotics_2/")
 folders_training.append("/home/michal/dataset/outdoor/nature/")
 folders_training.append("/home/michal/dataset/outdoor/za_park/")
+folders_training.append("/home/michal/dataset/outdoor/street/")
  
 
 classes_ids     = [8, 12, 21, 22, 23]
@@ -36,6 +38,3 @@ dataset = libs_dataset.DatasetSegmentation(folders_training, folders_training, c
 
 train = libs.Train(dataset, Model1, libs.MetricsSegmentation, batch_size = 8, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/model_1")
-
-train = libs.Train(dataset, Model0, libs.MetricsSegmentation, batch_size = 8, learning_rates = learning_rates)
-train.step_epochs(epoch_count, log_path = "./models/model_0")

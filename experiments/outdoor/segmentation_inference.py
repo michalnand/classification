@@ -60,12 +60,16 @@ class SegmentationInference:
     def _make_colors(self, count):
 
         result = []
+        
         result.append([0, 0, 1])
         result.append([1, 1, 0])
         result.append([0, 1, 0])
         result.append([0, 1, 1])
         result.append([1, 0, 0])
+        
 
+        #result.append([0, 0, 0])
+        #result.append([1, 0, 0])
         return numpy.array(result)
 
     '''
