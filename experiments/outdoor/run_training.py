@@ -9,7 +9,7 @@ import models.model_1.model as Model1
 
 
 #train epochs
-epoch_count     = 1000 
+epoch_count     = 200 
 
 #use cyclic learning rate
 learning_rates  = [0.001, 0.001, 0.0001, 0.0001, 0.0001, 0.0001, 0.00001]

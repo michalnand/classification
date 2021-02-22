@@ -5,8 +5,11 @@ from segmentation_inference import *
 import models.model_1.model as Model
 
 #cap = cv2.VideoCapture(0)
-cap = cv2.VideoCapture("/Users/michal/Movies/segmentation/park.mp4")
+#cap = cv2.VideoCapture("/Users/michal/Movies/segmentation/park.mp4")
 #cap = cv2.VideoCapture("/Users/michal/Movies/segmentation/street_01.mp4")
+#cap = cv2.VideoCapture("/Users/michal/Movies/segmentation/street_03.mp4")
+
+
 
 
 show_video = True
@@ -21,7 +24,7 @@ si = SegmentationInference(Model,  "models/model_1/trained/", 5, height, width)
 
 if save_video:
     fourcc = cv2.VideoWriter_fourcc(*'XVID') 
-    writer = cv2.VideoWriter('output.avi', fourcc, 5.0, (width, height)) 
+    writer = cv2.VideoWriter('segmentation_output.avi', fourcc, 5.0, (width, height)) 
 
 
 fps_smooth = 0.0
@@ -49,7 +52,7 @@ while(True):
 
         fps = 1.0/(time_stop - time_start)
         
-        result = (result*255).astype(numpy.uint8)
+        result = (mask*255).astype(numpy.uint8)
 
         text  = "fps= " + str(round(fps, 1))
 

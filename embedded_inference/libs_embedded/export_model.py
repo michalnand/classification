@@ -18,7 +18,8 @@ class ExportModel:
         self.output_shape   = output_shape
 
         model = Model.Create(input_shape, output_shape)
-        model.load(pretrained_path)
+        if pretrained_path is not None:
+            model.load(pretrained_path)
 
         self.export_model(model, quantization_type)
         self.export_files(export_path, quantization_type)
@@ -33,7 +34,13 @@ class ExportModel:
         code_network = ""
         code_weights = ""
 
-        for i, layer in enumerate(model.children()):
+        if hasattr(model, "layers"):
+            layers = model.layers
+        else:
+            layers = model.children()
+
+
+        for i, layer in enumerate(layers):
             
             if isinstance(layer, torch.nn.Linear):                
                 code, output_shape, required_memory, macs = ExportLinear(layer, i, self.network_prefix, layer_input_shape, quantization_type)
@@ -75,6 +82,7 @@ class ExportModel:
                 required_memory = 0
                 macs            = 0
                 output_shape    = layer_input_shape
+                print("skipping unknow layer : ", layer, "\n\n")
 
             layer_input_shape = output_shape
 
