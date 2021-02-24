@@ -3,7 +3,6 @@ import torch
 import os
 
 from .images_loader import *
-from .tiny_imagenet_config import *
 
 from PIL import Image, ImageFilter
 
@@ -189,28 +188,3 @@ class DatasetImages:
 
     def _rnd(self, min_value, max_value):
         return (max_value - min_value)*numpy.random.rand() + min_value
-
-
-
-
-if __name__ == "__main__":
-    dataset_path     = "/Users/michal/dataset/tiny_imagenet/"
-    
-    folders_training, classes_training, folders_testing, classes_testing = tiny_imagenet_config(dataset_path)
-
-    dataset = DatasetImages(folders_training, classes_training, folders_testing, classes_testing, augmentation_count=1)
-
-    batch_size = 16
-
-    x, _ = dataset.get_testing_batch(batch_size)
-    x, _ = dataset.get_training_batch(batch_size)
-    
-    for i in range(batch_size):
-
-        image_np = x[i].detach().to("cpu").numpy()
-        image_np    = (255.0*image_np).astype(numpy.uint8)
-
-        image_np    = numpy.moveaxis(image_np, 0, 2)
-
-        im = Image.fromarray(image_np, 'RGB')
-        im.show()
