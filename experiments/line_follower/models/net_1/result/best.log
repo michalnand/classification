@@ -1,35 +1,47 @@
-new best net in 54
-TRAINING result
-accuracy   = 86.815 [%]
-hit_count  = 52117
-miss_count = 7915
+best model
+epoch = 19
 
-class_accuracy = 97.778%   69.663%   97.617%   71.074%   97.432%   
+TRAINING result
+
+loss_mean = 0.07053124
+loss_std  = 0.0073885047
+
+
+accuracy   = 82.97 [%]
+hit_count  = 41525
+miss_count = 8523
+
+class_accuracy = 81.384%   77.241%   97.816%   71.462%   86.891%   
 
 
 confusion_matrix = 
-12059	 2337	 0	 0	 39	 
-273	 8246	 124	 0	 10	 
-0	 1253	 11428	 1204	 0	 
-0	 0	 154	 8509	 263	 
-0	 0	 0	 2258	 11875	 
+        8044        1164           0           0           9
+        1801        7745         118           0           2
+           0        1113        9899        1200          34
+           0           0         102        7227        1253
+          38           4           0        1685        8610
+
+
 
 
 
 TESTING result
-accuracy   = 87.55 [%]
-hit_count  = 5267
-miss_count = 749
 
-class_accuracy = 97.621%   71.834%   98.229%   71.023%   98.362%   
+loss_mean = 0.07252275
+loss_std  = 0.0077168155
+
+
+accuracy   = 82.1 [%]
+hit_count  = 4151
+miss_count = 905
+
+class_accuracy = 81.189%   76.977%   95.753%   70.928%   84.369%   
 
 
 confusion_matrix = 
-1190	 224	 0	 0	 4	 
-28	 885	 3	 0	 0	 
-0	 122	 1165	 121	 0	 
-0	 0	 17	 826	 15	 
-0	 0	 0	 215	 1201	 
-
-
+         833         112           0           0           3
+         186         769          21           0           0
+           0         115         992         132          10
+           0           0          22         688         147
+           6           2           0         149         869
 

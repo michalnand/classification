@@ -41,7 +41,7 @@ class ImagesLoader:
 
         result = []
         for file_name in files[0]:
-            if file_name.endswith(".jpg") or file_name.endswith(".png"):
+            if file_name.endswith(".jpg") or file_name.endswith(".png") or file_name.endswith(".JPEG"):
 
                 if self.file_mask == None:
                     result.append(path + file_name)

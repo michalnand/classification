@@ -17,7 +17,6 @@ class DatasetLineFollower:
         self.intensity_max = 1.0
 
         
-
         self.width         = width
         self.height        = height
         self.input_shape   = (1, self.height, self.width)
@@ -46,8 +45,19 @@ class DatasetLineFollower:
             self.testing_x[i] = testing_x.copy()
             self.testing_y[i] = testing_y.copy()
 
+        print("\n\n\n\n")
+        print("dataset summary : \n")
         print("training_count = ", self.get_training_count())
-        print("testing_count = " , self.get_testing_count())
+        print("testing_count  = ", self.get_testing_count())
+        print("classes_count =  ", self.classes_count)
+        print("training_x shape ", self.training_x.shape)
+        print("training_y shape ", self.training_y.shape)
+        print("testing_x shape  ", self.testing_x.shape) 
+        print("testing_y shape  ", self.testing_y.shape)
+        print("training_mean =  ", self.training_x.mean())
+        print("training_std =   ", self.training_x.std())
+        print("testing_mean =   ", self.testing_x.mean())
+        print("testing_std  =   ", self.testing_x.std())
 
 
     def get_training_count(self):
