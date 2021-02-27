@@ -1,12 +1,12 @@
-#ifndef _GlobalAveragePooling1d_H_
-#define _GlobalAveragePooling1d_H_
+#ifndef _GlobalAveragePool_H_
+#define _GlobalAveragePool_H_
 
 #include <stdint.h>
 
 
 template<   unsigned int height, unsigned int width, unsigned int channels,
             class IO_t, class ACC_t, int io_max>
-void GlobalAveragePooling1d(IO_t *output_buffer, IO_t *input_buffer)
+void GlobalAveragePool(IO_t *output_buffer, IO_t *input_buffer)
 {
     unsigned int size = height*width;
 

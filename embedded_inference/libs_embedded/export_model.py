@@ -7,7 +7,7 @@ from .ExportConv1d          import *
 from .ExportConv2d          import *
 from .ExportGRU             import *
 from .ExportReLU            import *
-from .ExportAvgPool1d       import *
+from .ExportGlobalAvgPool   import *
 
 class ExportModel:
 
@@ -72,12 +72,6 @@ class ExportModel:
                 code_network+= code[0]
                 total_macs+= macs
 
-            elif isinstance(layer, torch.nn.AvgPool1d):
-                code, output_shape, required_memory, macs = ExportAvgPool1d(layer, layer_input_shape, i, quantization_type)
-                
-                code_network+= code[0]
-                total_macs+= macs
-
             else:
                 required_memory = 0
                 macs            = 0
@@ -99,6 +93,8 @@ class ExportModel:
 
         if quantization_type == "int8":
             io_type = "int8_t"
+        elif quantization_type == "int16":
+            io_type = "int16_t"
         else:
             io_type = "float"
 

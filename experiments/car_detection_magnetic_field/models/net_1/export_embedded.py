@@ -20,3 +20,6 @@ embedded_inference.libs_embedded.ExportModel("MyModel", input_shape, output_shap
 
 export_path     = model_path + "export_int8/"
 embedded_inference.libs_embedded.ExportModel("MyModel", input_shape, output_shape, model, pretrained_path, export_path, "int8")
+
+export_path     = model_path + "export_int16/"
+embedded_inference.libs_embedded.ExportModel("MyModel", input_shape, output_shape, model, pretrained_path, export_path, "int16")

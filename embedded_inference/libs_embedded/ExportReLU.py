@@ -3,6 +3,8 @@ from .Quantizer import *
 def ExportReLU(layer, layer_num, network_prefix, input_shape, quantization_type):
     if quantization_type == "int8":
         io_data_type    = "int8_t"
+    elif quantization_type == "int16":
+        io_data_type    = "int16_t"
     else:
         io_data_type    = "float"
 

@@ -18,6 +18,17 @@ def ExportLinear(layer, layer_num, network_prefix, input_shape, quantization_typ
         weights_quant   = numpy.round(weights_quant, 0).astype(int)
         bias_quant      = numpy.round(bias_quant, 0).astype(int)
 
+    elif quantization_type == "int16":
+        io_data_type    = "int16_t"
+        w_data_type     = "int16_t"
+        acc_data_type   = "int32_t"
+        max_value       = 128-1
+
+        weights_quant, bias_quant, scale = Quantizer(weights, bias, max_value)
+
+        weights_quant   = numpy.round(weights_quant, 0).astype(int)
+        bias_quant      = numpy.round(bias_quant, 0).astype(int)
+
     else:
         io_data_type    = "float"
         w_data_type     = "float"

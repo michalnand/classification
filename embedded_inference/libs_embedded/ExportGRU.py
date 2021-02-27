@@ -78,6 +78,33 @@ def ExportGRU(layer, layer_num, network_prefix, input_shape, quantization_type):
         w_in_quant      = numpy.round(w_in_quant, 0).astype(int)
         b_in_quant      = numpy.round(b_in_quant, 0).astype(int)
 
+    elif quantization_type == "int16": 
+        io_data_type    = "int16_t"
+        w_data_type     = "int16_t"
+        acc_data_type   = "int32_t"
+        max_value       = 128-1
+
+        w_hr_quant, b_hr_quant, hr_scale = Quantizer(w_hr, b_hr, max_value)
+        w_hz_quant, b_hz_quant, hz_scale = Quantizer(w_hz, b_hz, max_value)
+        w_hn_quant, b_hn_quant, hn_scale = Quantizer(w_hn, b_hn, max_value)
+
+        w_ir_quant, b_ir_quant, ir_scale = Quantizer(w_ir, b_ir, max_value)
+        w_iz_quant, b_iz_quant, iz_scale = Quantizer(w_iz, b_iz, max_value)
+        w_in_quant, b_in_quant, in_scale = Quantizer(w_in, b_in, max_value)
+
+        w_hr_quant      = numpy.round(w_hr_quant, 0).astype(int)
+        b_hr_quant      = numpy.round(b_hr_quant, 0).astype(int)
+        w_hz_quant      = numpy.round(w_hz_quant, 0).astype(int)
+        b_hz_quant      = numpy.round(b_hz_quant, 0).astype(int)
+        w_hn_quant      = numpy.round(w_hn_quant, 0).astype(int)
+        b_hn_quant      = numpy.round(b_hn_quant, 0).astype(int)
+
+        w_ir_quant      = numpy.round(w_ir_quant, 0).astype(int)
+        b_ir_quant      = numpy.round(b_ir_quant, 0).astype(int)
+        w_iz_quant      = numpy.round(w_iz_quant, 0).astype(int)
+        b_iz_quant      = numpy.round(b_iz_quant, 0).astype(int)
+        w_in_quant      = numpy.round(w_in_quant, 0).astype(int)
+        b_in_quant      = numpy.round(b_in_quant, 0).astype(int)
 
     else:
         io_data_type    = "float"

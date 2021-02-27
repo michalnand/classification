@@ -1,19 +1,6 @@
 #ifndef _dot_microkernel_H_
 #define _dot_microkernel_H_
 
-/*
-template<const unsigned int vector_size, class DATA_VA_t, class DATA_VB_t, class ACC_t>
-ACC_t dot_microkernel(const DATA_VA_t *va, const DATA_VB_t *vb)
-{    
-    ACC_t result = 0;
-
-    for (unsigned int i = 0; i < vector_size; i++)
-        result+= va[i]*vb[i];
-
-    return result; 
-}
-*/
-
 
 template<const unsigned int vector_size, class DATA_VA_t, class DATA_VB_t, class ACC_t>
 ACC_t dot_microkernel(const DATA_VA_t *va, const DATA_VB_t *vb)
@@ -22,7 +9,6 @@ ACC_t dot_microkernel(const DATA_VA_t *va, const DATA_VB_t *vb)
 
     unsigned int idx = 0;
     unsigned int size = vector_size;
-
 
     while (size >= 32)
     {                    
@@ -62,7 +48,7 @@ ACC_t dot_microkernel(const DATA_VA_t *va, const DATA_VB_t *vb)
         size-= 32;
     }
 
-
+    /*
     while (size >= 16)
     {                    
         result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
@@ -99,7 +85,8 @@ ACC_t dot_microkernel(const DATA_VA_t *va, const DATA_VB_t *vb)
         
         size-= 8;
     }
-  
+    */
+
     while (size > 0)
     {
         result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;

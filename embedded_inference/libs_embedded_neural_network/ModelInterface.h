@@ -4,15 +4,13 @@
 #include <stdint.h>
 
 #include "Linear.h"
+
+
 #include "Conv1d.h"
 #include "Conv2d.h"
-
 #include "GRU.h"
-
 #include "ReLU.h"
-
-#include "GlobalAveragePooling1d.h"
-
+#include "GlobalAveragePool.h"
 #include "ChannelReorder.h"
 
 template<class DType>
