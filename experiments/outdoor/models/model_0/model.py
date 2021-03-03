@@ -18,7 +18,6 @@ class Create(torch.nn.Module):
                         self.conv_dw(128, 256, 2)
         ]
 
-
         self.layers_encoder_1 = [
                         self.conv_dw(256, 256, 1),
                         self.conv_dw(256, 256, 2),
@@ -28,25 +27,25 @@ class Create(torch.nn.Module):
         ]
 
         self.layers_decoder = [
-            self.conv_dw(256 + 256, 256, 1), 
-            self.conv_dw(256, 128, 1),
-            self.conv_dw(128, 128, 1),
+            self.conv_dw(256 + 512, 256, 1), 
+            self.conv_bn(256, 128, 1),
+            self.conv_bn(128, 64, 1),
 
-            nn.Conv2d(128, output_shape[0], kernel_size = 1, stride = 1, padding = 0),
+            nn.Conv2d(64, output_shape[0], kernel_size = 1, stride = 1, padding = 0),
             nn.Upsample(scale_factor=8, mode="bilinear", align_corners=False)
         ]
 
         for i in range(len(self.layers_encoder_0)):
             if hasattr(self.layers_encoder_0[i], "weight"):
-                torch.nn.init.orthogonal_(self.layers_encoder_0[i].weight, 2**0.5)
+                torch.nn.init.xavier_uniform_(self.layers_encoder_0[i].weight)
 
         for i in range(len(self.layers_encoder_1)):
-            if hasattr(self.layers_encoder_1[i], "weight"):
-                torch.nn.init.orthogonal_(self.layers_encoder_1[i].weight, 2**0.5)
+            if hasattr(self.layers_encoder_1[i], "weight"): 
+                torch.nn.init.xavier_uniform_(self.layers_encoder_1[i].weight)
 
         for i in range(len(self.layers_decoder)):
             if hasattr(self.layers_decoder[i], "weight"):
-                torch.nn.init.orthogonal_(self.layers_decoder[i].weight, 2**0.5)
+                torch.nn.init.xavier_uniform_(self.layers_decoder[i].weight)
 
     
         self.model_encoder_0 = nn.Sequential(*self.layers_encoder_0)

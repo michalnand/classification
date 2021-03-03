@@ -8,7 +8,7 @@
 /*
     - simd optimzed
     - load 8 things, compute 8 things
-    - utilzation 8/(8+8) = 0.5  [50%]
+    - utilization 8/(8+8) = 0.5  [50%]
 
  800047c:	f853 4c2c 	ldr.w	r4, [r3, #-44]  //loading, vaste time
  8000480:	f851 ec2c 	ldr.w	lr, [r1, #-44]
@@ -29,10 +29,11 @@
 */
 
 
+
 /*
     - naive code
     - load 8 things, compute 4 things
-    - utilzation 4/(8+4) = 33%, in practice is much less due to huge memory access
+    - utilization 4/(8+4) = 33%, in practice is much less due to huge memory access
 
 
  8000524:	f8b1 a032 	ldrh.w	sl, [r1, #50]	; 0x32  //loading, vaste time

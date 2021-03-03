@@ -36,5 +36,8 @@ classes_ids     = [8, 12, 21, 22, 23]
 
 dataset = libs_dataset.DatasetSegmentation(folders_training, folders_training, classes_ids, height = 256, width = 512)
 
-train = libs.Train(dataset, Model1, libs.MetricsSegmentation, batch_size = 8, learning_rates = learning_rates)
-train.step_epochs(epoch_count, log_path = "./models/model_1")
+#train = libs.Train(dataset, Model1, libs.MetricsSegmentation, batch_size = 8, learning_rates = learning_rates)
+#train.step_epochs(epoch_count, log_path = "./models/model_1")
+
+train = libs.Train(dataset, Model0, libs.MetricsSegmentation, batch_size = 8, learning_rates = learning_rates)
+train.step_epochs(epoch_count, log_path = "./models/model_0")
