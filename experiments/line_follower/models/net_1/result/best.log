@@ -1,25 +1,25 @@
 best model
-epoch = 19
+epoch = 12
 
 TRAINING result
 
-loss_mean = 0.07053124
-loss_std  = 0.0073885047
+loss_mean = 0.03713736
+loss_std  = 0.008696473
 
 
-accuracy   = 82.97 [%]
-hit_count  = 41525
-miss_count = 8523
+accuracy   = 86.829 [%]
+hit_count  = 43456
+miss_count = 6592
 
-class_accuracy = 81.384%   77.241%   97.816%   71.462%   86.891%   
+class_accuracy = 98.599%   68.973%   99.99%   67.838%   99.797%   
 
 
 confusion_matrix = 
-        8044        1164           0           0           9
-        1801        7745         118           0           2
-           0        1113        9899        1200          34
-           0           0         102        7227        1253
-          38           4           0        1685        8610
+        9643        2156           0           0           0
+         136        6947           0           0           0
+           0         968       10053         986           0
+           0           0           0        6990          19
+           0           0           0        2327        9823
 
 
 
@@ -27,21 +27,21 @@ confusion_matrix =
 
 TESTING result
 
-loss_mean = 0.07252275
-loss_std  = 0.0077168155
+loss_mean = 0.036383655
+loss_std  = 0.008432007
 
 
-accuracy   = 82.1 [%]
-hit_count  = 4151
-miss_count = 905
+accuracy   = 88.37 [%]
+hit_count  = 4468
+miss_count = 588
 
-class_accuracy = 81.189%   76.977%   95.753%   70.928%   84.369%   
+class_accuracy = 98.915%   70.019%   99.897%   73.065%   99.069%   
 
 
 confusion_matrix = 
-         833         112           0           0           3
-         186         769          21           0           0
-           0         115         992         132          10
-           0           0          22         688         147
-           6           2           0         149         869
+        1003         203           0           0           0
+          10         724           0           0           0
+           0         106         969          95           0
+           0           0           0         708           9
+           0           0           0         165        1064
 

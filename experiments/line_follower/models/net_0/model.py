@@ -25,15 +25,15 @@ class Create(torch.nn.Module):
      
         for i in range(len(self.layers)):
             if hasattr(self.layers[i], "weight"):
-                torch.nn.init.xavier_uniform_(self.layers[i].weight)
+                torch.nn.init.orthogonal_(self.layers[i].weight, 2**0.5)
 
         self.model = nn.Sequential(*self.layers)
         self.model.to(self.device)
 
         print(self.model)
 
-    def forward(self, state):
-        y = self.model.forward(state)
+    def forward(self, x):
+        y = self.model.forward(x)
         return y
     
     def save(self, path):

@@ -5,13 +5,13 @@ from PIL import Image, ImageDraw, ImageFont
 
 class DatasetLineFollower:
     def __init__(self, width = 8, height = 8, classes_count = 5, training_count = 50000, testing_count = 1000):
-        self.angle_noise      = 0.05
-        self.top_bottom_noise = 0.1 
+        self.angle_noise      = 0.02
+        self.top_bottom_noise = 0.0
 
         self.noise_level      = 0.05
 
         self.line_width_min = 0.15
-        self.line_width_max = 0.2
+        self.line_width_max = 0.25
 
         self.intensity_min = 0.5
         self.intensity_max = 1.0
@@ -86,12 +86,9 @@ class DatasetLineFollower:
         return result_x, result_y
 
 
-
-
     def _create_item(self):
         line_position = numpy.random.rand()
 
-        
         if numpy.random.randint(2) == 0:
             angle = 0.0
         else:
@@ -123,7 +120,7 @@ class DatasetLineFollower:
 
         return img_np, target_np
 
-
+ 
     def _generate_line_image(self, lines):
         img = Image.new("L", (self.width, self.height)) 
 
@@ -137,6 +134,7 @@ class DatasetLineFollower:
             shape = [(line[0]*self.width, line[1]*self.height), (line[2]*self.width, line[3]*self.height)] 
             img1.line(shape, fill = intensity, width = line_width) 
 
+        '''
         if numpy.random.randint(2) == 0:
             #random perspective
             param = numpy.random.randint(20)
@@ -152,7 +150,7 @@ class DatasetLineFollower:
                                     )
 
             img = img.transform( (img.width, img.height), method=Image.PERSPECTIVE, data=coeff)
-        
+        '''
 
         return img
 
@@ -203,7 +201,6 @@ if __name__ == "__main__":
     result_img = numpy.zeros((result_img_height, result_img_width))
     x_t, y_t = dataset.get_training_batch(batch_size=imgs_x*imgs_y)
 
-
     for y in range(imgs_y):
         for x in range(imgs_x):
             idx  = y*imgs_x + x
@@ -212,7 +209,7 @@ if __name__ == "__main__":
             x_np = (x_np - x_np.min())/(x_np.max() - x_np.min())
 
             y_ofs = y*(height + spacing)
-            x_ofs = x*(height + spacing)
+            x_ofs = x*(width + spacing)
 
             result_img[0 + y_ofs:height + y_ofs, 0 + x_ofs:width + x_ofs] = x_np
 
@@ -222,8 +219,8 @@ if __name__ == "__main__":
     img     = Image.new('RGB', img_gr.size)
     img.paste(img_gr)
 
-    target_height  = 96
-    target_width   = 96
+    target_height  = width*2
+    target_width   = height*2
 
     height_ = target_height*imgs_y
     width_  = target_width*imgs_y

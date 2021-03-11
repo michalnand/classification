@@ -1,25 +1,25 @@
 best model
-epoch = 17
+epoch = 25
 
 TRAINING result
 
-loss_mean = 0.083705775
-loss_std  = 0.0056213927
+loss_mean = 0.038858976
+loss_std  = 0.008024076
 
 
-accuracy   = 81.929 [%]
-hit_count  = 41004
-miss_count = 9044
+accuracy   = 86.809 [%]
+hit_count  = 43446
+miss_count = 6602
 
-class_accuracy = 81.796%   70.373%   98.298%   70.897%   88.118%   
+class_accuracy = 99.99%   67.638%   99.99%   67.27%   99.204%   
 
 
 confusion_matrix = 
-        8169        1755          13           9           7
-        1815        6993          75           0           0
-           2        1188        9931        1290           0
-           0           0          81        7145        1174
-           0           0           2        1633        8766
+       10045        2199           0           0           0
+           0        6684           0           0           0
+           0         998        9915        1077           0
+           0           0           0        6838          79
+           0           0           0        2249        9964
 
 
 
@@ -27,21 +27,21 @@ confusion_matrix =
 
 TESTING result
 
-loss_mean = 0.082269885
-loss_std  = 0.0055227736
+loss_mean = 0.036048803
+loss_std  = 0.008012352
 
 
-accuracy   = 81.804 [%]
-hit_count  = 4136
-miss_count = 920
+accuracy   = 88.291 [%]
+hit_count  = 4464
+miss_count = 592
 
-class_accuracy = 80.488%   75.579%   97.233%   65.321%   87.691%   
+class_accuracy = 99.909%   69.316%   99.906%   70.704%   99.258%   
 
 
 confusion_matrix = 
-         792         127           0           0           4
-         191         718          13           0           0
-           0         104        1019         145           0
-           0           0          15         631         132
-           0           0           0         189         976
+        1096         212           0           0           0
+           0         689           0           0           0
+           0          92        1059          80           0
+           0           0           0         683           6
+           0           0           0         202         937
 

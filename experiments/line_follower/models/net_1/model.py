@@ -10,40 +10,31 @@ class Create(torch.nn.Module):
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        fc_size = (input_shape[1]//2)*(input_shape[2]//2)
+        self.gru      = nn.GRU(input_size=input_shape[2], hidden_size=32, batch_first = True)
+        self.linear   = nn.Linear(32, output_shape[0])
 
-        self.layers = [ 
-                        nn.Conv2d(input_shape[0], 8, kernel_size = 3, stride = 2, padding = 1),
-                        nn.ReLU(),  
+        self.gru.to(self.device)
+        self.linear.to(self.device)
 
-                        nn.Conv2d(8, 8, kernel_size = 3, stride = 1, padding = 1),
-                        nn.ReLU(),  
+        print(self.gru)
+        print(self.linear)
 
-                        nn.Flatten(),
-                        nn.Linear(fc_size*8, output_shape[0])
-        ]
-     
-        for i in range(len(self.layers)):
-            if hasattr(self.layers[i], "weight"):
-                torch.nn.init.xavier_uniform_(self.layers[i].weight)
+    def forward(self, x):
+        x_ = x.reshape((x.shape[0], x.shape[2], x.shape[3]))
+        x_ = x_.flip([1])
 
-        self.model = nn.Sequential(*self.layers)
-        self.model.to(self.device)
+        output, hn = self.gru(x_)
 
-        print(self.model)
+        return self.linear(hn[0])
 
-    def forward(self, state):
-        y = self.model.forward(state)
-        return y
-    
+
     def save(self, path):
-        name = path + "model.pt"
-        print("saving", name)
-        torch.save(self.model.state_dict(), name) 
+        torch.save(self.gru.state_dict(),    path + "model_gru.pt") 
+        torch.save(self.linear.state_dict(), path + "model_linear.pt") 
 
     def load(self, path):
-        name = path + "model.pt"
-        print("loading", name)
+        self.gru.load_state_dict(torch.load(path + "model_gru.pt", map_location = self.device))
+        self.linear.load_state_dict(torch.load(path + "model_linear.pt", map_location = self.device))
 
-        self.model.load_state_dict(torch.load(name, map_location = self.device))
-        self.model.eval()
+        self.gru.eval() 
+        self.linear.eval()

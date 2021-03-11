@@ -27,7 +27,7 @@ class Create(torch.nn.Module):
         ]
 
         self.layers_decoder = [
-            self.conv_dw(256 + 512, 256, 1), 
+            self.conv_dw(256 + 256, 256, 1), 
             self.conv_bn(256, 128, 1),
             self.conv_bn(128, 64, 1),
 

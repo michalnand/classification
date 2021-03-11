@@ -48,45 +48,6 @@ ACC_t dot_microkernel(const DATA_VA_t *va, const DATA_VB_t *vb)
         size-= 32;
     }
 
-    /*
-    while (size >= 16)
-    {                    
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-
-        size-= 16;
-    }
-
-
-    while (size >= 8)
-    {                    
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
-        
-        size-= 8;
-    }
-    */
-
     while (size > 0)
     {
         result+= (ACC_t)va[idx]*(ACC_t)vb[idx]; idx++;
