@@ -10,7 +10,7 @@ class DatasetMnist:
         test  = torchvision.datasets.MNIST("./files/", train=False, download=True)
 
         self.training_count = len(train)
-        self.testing_count = len(test)
+        self.testing_count  = len(test)
 
         
         

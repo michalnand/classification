@@ -11,16 +11,19 @@ from .ExportGlobalAvgPool   import *
 
 class ExportModel:
 
-    def __init__(self, network_prefix, input_shape, output_shape, Model, pretrained_path, export_path, quantization_type):
+    def __init__(self, network_prefix, input_shape, output_shape, Model, pretrained_path, export_path, quantization_type, reccurent_stream_model = False):
 
         self.network_prefix = network_prefix
         self.input_shape    = input_shape
         self.output_shape   = output_shape
 
+        self.reccurent_stream_model = reccurent_stream_model
+
         model = Model.Create(input_shape, output_shape)
+
         if pretrained_path is not None:
             model.load(pretrained_path)
-
+            
         self.export_model(model, quantization_type)
         self.export_files(export_path, quantization_type)
 
@@ -60,8 +63,12 @@ class ExportModel:
                 code_network+= code[0]
                 code_weights+= code[1]
 
-            elif isinstance(layer, torch.nn.GRU):                
-                code, output_shape, required_memory, macs = ExportGRU(layer, i, self.network_prefix, layer_input_shape, quantization_type)
+            elif isinstance(layer, torch.nn.GRU):   
+                if self.reccurent_stream_model:             
+                    code, output_shape, required_memory, macs, rnn_hidden_size = ExportGRUStream(layer, i, self.network_prefix, layer_input_shape, quantization_type)
+                    self.rnn_hidden_size = rnn_hidden_size
+                else:
+                    code, output_shape, required_memory, macs = ExportGRU(layer, i, self.network_prefix, layer_input_shape, quantization_type)
 
                 code_network+= code[0]
                 code_weights+= code[1]
@@ -108,7 +115,15 @@ class ExportModel:
         self.code_h+= "{\n"
         self.code_h+= "\tpublic:\n"
         self.code_h+= "\t\t " + self.network_prefix + "();\n"
+        if self.reccurent_stream_model:
+            self.code_h+= "\t\t " + "void reset();\n"
         self.code_h+= "\t\t " + "void forward();\n"
+
+        if self.reccurent_stream_model:
+            self.code_h+= "\tprivate:\n"
+            self.code_h+= "\t\t " + "float *hidden_state;\n"
+
+
         self.code_h+= "};\n"
 
         self.code_h+= "\n\n"
@@ -124,6 +139,11 @@ class ExportModel:
         self.code_cpp+= "\t: ModelInterface()\n"
         self.code_cpp+= "{\n"
         self.code_cpp+= "\t" + "init_buffer("  + str(self.total_required_memory) + ");\n"
+
+        if self.reccurent_stream_model:
+            self.code_cpp+= "\t"    + "hidden_state = new float[" + str(self.rnn_hidden_size) + "];\n"
+            self.code_cpp+= "\t"    + "reset();\n"
+            
         self.code_cpp+= "\t" + "total_macs = " + str(self.total_macs) + ";\n"
 
         if len(self.input_shape) == 3:
@@ -151,6 +171,13 @@ class ExportModel:
         else:
             self.code_cpp+= "\t" + "output_width = "    + str(1) + ";\n"
 
+        self.code_cpp+= "}\n\n"
+
+
+        self.code_cpp+= "void " + self.network_prefix + "::" + "reset()\n"
+        self.code_cpp+= "{\n"
+        self.code_cpp+= "\t"    + "for (unsigned int i = 0; i < " + str(self.rnn_hidden_size) + "; i++)\n"
+        self.code_cpp+= "\t\t"  + "hidden_state[i] = 0;\n"
         self.code_cpp+= "}\n\n"
 
 

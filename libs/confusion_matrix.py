@@ -16,7 +16,6 @@ class ConfusionMatrix:
 
         self.class_accuracy = numpy.zeros(self.classes_count)
 
-
     def add_batch(self, target, predicted):
         for i in range(len(target)):
             self.add(target[i], predicted[i])
@@ -25,6 +24,13 @@ class ConfusionMatrix:
         target_idx      = numpy.argmax(target)
         predicted_idx   = numpy.argmax(predicted)
 
+        self.confussion_matrix[predicted_idx][target_idx]+= 1
+
+    def add_batch_idx(self, target, predicted):
+        for i in range(len(target)):
+            self.add_idx(target[i], predicted[i])
+
+    def add_idx(self, target_idx, predicted_idx):
         self.confussion_matrix[predicted_idx][target_idx]+= 1
 
     def compute(self):

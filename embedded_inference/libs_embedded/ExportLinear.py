@@ -4,9 +4,26 @@ def ExportLinear(layer, layer_num, network_prefix, input_shape, quantization_typ
     
     layer_id = network_prefix + "_" + "layer_" + str(layer_num)
 
-    weights = layer.weight.to("cpu").detach().numpy()
-    bias    = layer.bias.to("cpu").detach().numpy()
+    padding_inputs  = 4
+    padding_outputs = 8
 
+    weights_raw = layer.weight.to("cpu").detach().numpy()
+    bias_raw    = layer.bias.to("cpu").detach().numpy()
+
+    #add padding
+    in_features  = weights_raw.shape[1]
+    out_features = weights_raw.shape[0]
+
+    p_out       = (padding_outputs - (out_features%padding_outputs))%padding_outputs
+    p_in        = (padding_inputs  - (in_features%padding_inputs))%padding_inputs
+
+    weights = numpy.zeros((out_features + p_out, in_features + p_in))
+    weights[0:out_features, 0:in_features] = weights_raw
+
+    bias        = numpy.zeros((out_features + p_out))
+    bias[0:out_features] = bias_raw
+    
+    
     if quantization_type == "int8":
         io_data_type    = "int8_t"
         w_data_type     = "int8_t"
@@ -43,6 +60,7 @@ def ExportLinear(layer, layer_num, network_prefix, input_shape, quantization_typ
     output_size     = weights.shape[0]
     input_size      = weights.shape[1]
 
+    
     var_weights = layer_id + "_weights"
     var_bias    = layer_id + "_bias"
 
@@ -97,4 +115,4 @@ def ExportLinear(layer, layer_num, network_prefix, input_shape, quantization_typ
     print("\n\n")
 
 
-    return code, (output_size, ), output_size, macs
+    return code, (output_size, ), output_size*4, macs

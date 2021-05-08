@@ -15,12 +15,11 @@ class Train:
         self.Metrics            = Metrics
 
     def step_epochs(self, epoch_count, log_path = "./"):
-        accuracy_best       = -1.0
         epoch_time_filtered = -1.0
 
         f_training_log  = open(log_path + "/result/training.log","w+")
 
-        best_score = 0.0
+        best_score = -1000000.0
 
         for epoch in range(epoch_count):
             learning_rate = self.learning_rates[epoch_count%len(self.learning_rates)]

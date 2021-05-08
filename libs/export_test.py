@@ -48,6 +48,11 @@ class ExportTest:
             reference_y = self.model_reference.forward(x).detach().to("cpu").numpy()
             testing_y   = self.model_testing.forward(x).detach().to("cpu").numpy()
 
+            if len(target_y.shape) > 2:
+                target_y    = numpy.reshape(target_y,  (target_y.shape[0]*target_y.shape[1], target_y.shape[2]))
+                reference_y = numpy.reshape(reference_y,  (reference_y.shape[0]*reference_y.shape[1], reference_y.shape[2]))
+                testing_y   = numpy.reshape(testing_y, (testing_y.shape[0]*testing_y.shape[1], testing_y.shape[2]))
+            
             reference_confusion_matrix.add_batch(target_y, reference_y)
             testing_confusion_matrix.add_batch(target_y, testing_y)
 

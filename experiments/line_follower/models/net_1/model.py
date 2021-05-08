@@ -10,8 +10,8 @@ class Create(torch.nn.Module):
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        self.gru      = nn.GRU(input_size=input_shape[2], hidden_size=32, batch_first = True)
-        self.linear   = nn.Linear(32, output_shape[0])
+        self.gru      = nn.GRU(input_size=input_shape[1], hidden_size=64, batch_first = True)
+        self.linear   = nn.Linear(64, output_shape[1])
 
         self.gru.to(self.device)
         self.linear.to(self.device)
@@ -20,12 +20,9 @@ class Create(torch.nn.Module):
         print(self.linear)
 
     def forward(self, x):
-        x_ = x.reshape((x.shape[0], x.shape[2], x.shape[3]))
-        x_ = x_.flip([1])
-
-        output, hn = self.gru(x_)
-
-        return self.linear(hn[0])
+        gru_y, hn   = self.gru(x)
+        y           = self.linear(gru_y)
+        return y
 
 
     def save(self, path):

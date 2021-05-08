@@ -2,7 +2,6 @@
 #define _Conv2d_H_
 
 #include <stdint.h>
-#include <typeinfo>
 
 #include "dot_microkernel.h"
 #include "Padding.h"
@@ -42,14 +41,15 @@ void Conv2d(IO_t *output_buffer, IO_t *input_buffer, const WEIGHT_t *kernel, con
                     kernel_+= kernel_size*input_channels;
                 }
 
-                if (typeid(IO_t) == typeid(float))
-                {
-                    result = (result*scale)/1024;
-                }
-                else
+                if (sizeof(IO_t) == 1)
                 {
                     result = (result*scale)/(128*1024);
                 }
+                else
+                {
+                    result = (result*scale)/1024;
+                }
+                
 
                 result = result + (bias[filter]*scale)/1024;
 

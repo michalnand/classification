@@ -12,8 +12,15 @@ output_shape    = (10, )
 import model
 
 model_path      = "./"
-pretrained_path = model_path + "trained/"
-export_path     = model_path + "export/"
 
+pretrained_path = model_path + "trained/"
+export_path     = model_path + "export_int8/"
 
 embedded_inference.libs_embedded.ExportModel("MyModel", input_shape, output_shape, model, pretrained_path, export_path, "int8")
+
+
+
+pretrained_path = model_path + "trained/"
+export_path     = model_path + "export_float/"
+
+embedded_inference.libs_embedded.ExportModel("MyModel", input_shape, output_shape, model, pretrained_path, export_path, "float")
