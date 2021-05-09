@@ -59,3 +59,36 @@ confusion_matrix =
         4969          10
           32        5037
 ```
+
+
+# supervised training
+
+after contrastive pretraining, the aditional linear layer is connected and trained just for 1 epoch
+for classification
+
+the weights for contrastive model are frozen
+
+![](images/supervised.png)
+
+
+```
+accuracy   = 99.323 [%]
+hit_count  = 9980
+miss_count = 68
+
+class_accuracy = 99.901%   99.552%   99.427%   99.385%   99.004%   98.933%   98.608%   99.034%   99.475%   98.851%   
+
+
+confusion_matrix = 
+        1013           0           1           3           0           2           8           0           1           0
+           0        1111           0           0           0           0           2           4           0           0
+           0           0        1041           1           0           0           0           4           3           0
+           0           2           0         969           0           7           0           0           0           1
+           0           0           0           0         994           0           0           0           0           4
+           0           0           0           0           0         927           0           0           0           0
+           0           0           0           0           2           0         921           0           0           0
+           0           2           4           1           0           0           0        1025           0           4
+           0           0           0           0           1           0           2           0         947           2
+           0           0           0           0           6           0           0           1           0        1032
+
+```
