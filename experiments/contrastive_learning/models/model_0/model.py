@@ -46,6 +46,9 @@ class Create(torch.nn.Module):
         dist = ((fa - fb)**2).mean(dim=1)
         
         return dist
+
+    def eval_features(self, x):
+        return self.model(x)
     
     def save(self, path):
         torch.save(self.model.state_dict(), path   + "model.pt")

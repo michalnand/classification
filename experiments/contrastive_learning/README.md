@@ -44,6 +44,17 @@ l2 = target*max(1.0 - predicted, 0)
 loss  = (l1 + l2).mean()
 ```
 
+### clusters visualisation
+
+using t-sne we can project original MNIST 784D data into 2D plot
+
+![](images/mnist_contrastive_learning_orig.png)
+
+after puting data into model, we obtain 128 features vector, and again project using t-sne into 2D - very nice cluster
+
+![](images/mnist_contrastive_learning_t_sne.png)
+
+
 ### results
 arround 99.5% accuracy on testing set, training for 10 epochs
 
