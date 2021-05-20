@@ -8,10 +8,11 @@
 experiemnt link : [car_detection_magnetic_field](experiments/car_detection_magnetic_field)
 
 
+## image segmentation for outdoor robot
 
-## line detection from camera
+experiemnt link : [image_segmentation](experiments/outdoor)
 
-- for line follower or first self-driving cars experiments
-- include templated embedded C++ only inference - running in 8bit precission
 
-experiemnt link : [line_detection](experiments/line_detection)
+## contrastive learning - just first experiment
+
+experiemnt link : [contrastive_learning](experiments/contrastive_learning)
