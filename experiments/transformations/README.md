@@ -1,0 +1,147 @@
+# image segmentation
+
+![](images/segmentation.jpg)
+![](images/video.gif)
+
+
+trained on custom dataset
+
+using only small model - for future usage on NVIDIA Jetson Nano
+
+training 200 epoch, cyclic learning rate
+
+# results
+
+```
+best model
+epoch = 32
+
+TRAINING result
+
+loss_mean = 0.019305283
+loss_std  = 0.0073369946
+iou_mean = 0.9389525484537616
+iou_std  = 0.025622261055041305
+class_iou  = 
+     0.88244     0.72199     0.85114     0.80327     0.93012
+
+
+
+TESTING result
+
+loss_mean = 0.013473748
+loss_std  = 0.0039793085
+iou_mean = 0.9604955096287635
+iou_std  = 0.013087814553758475
+class_iou  = 
+     0.92397     0.77855     0.90332     0.85446      0.9539
+```
+
+# model
+
+strided convs, some brach : [model](models/model_1/)
+
+```python
+import torch
+import torch.nn as nn
+
+class Create(torch.nn.Module):
+
+    def __init__(self, input_shape, output_shape):
+        super(Create, self).__init__()
+
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        self.layers_encoder_0 = [ 
+                        self.conv_bn(input_shape[0], 32, 2),
+
+                        self.conv_bn(32, 64, 1),
+                        self.conv_bn(64, 128, 2),
+
+                        self.conv_bn(128, 128, 1),
+                        self.conv_bn(128, 256, 2)
+        ]
+
+
+        self.layers_encoder_1 = [
+                        self.conv_bn(256, 256, 1),
+                        self.conv_bn(256, 256, 2),
+
+                        self.conv_bn(256, 256, 1),
+                        self.conv_bn(256, 256, 2)
+        ]
+
+        self.layers_decoder = [
+            self.conv_bn(256 + 256, 256, 1),
+            self.conv_bn(256, 128, 1),
+            self.conv_bn(128, 128, 1),
+
+            nn.Conv2d(128, output_shape[0], kernel_size = 1, stride = 1, padding = 0),
+            nn.Upsample(scale_factor=8, mode="bilinear", align_corners=False)
+        ]
+
+        for i in range(len(self.layers_encoder_0)):
+            if hasattr(self.layers_encoder_0[i], "weight"):
+                torch.nn.init.xavier_uniform_(self.layers_encoder_0[i].weight)
+
+        for i in range(len(self.layers_encoder_1)):
+            if hasattr(self.layers_encoder_1[i], "weight"):
+                torch.nn.init.xavier_uniform_(self.layers_encoder_1[i].weight)
+
+        for i in range(len(self.layers_decoder)):
+            if hasattr(self.layers_decoder[i], "weight"):
+                torch.nn.init.xavier_uniform_(self.layers_decoder[i].weight)
+
+    
+        self.model_encoder_0 = nn.Sequential(*self.layers_encoder_0)
+        self.model_encoder_0.to(self.device)
+
+        self.model_encoder_1 = nn.Sequential(*self.layers_encoder_1)
+        self.model_encoder_1.to(self.device)
+
+        self.model_decoder = nn.Sequential(*self.layers_decoder)
+        self.model_decoder.to(self.device)
+
+        print(self.model_encoder_0)
+        print(self.model_encoder_1)
+        print(self.model_decoder)
+
+
+    def forward(self, x):
+        encoder_0 = self.model_encoder_0(x)
+        encoder_1 = self.model_encoder_1(encoder_0)
+        
+        encoder_1_up = torch.nn.functional.interpolate(encoder_1, scale_factor=4, mode="nearest")
+
+        d_in      = torch.cat([encoder_0, encoder_1_up], dim=1)
+
+        y = self.model_decoder(d_in)
+        return y
+    
+    def save(self, path):
+        torch.save(self.model_encoder_0.state_dict(), path + "model_encoder_0.pt") 
+        torch.save(self.model_encoder_1.state_dict(), path + "model_encoder_1.pt") 
+        torch.save(self.model_decoder.state_dict(), path + "model_decoder.pt") 
+
+    def load(self, path):
+        self.model_encoder_0.load_state_dict(torch.load(path + "model_encoder_0.pt", map_location = self.device))
+        self.model_encoder_1.load_state_dict(torch.load(path + "model_encoder_1.pt", map_location = self.device))
+        self.model_decoder.load_state_dict(torch.load(path + "model_decoder.pt", map_location = self.device))
+        
+        self.model_encoder_0.eval() 
+        self.model_encoder_1.eval() 
+        self.model_decoder.eval() 
+
+    def conv_bn(self, inputs, outputs, stride):
+        return nn.Sequential(
+                nn.Conv2d(inputs, outputs, kernel_size = 3, stride = stride, padding = 1),
+                nn.BatchNorm2d(outputs),
+                nn.ReLU(inplace=True))
+    
+    def tconv_bn(self, inputs, outputs, stride):
+        return nn.Sequential(
+                nn.ConvTranspose2d(inputs, outputs, kernel_size = 3, stride = stride, padding = 1, output_padding = 1),
+                nn.BatchNorm2d(outputs),
+                nn.ReLU(inplace=True))
+
+```

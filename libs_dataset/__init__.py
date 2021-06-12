@@ -9,6 +9,7 @@ from .dataset_line_follower_stream import *
 
 from .dataset_mnist             import *
 from .dataset_segmentaion       import *
+from .dataset_transformations   import *
 from .dataset_images            import *
 from .dataset_contrastive       import *
 
