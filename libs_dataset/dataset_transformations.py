@@ -9,14 +9,15 @@ from PIL import Image, ImageFilter
 
 class DatasetTransformations:
 
-    def __init__(self, folders_training, folders_testing, height = 256, width=256, source_height = 960, source_width = 1280, augmentation_count = 64):
+    def __init__(self, folders_training, folders_testing, height = 256, width=256, source_height = 960, source_width = 1280, augmentation_count = 64, testing_augmentation_count = 8):
 
         self.height             = height
         self.width              = width 
         self.source_height      = source_height
         self.source_width       = source_width
 
-        self.augmentation_count = augmentation_count
+        self.training_augmentation_count = training_augmentation_count
+        self.testing_augmentation_count  = testing_augmentation_count
 
         self.training_images    = []
         self.training_targets   = []
@@ -27,7 +28,7 @@ class DatasetTransformations:
         for folder in folders_training:
             images = ImagesLoader([folder], source_height, source_width, channel_first=True)
 
-            images_aug, target = self._make_transformations(images.images)
+            images_aug, target = self._make_transformations(images.images, self.testing_augmentation_count)
             
             self.training_images.append(images_aug)
             self.training_targets.append(target)
@@ -41,7 +42,7 @@ class DatasetTransformations:
         for folder in folders_testing:
             images = ImagesLoader([folder], source_height, source_width, channel_first=True)
 
-            images_aug, target = self._make_transformations(images.images)
+            images_aug, target = self._make_transformations(images.images, self.testing_augmentation_count)
             
             self.testing_images.append(images_aug)
             self.testing_targets.append(target)
@@ -98,7 +99,7 @@ class DatasetTransformations:
 
         return result_x, result_y
 
-    def _make_transformations(self, images):
+    def _make_transformations(self, images, augmentation_count):
         
         count           = images.shape[0]
         total_count     = count*self.augmentation_count
@@ -110,7 +111,7 @@ class DatasetTransformations:
         for j in range(count):
             image_in = Image.fromarray(numpy.moveaxis(images[j], 0, 2), 'RGB')
 
-            for i in range(self.augmentation_count):
+            for i in range(augmentation_count):
                 image_a, image_b, transformation = self._make_transformation(image_in)
 
                 images_result[ptr][0]       = image_a
@@ -126,7 +127,7 @@ class DatasetTransformations:
         ax = numpy.random.randint(0, self.source_width - self.width//2)
         ay = numpy.random.randint(0, self.source_height - self.height//2)
         image_a, angle_a, zoom_a = self._create_transformed(image_in, ax, ay)
-        
+
         if numpy.random.rand() < 0.5: 
             bx = int(ax + self._rnd(-max_distance*self.width, max_distance*self.width))
             by = int(ay + self._rnd(-max_distance*self.height, max_distance*self.height))
