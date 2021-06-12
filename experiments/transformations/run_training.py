@@ -33,5 +33,5 @@ folders_training.append("/home/michal/dataset/outdoor/street/")
 
 dataset = libs_dataset.DatasetTransformations(folders_training, folders_training, height = 256, width = 256)
 
-train = libs.Train(dataset, Model0, libs.MetricsSegmentation, batch_size = 8, learning_rates = learning_rates)
+train = libs.Train(dataset, Model0, libs.MetricsRegression, batch_size = 32, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/model_0")
