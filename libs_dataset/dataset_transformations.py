@@ -2,8 +2,8 @@ import numpy
 import torch 
 import os
 
-#from .images_loader import *
-from images_loader import *
+from .images_loader import *
+#from images_loader import *
 
 from PIL import Image, ImageFilter
 
