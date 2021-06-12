@@ -126,34 +126,21 @@ class DatasetTransformations:
         ax = numpy.random.randint(0, self.source_width - self.width//2)
         ay = numpy.random.randint(0, self.source_height - self.height//2)
         image_a, angle_a, zoom_a = self._create_transformed(image_in, ax, ay)
-   
-        if True: #numpy.random.rand() < 0.5: 
+        
+        if numpy.random.rand() < 0.5: 
             bx = int(ax + self._rnd(-max_distance*self.width, max_distance*self.width))
             by = int(ay + self._rnd(-max_distance*self.height, max_distance*self.height))
             image_b, angle_b, zoom_b = self._create_transformed(image_in, bx, by)
-            close = 1.0
-        else:
-            dx = self._rnd(self.width//2, self.source_width - self.width)
-            dy = self._rnd(self.height//2, self.source_height - self.height)
-            
-            if numpy.random.rand() < 0.5:
-                dx = -dx
-
-            if numpy.random.rand() < 0.5:
-                dy = -dy
-
-            bx = int(ax + dx) 
-            by = int(ay + dy)
-
+        else: 
+            bx = int(ax + self._rnd(-max_distance*0.1*self.width, max_distance*0.1*self.width))
+            by = int(ay + self._rnd(-max_distance*0.1*self.height, max_distance*0.1*self.height))
             image_b, angle_b, zoom_b = self._create_transformed(image_in, bx, by)
-            close = 0.0
-
+            
         transformation      = numpy.zeros(self.classes_count, )
         transformation[0]   = (ax - bx)/self.width
         transformation[1]   = (ay - by)/self.height
         transformation[2]   = (angle_a - angle_b)*numpy.pi/180.0
         transformation[3]   = zoom_a/zoom_b
-
  
         return image_a, image_b, transformation
 

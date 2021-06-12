@@ -8,10 +8,10 @@ class Create(torch.nn.Module):
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        self.fc_size = 128*(input_shape[1]//32)*(input_shape[2]//32)
+        self.fc_size = 128*(input_shape[2]//32)*(input_shape[3]//32)
 
         self.layers_features = [
-            self.conv_bn(input_shape[0], 32, 2),
+            self.conv_bn(input_shape[1], 32, 2),
             self.conv_bn(32, 64, 2),
 
             self.conv_bn(64, 64, 1),
