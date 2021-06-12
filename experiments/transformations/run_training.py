@@ -28,7 +28,7 @@ folders_training.append("/home/michal/dataset/outdoor/istrobotics_1/images/")
 folders_training.append("/home/michal/dataset/outdoor/istrobotics_2/images/")
 folders_training.append("/home/michal/dataset/outdoor/nature/images/")
 folders_training.append("/home/michal/dataset/outdoor/za_park/images/")
-folders_training.append("/home/michal/dataset/outdoor/street/images/")
+#folders_training.append("/home/michal/dataset/outdoor/street/images/")
  
  
 dataset = libs_dataset.DatasetTransformations(folders_training, folders_training, height = 256, width = 256)
