@@ -102,7 +102,7 @@ class DatasetTransformations:
     def _make_transformations(self, images, augmentation_count):
         
         count           = images.shape[0]
-        total_count     = count*self.augmentation_count
+        total_count     = count*augmentation_count 
 
         images_result           = numpy.zeros((total_count, 2, 3, self.height, self.width), dtype=numpy.uint8)
         transformations_result  = numpy.zeros((total_count, self.classes_count))
