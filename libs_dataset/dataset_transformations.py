@@ -53,7 +53,7 @@ class DatasetTransformations:
         self.height        = height
         self.width         = width
 
-        self.input_shape   = (self.channels, 2, self.height, self.width)
+        self.input_shape   = (2, self.channels, self.height, self.width)
         self.output_shape  = (self.classes_count, )
 
         memory = (self.get_training_count() + self.get_testing_count())*numpy.prod(self.input_shape)

@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
     outputs_count   = 5
 
-    model = Create((channels, height, width), (outputs_count, ))
+    model = Create((2, channels, height, width), (outputs_count, ))
     model.eval()
 
     x = torch.randn((batch_size, 2, channels, height, width)).to(model.device)
