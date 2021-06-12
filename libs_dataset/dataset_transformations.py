@@ -9,12 +9,12 @@ from PIL import Image, ImageFilter
 
 class DatasetTransformations:
 
-    def __init__(self, folders_training, folders_testing, height = 256, width=256, source_height = 960, source_width = 1280, augmentation_count = 64, testing_augmentation_count = 8):
+    def __init__(self, folders_training, folders_testing, height = 256, width=256, source_height = 960, source_width = 1280, training_augmentation_count = 64, testing_augmentation_count = 8):
 
         self.height             = height
         self.width              = width 
         self.source_height      = source_height
-        self.source_width       = source_width
+        self.source_width       = source_width 
 
         self.training_augmentation_count = training_augmentation_count
         self.testing_augmentation_count  = testing_augmentation_count
@@ -28,7 +28,7 @@ class DatasetTransformations:
         for folder in folders_training:
             images = ImagesLoader([folder], source_height, source_width, channel_first=True)
 
-            images_aug, target = self._make_transformations(images.images, self.testing_augmentation_count)
+            images_aug, target = self._make_transformations(images.images, self.training_augmentation_count)
             
             self.training_images.append(images_aug)
             self.training_targets.append(target)
