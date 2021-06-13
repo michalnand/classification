@@ -4,7 +4,8 @@ sys.path.insert(0,'../..')
 import libs
 import libs_dataset
 
-import models.model_1.model as Model
+import models.model_0.model as Model0
+import models.model_1.model as Model1
 
 
 #train epochs
@@ -27,8 +28,10 @@ folders_testing = []
 folders_testing.append("/home/michal/dataset/outdoor/test/")
 
  
- 
 dataset = libs_dataset.DatasetTransformations(folders_training, folders_testing, height = 256, width = 256)
 
-train = libs.Train(dataset, Model, libs.MetricsRegression, batch_size = 32, learning_rates = learning_rates)
+train = libs.Train(dataset, Model0, libs.MetricsRegression, batch_size = 32, learning_rates = learning_rates)
+train.step_epochs(epoch_count, log_path = "./models/model_0")
+
+train = libs.Train(dataset, Model1, libs.MetricsRegression, batch_size = 32, learning_rates = learning_rates)
 train.step_epochs(epoch_count, log_path = "./models/model_1")

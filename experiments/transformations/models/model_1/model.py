@@ -25,6 +25,8 @@ class Create(torch.nn.Module):
 
             nn.Flatten(),
 
+            nn.Dropout(0.2),
+
             nn.Linear(self.fc_size, 256),
             nn.ReLU(),
             nn.Linear(256, output_shape[0])
@@ -32,7 +34,7 @@ class Create(torch.nn.Module):
 
         for i in range(len(self.layers)):
             if hasattr(self.layers[i], "weight"):
-                torch.nn.init.orthogonal_(self.layers[i].weight, 0.1)
+                torch.nn.init.xavier_uniform_(self.layers[i].weight)
                 torch.nn.init.zeros_(self.layers[i].bias)
 
         self.model = nn.Sequential(*self.layers)

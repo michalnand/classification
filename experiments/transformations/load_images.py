@@ -41,11 +41,11 @@ class LoadImageTransformed:
         if numpy.random.rand() < 0.5: 
             bx = int(ax + self._rnd(-max_distance*self.width, max_distance*self.width))
             by = int(ay + self._rnd(-max_distance*self.height, max_distance*self.height))
-            image_b, angle_b, zoom_b = self._create_transformed(image_in, bx, by)
         else: 
             bx = int(ax + self._rnd(-max_distance*0.1*self.width, max_distance*0.1*self.width))
             by = int(ay + self._rnd(-max_distance*0.1*self.height, max_distance*0.1*self.height))
-            image_b, angle_b, zoom_b = self._create_transformed(image_in, bx, by)
+        
+        image_b, angle_b, zoom_b = self._create_transformed(image_in, bx, by)
             
         transformation      = numpy.zeros(4, )
         transformation[0]   = (ax - bx)/self.width
@@ -58,8 +58,8 @@ class LoadImageTransformed:
 
     def _create_transformed(self, image_in, x, y):
         
-        angle   = self._rnd(-10.0, 10.0)
-        zoom    = self._rnd(0.9, 1.1)   
+        angle   = 0 #self._rnd(-10.0, 10.0)
+        zoom    = 1 #self._rnd(0.9, 1.1)   
 
         ax      = int(x - 0.5*zoom*self.width)
         ay      = int(y - 0.5*zoom*self.height)

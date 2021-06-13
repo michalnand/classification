@@ -80,8 +80,8 @@ class DatasetTransformations:
         return self._get_batch(self.training_images, self.training_targets, batch_size)
 
     def get_testing_batch(self, batch_size = 32):
-        return self._get_batch(self.training_images, self.training_targets, batch_size)
-
+        return self._get_batch(self.testing_images, self.testing_targets, batch_size)
+ 
     def _get_batch(self, images, targets, batch_size):
         result_x = torch.zeros((batch_size, 2, self.channels, self.height, self.width)).float()
         result_y = torch.zeros((batch_size, self.classes_count)).float()
@@ -148,8 +148,8 @@ class DatasetTransformations:
 
     def _create_transformed(self, image_in, x, y):
         
-        angle   = self._rnd(-10.0, 10.0)
-        zoom    = self._rnd(0.9, 1.1)   
+        angle   = 0 #self._rnd(-10.0, 10.0)
+        zoom    = 1 #self._rnd(0.9, 1.1)   
 
         ax      = int(x - 0.5*zoom*self.width)
         ay      = int(y - 0.5*zoom*self.height)

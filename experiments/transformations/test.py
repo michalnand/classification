@@ -3,7 +3,7 @@ import torch
 from PIL import Image
 import load_images
 
-import models.model_0.model as Model0
+import models.model_1.model as Model
 
 
 def show_image(image_np):
@@ -22,8 +22,8 @@ show_image(x_input[0][1])
 
 
 
-model = Model0.Create((2, 3, 256, 256), (4, ))
-model.load("./models/model_0/trained/") 
+model = Model.Create((2, 3, 256, 256), (4, ))
+model.load("./models/model_1/trained/")
 
 batch = torch.from_numpy(x_input).float().to(model.device)
  

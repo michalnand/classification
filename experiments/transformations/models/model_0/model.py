@@ -30,6 +30,8 @@ class Create(torch.nn.Module):
         ]
 
         self.layers_output = [
+            nn.Dropout(0.2),
+
             nn.Linear(2*256, 256),
             nn.ReLU(),
             nn.Linear(256, output_shape[0])
@@ -37,12 +39,12 @@ class Create(torch.nn.Module):
 
         for i in range(len(self.layers_features)):
             if hasattr(self.layers_features[i], "weight"):
-                torch.nn.init.orthogonal_(self.layers_features[i].weight, 2**0.5)
+                torch.nn.init.xavier_uniform_(self.layers_features[i].weight)
                 torch.nn.init.zeros_(self.layers_features[i].bias)
 
         for i in range(len(self.layers_output)):
             if hasattr(self.layers_output[i], "weight"):
-                torch.nn.init.orthogonal_(self.layers_output[i].weight, 0.01)
+                torch.nn.init.xavier_uniform_(self.layers_output[i].weight)
                 torch.nn.init.zeros_(self.layers_output[i].bias)
 
         self.model_features = nn.Sequential(*self.layers_features)
