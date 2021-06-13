@@ -6,10 +6,10 @@ from .images_loader import *
 #from images_loader import *
 
 from PIL import Image, ImageFilter
-
+ 
 class DatasetTransformations:
 
-    def __init__(self, folders_training, folders_testing, height = 256, width=256, source_height = 960, source_width = 1280, training_augmentation_count = 64, testing_augmentation_count = 8):
+    def __init__(self, folders_training, folders_testing, height = 256, width=256, source_height = 960, source_width = 1280, training_augmentation_count = 64, testing_augmentation_count = 16):
 
         self.height             = height
         self.width              = width 
