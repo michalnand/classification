@@ -8,75 +8,50 @@ class Create(torch.nn.Module):
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        self.fc_size = 128*(input_shape[2]//32)*(input_shape[3]//32)
+        self.fc_size = 512*(input_shape[2]//128)*(input_shape[3]//128)
 
-        self.layers_features = [
-            self.conv_bn(input_shape[1], 32, 2),
+        self.layers = [
+            nn.Conv2d(2*input_shape[1], 16, kernel_size = 7, stride = 2, padding = 3),
+            nn.ReLU(),
+            
+            self.conv_bn(16, 32, 2),
             self.conv_bn(32, 64, 2),
-
-            self.conv_bn(64, 64, 1),
-            self.conv_bn(64, 64, 2),
-
-            self.conv_bn(64, 128, 1),
-            self.conv_bn(128, 128, 2),
-
-            self.conv_bn(128, 128, 1),
-            self.conv_bn(128, 128, 2),
+            self.conv_bn(64, 128, 2),
+            self.conv_bn(128, 256, 2),
+            self.conv_bn(256, 256, 2),
+            self.conv_bn(256, 512, 2),
 
             nn.Flatten(),
 
-            nn.Linear(self.fc_size, 256),
-            nn.ReLU()
-        ]
-
-        self.layers_output = [
             nn.Dropout(0.2),
 
-            nn.Linear(2*256, 256),
+            nn.Linear(self.fc_size, 256),
             nn.ReLU(),
             nn.Linear(256, output_shape[0])
         ]
 
-        for i in range(len(self.layers_features)):
-            if hasattr(self.layers_features[i], "weight"):
-                torch.nn.init.xavier_uniform_(self.layers_features[i].weight)
-                torch.nn.init.zeros_(self.layers_features[i].bias)
+        for i in range(len(self.layers)):
+            if hasattr(self.layers[i], "weight"):
+                torch.nn.init.xavier_uniform_(self.layers[i].weight)
+                torch.nn.init.zeros_(self.layers[i].bias)
 
-        for i in range(len(self.layers_output)):
-            if hasattr(self.layers_output[i], "weight"):
-                torch.nn.init.xavier_uniform_(self.layers_output[i].weight)
-                torch.nn.init.zeros_(self.layers_output[i].bias)
+        self.model = nn.Sequential(*self.layers)
+        self.model.to(self.device)
 
-        self.model_features = nn.Sequential(*self.layers_features)
-        self.model_features.to(self.device)
-
-        self.model_output = nn.Sequential(*self.layers_output)
-        self.model_output.to(self.device)
-
-        print(self.model_features)
-        print(self.model_output)
+        print(self.model)
 
 
     def forward(self, x):
-        x0        = x[:,0]
-        x1        = x[:,1]
-
-        f0  = self.model_features(x0)
-        f1  = self.model_features(x1)
-
-        y = self.model_output(torch.cat([f0, f1], dim=1))
+        x_in    = x.reshape((x.shape[0], x.shape[1]*x.shape[2], x.shape[3], x.shape[4]))
+        y       = self.model(x_in)
         return y
     
     def save(self, path):
-        torch.save(self.model_features.state_dict(), path + "model_features.pt") 
-        torch.save(self.model_output.state_dict(), path + "model_output.pt") 
+        torch.save(self.model.state_dict(), path + "model.pt") 
 
     def load(self, path):
-        self.model_features.load_state_dict(torch.load(path + "model_features.pt", map_location = self.device))
-        self.model_output.load_state_dict(torch.load(path + "model_output.pt", map_location = self.device))
-        
-        self.model_features.eval() 
-        self.model_output.eval() 
+        self.model.load_state_dict(torch.load(path + "model.pt", map_location = self.device))        
+        self.model.eval() 
 
     def conv_bn(self, inputs, outputs, stride):
         return nn.Sequential(

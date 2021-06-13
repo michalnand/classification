@@ -8,11 +8,12 @@ import models.model_0.model as Model0
 import models.model_1.model as Model1
 
 
+
 #train epochs
 epoch_count     = 100 
 
 #use cyclic learning rate
-learning_rates  = [0.001, 0.001, 0.0001, 0.0001, 0.0001, 0.0001, 0.00001]
+learning_rates  = [0.001, 0.001, 0.0001, 0.0001, 0.00001]
 
 folders_training = []
 folders_training.append("/home/michal/dataset/outdoor/lietavska_lucka/images/")
