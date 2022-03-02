@@ -1,0 +1,88 @@
+import numpy
+import torch 
+
+class DatasetAnomaly:
+    def __init__(self, dataset, normal_class_ids, anomaly_class_ids):
+        self.dataset            = dataset
+        self.normal_class_ids   = normal_class_ids
+        self.anomaly_class_ids  = anomaly_class_ids
+
+        self.input_shape    = self.dataset.input_shape
+        self.output_shape   = (1, )
+
+        self.training_normal_ids    = []
+        self.training_anomaly_ids   = []
+
+        for i in range(self.get_training_count()):
+            class_idx = numpy.argmax(self.dataset.training_y[i])
+
+            if class_idx in self.normal_class_ids:
+                self.training_normal_ids.append(i)
+
+            if class_idx in self.anomaly_class_ids:
+                self.training_anomaly_ids.append(i)
+
+
+
+        self.testing_normal_ids    = []
+        self.testing_anomaly_ids   = []
+
+        for i in range(self.get_testing_count()):
+            class_idx = numpy.argmax(self.dataset.testing_y[i])
+
+            if class_idx in self.normal_class_ids:
+                self.testing_normal_ids.append(i)
+
+            if class_idx in self.anomaly_class_ids:
+                self.testing_anomaly_ids.append(i)
+            
+
+      
+        print("\n\n\n\n")
+        print("dataset summary - anomaly: \n")
+        print("training_count   = ", self.get_training_count())
+        print("testing_count    = ", self.get_testing_count())
+        print("input_shape      = ", self.input_shape)
+        print("output_shape     = ", self.output_shape)
+        print("\n")
+
+    def get_training_count(self):
+        return self.dataset.get_training_count()
+
+    def get_testing_count(self):
+        return self.dataset.get_testing_count()
+
+    def get_training_batch(self, batch_size = 32, ratio = 1.0):
+        return self._get_batch(self.dataset.training_x, self.training_normal_ids, self.training_anomaly_ids, 1.0, batch_size)
+
+    def get_testing_batch(self, batch_size = 32, ratio = 0.5):
+        return self._get_batch(self.dataset.testing_x, self.testing_normal_ids, self.testing_anomaly_ids, 0.5, batch_size)
+
+
+    def _get_batch(self, x, normal_ids, anomaly_ids, normal_ratio, batch_size):
+        result_x = torch.zeros((batch_size, 2)  + self.input_shape)
+        result_y = torch.zeros((batch_size, ))
+
+        for i in range(batch_size):
+            if numpy.random.rand() < normal_ratio:
+                idx     = numpy.random.choice(normal_ids)
+                label   = 0.0
+            else:
+                idx     = numpy.random.choice(anomaly_ids)
+                label   = 1.0
+
+            result_x[i] = torch.from_numpy(x[idx]).float()
+            result_y[i] = label
+
+        return result_x, result_y
+
+
+        result_x = torch.zeros((batch_size, 2)  + self.input_shape)
+        result_y = torch.zeros((batch_size, ))
+
+        for i in range(batch_size):
+            idx_a, idx_b, target = self._get_idx(classes_mapping)
+           
+            result_x[i][0]  = torch.from_numpy(x[idx_a]).float()
+            result_x[i][1]  = torch.from_numpy(x[idx_b]).float()
+            result_y[i]     = 1.0*target

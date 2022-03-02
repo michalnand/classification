@@ -63,7 +63,7 @@ class DatasetMnist:
         print("dataset summary : \n")
         print("training_count = ", self.get_training_count())
         print("testing_count  = ", self.get_testing_count())
-        print("channels = ", self.height)
+        print("channels = ", self.channels)
         print("height   = ", self.height)
         print("width    = ", self.width)
         print("classes_count =  ", self.classes_count)

@@ -62,13 +62,18 @@ class DatasetContrastive:
 
     def _get_idx(self, classes_mapping):
         class_a_idx = numpy.random.randint(self.dataset.classes_count)
+
+        #same items, label = 0 (close distance)
         class_b_idx = class_a_idx
         target      = 0
 
+        #50% prob of different item
         if numpy.random.randint(2) == 1:
+            #different items, label = 1 (far distacne)
             while class_b_idx == class_a_idx:
                 class_b_idx = numpy.random.randint(self.dataset.classes_count)
             target      = 1
+        
             
         item_a_idx = numpy.random.randint(len(classes_mapping[class_a_idx]))
         item_b_idx = numpy.random.randint(len(classes_mapping[class_b_idx]))

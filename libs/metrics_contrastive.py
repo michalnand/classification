@@ -82,11 +82,12 @@ class MetricsContrastive:
 
 
     def _loss(self, target_t, predicted_t, alpha = 1.0):
-        zeros = torch.zeros(target_t.shape).to(target_t.device)
-
+        #similar inputs (target = 0), minimize predicted distance
         l1 = (1.0 - target_t)*predicted_t
+
+        #distant inputs (target = 1), maximize predicted distance to margin 1
+        zeros = torch.zeros_like(predicted_t)
         l2 = target_t*torch.max(alpha - predicted_t, zeros)
- 
-        l  = (l1 + l2).mean()
-        
-        return l
+
+        return (l1 + l2).mean()
+

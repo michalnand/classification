@@ -79,9 +79,13 @@ class Train:
             training_x = training_x.to(self.model.device)
             training_y = training_y.to(self.model.device)
 
-            predicted_y = self.model.forward(training_x)
+            if hasattr(self.model, "loss"):
+                predicted_y, loss = self.model.loss(training_x, training_y)
 
-            loss  = metrics.loss_training(training_y, predicted_y)
+            else:
+                predicted_y = self.model.forward(training_x)
+                loss  = metrics.loss_training(training_y, predicted_y)
+            
             metrics.add_training(training_y, predicted_y)
 
             optimizer.zero_grad()

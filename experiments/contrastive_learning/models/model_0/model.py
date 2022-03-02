@@ -16,19 +16,23 @@ class Create(torch.nn.Module):
                         nn.Conv2d(16, 32, kernel_size = 3, stride = 2, padding = 1),
                         nn.ReLU(),
                         nn.Conv2d(32, 64, kernel_size = 3, stride = 1, padding = 1),
-                        nn.ReLU(), 
-                        nn.Conv2d(64, 64, kernel_size = 3, stride = 1, padding = 0),
-                        nn.ReLU(), 
+                        nn.ReLU(),
                        
                         nn.Flatten(),
-                        nn.Linear(5*5*64, 128),
-                        nn.ReLU()
+                        nn.Linear(7*7*64, 128),
+                        nn.ReLU(),
+                        nn.Linear(128, 128)
         ]
 
        
         for i in range(len(self.layers)):
-            if hasattr(self.layers[i], "weight"):
+            if isinstance(self.layers[i], nn.Conv2d):
+                torch.nn.init.orthogonal_(self.layers[i].weight, 0.1)
+                torch.nn.init.zeros_(self.layers[i].bias)
+
+            if isinstance(self.layers[i], nn.Linear):
                 torch.nn.init.xavier_uniform_(self.layers[i].weight)
+                torch.nn.init.zeros_(self.layers[i].bias)
         
         self.model = nn.Sequential(*self.layers)
         self.model.to(self.device)

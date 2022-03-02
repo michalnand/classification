@@ -1,0 +1,16 @@
+best model
+epoch = 67
+
+TRAINING result
+
+loss_mean = 0.0022765351
+loss_std  = 0.00096243335
+loss_min  = 0.00038627267
+loss_max  = 0.007106719
+
+TESTING result
+
+loss_mean = 0.010528864
+loss_std  = 0.0031955275
+loss_min  = 0.004111293
+loss_max  = 0.017901354

@@ -22,7 +22,7 @@ x, y = dataset.get_testing_batch(batch_size=1024)
 
 labels = torch.argmax(y, dim=1).detach().to("cpu").numpy()
 
-
+ 
 print("computing features")
 #features = x.view(x.shape[0], -1) 
 features = model.eval_features(x)

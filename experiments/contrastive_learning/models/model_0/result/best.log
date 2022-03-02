@@ -1,22 +1,22 @@
 best model
-epoch = 9
+epoch = 3
 
 TRAINING result
 
-loss_mean = 0.0077445856
-loss_std  = 0.0054133427
+loss_mean = 0.033166986
+loss_std  = 0.011814208
 
 
-accuracy   = 99.828 [%]
-hit_count  = 59929
-miss_count = 103
+accuracy   = 99.059 [%]
+hit_count  = 59467
+miss_count = 565
 
-class_accuracy = 99.718%   99.933%   
+class_accuracy = 98.686%   99.426%   
 
 
 confusion_matrix = 
-       30009          19
-          84       29920
+       29673         171
+         394       29794
 
 
 
@@ -24,18 +24,18 @@ confusion_matrix =
 
 TESTING result
 
-loss_mean = 0.012039069
-loss_std  = 0.008321454
+loss_mean = 0.0298137
+loss_std  = 0.010110915
 
 
-accuracy   = 99.582 [%]
-hit_count  = 10006
-miss_count = 42
+accuracy   = 99.144 [%]
+hit_count  = 9962
+miss_count = 86
 
-class_accuracy = 99.34%   99.782%   
+class_accuracy = 98.644%   99.617%   
 
 
 confusion_matrix = 
-        4969          10
-          32        5037
+        5019          18
+          68        4943
 
