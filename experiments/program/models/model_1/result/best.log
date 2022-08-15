@@ -1,0 +1,41 @@
+best model
+epoch = 18
+
+TRAINING result
+
+loss_mean = 0.16721576
+loss_std  = 0.015008606
+
+
+accuracy   = 66.998 [%]
+hit_count  = 6732
+miss_count = 3316
+
+class_accuracy = 56.852%   76.642%   
+
+
+confusion_matrix = 
+        2788        1201
+        2115        3944
+
+
+
+
+
+TESTING result
+
+loss_mean = 0.15372264
+loss_std  = 0.012870244
+
+
+accuracy   = 69.727 [%]
+hit_count  = 714
+miss_count = 310
+
+class_accuracy = 62.008%   77.027%   
+
+
+confusion_matrix = 
+         315         118
+         192         399
+

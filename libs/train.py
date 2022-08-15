@@ -3,7 +3,7 @@ import torch
 import time
 
 class Train:
-    def __init__(self, dataset, Model, Metrics, batch_size = 64, learning_rates = [0.0001], weight_decay = 0.001):
+    def __init__(self, dataset, Model, Metrics, batch_size = 64, learning_rates = [0.0001], weight_decay = 0.0):
 
         self.dataset            = dataset
         self.model              = Model.Create(self.dataset.input_shape, self.dataset.output_shape)
@@ -21,9 +21,13 @@ class Train:
 
         best_score = -1000000.0
 
+        learning_rate = self.learning_rates[0]
+
+        optimizer   = torch.optim.Adam(self.model.parameters(), lr=learning_rate, weight_decay=learning_rate*self.weight_decay)  
+        
         for epoch in range(epoch_count):
-            learning_rate = self.learning_rates[epoch_count%len(self.learning_rates)]
-            metrics, epoch_time = self.step_epoch(learning_rate, epoch, epoch_count)
+            
+            metrics, epoch_time = self.step_epoch(epoch, epoch_count, optimizer)
 
             if epoch_time_filtered < 0.0:
                 epoch_time_filtered = epoch_time
@@ -60,14 +64,13 @@ class Train:
         f_training_log.close()
     
 
-    def step_epoch(self, learning_rate, epoch, epoch_count):
+    def step_epoch(self, epoch, epoch_count, optimizer):
 
         time_start = time.time()
 
         if hasattr(self.model, 'epoch_start'):
             self.model.epoch_start(epoch, epoch_count)
 
-        optimizer   = torch.optim.Adam(self.model.parameters(), lr=learning_rate, weight_decay=learning_rate*self.weight_decay)  
         batch_count = (self.dataset.get_training_count() + self.batch_size) // self.batch_size
 
         metrics            = self.Metrics(self.dataset.output_shape)

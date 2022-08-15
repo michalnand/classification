@@ -13,5 +13,6 @@ from .dataset_transformations   import *
 from .dataset_images            import *
 from .dataset_contrastive       import *
 from .dataset_anomaly           import *
+from .dataset_program           import *
 
 from .tiny_imagenet_config      import *
